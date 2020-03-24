@@ -3,9 +3,12 @@ from django.views import generic
 
 from .models import Recipes
 
-def index(request):
-    return render(request, 'foodApp/index.html')
+def home(request):
+    return render(request, 'foodApp/home.html')
 
-class RecipesView(generic.DetailView):
+class RecipesListView(generic.ListView):
     model = Recipes
-    template_name = 'foodapp/recipes.html'
+
+
+class RecipesDetailView(generic.DetailView):
+    model = Recipes
