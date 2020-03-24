@@ -8,6 +8,7 @@ def home(request):
 
 class RecipesListView(generic.ListView):
     model = Recipes
+    ordering = ['title']
 
 
 class RecipesDetailView(generic.DetailView):

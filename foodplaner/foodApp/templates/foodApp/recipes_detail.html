@@ -3,7 +3,10 @@
     <main role="main" class="container">
         <div class="jumbotron">
             <h1>{{object.title}}</h1>
-            <p class="lead">{{object.description}}</p>
+            <p class="lead">Kurzbeschreibung: {{object.description}}</p>
+            <p class="lead">Verarbeitungszeit: {{object.work_time}}min</p>
+            <p class="lead">Zutanten: {{object.ingredients}}</p>
+            <p class="lead">Zubereitung: {{object.preparation}}</p>
         </div>    
     </main>
 {% endblock main_content %}

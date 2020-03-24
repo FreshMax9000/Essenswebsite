@@ -4,7 +4,7 @@
         {% for object in object_list  %}
             <div class="jumbotron">
                 <h1>{{object.title}}</h1>
-                <p class="lead">{{recipe.description}}</p>
+                <p class="lead">{{object.description}}</p>
                 <a class="btn btn-lg btn-primary" href="{% url 'foodApp:recipesDetail' object.id %}" role="button">{{object.title}} &raquo;</a>
             </div>
         {% endfor %}        
