@@ -1,0 +1,5 @@
+workflow-aggregator:latest
+git
+build-user-vars-plugin
+configuration-as-code-support:latest
+job-dsl:latest
