@@ -27,10 +27,13 @@
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-              <a class="nav-link" href="{% url 'foodApp:index' %}">Home <!--span class="sr-only">(current)</span--></a>
+              <a class="nav-link" href="{% url 'foodApp:home' %}">Home <!--span class="sr-only">(current)</span--></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'foodApp:recipes' 1 %}">Rezepte</a>
+              <a class="nav-link" href="#">Foodplaner</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'foodApp:recipesList' %}">Rezepte</a>
             </li>
             <!--li class="nav-item">
               <a class="nav-link disabled" href="#">Disabled</a>
@@ -51,50 +54,8 @@
         </div>
       </nav>
   
-      <main role="main">
-  
-        <!-- Main jumbotron for a primary marketing message or call to action -->
-        <div class="jumbotron">
-          <div class="container">
-            <h1 class="display-3">Hello, world!</h1>
-                <p>
-                    {% block content %}{% endblock %} 
-                </p>
-                <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
-          </div>
-        </div>
-  
-        <div class="container">
-          <!-- Example row of columns -->
-          <div class="row">
-            <div class="col-md-4">
-              <h2>Heading</h2>
-                <p>
-                    {% block content1 %}{% endblock %} 
-                </p>
-              <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
-            </div>
-            <div class="col-md-4">
-              <h2>Heading</h2>
-              <p>
-                  {% block content2 %}{% endblock %} 
-              </p>
-              <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
-            </div>
-            <div class="col-md-4">
-              <h2>Heading</h2>
-              <p>
-                  {% block content3 %}{% endblock %} 
-              </p>
-              <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
-            </div>
-          </div>
-  
-          <hr>
-  
-        </div> <!-- /container -->
-  
-      </main>
+      {% block main_content %}
+      {% endblock main_content %}
   
       <footer class="container">
         <p>&copy; INF18IN - DHBW 2020</p>
