@@ -1,15 +1,15 @@
 from django.shortcuts import render
 from django.views import generic
 
-from .models import Recipes
+from . import models
 
 def home(request):
     return render(request, 'foodApp/home.html')
 
 class RecipesListView(generic.ListView):
-    model = Recipes
+    model = models.Recipe
     ordering = ['title']
 
 
 class RecipesDetailView(generic.DetailView):
-    model = Recipes
+    model = models.Recipe
