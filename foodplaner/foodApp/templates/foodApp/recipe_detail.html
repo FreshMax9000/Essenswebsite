@@ -1,0 +1,22 @@
+{% extends "foodApp/base.html" %}
+{% block main_content %}
+    <main role="main" class="container">
+        <div class="jumbotron">
+            <h1>{{object.title}}</h1>
+            <p class="lead">Kurzbeschreibung: {{object.description}}</p>
+            {% if object.avg_rating > 0 %}
+                <p class="lead">Bewertung: {{object.avg_rating}}</p>
+            {% endif %}
+            <p class="lead">Verarbeitungszeit: {{object.work_time}}min</p>
+            <p class="lead">Zutaten:
+                <div class="lead container">
+                    {% for each in object.ingredient_set.all %}
+                        <li>{{ each.quantity }}{{ each.grocerie.unit }} {{ each.grocerie.name }}</li>
+                    {% endfor %}
+                </div>
+            </p>
+            <p class="lead">Zubereitung: {{object.preparation}}</p>
+            <p class="lead">Erstellt von: {{object.author}}</p>
+        </div>    
+    </main>
+{% endblock main_content %}
