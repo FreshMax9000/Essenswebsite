@@ -1,0 +1,38 @@
+{% extends "foodApp/base.html" %}
+{% block main_content %}
+    <main role="main">
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+        <div class="container">
+        <h1 class="display-3">Hallo Du!</h1>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Example row of columns -->
+        <div class="row">
+
+        <div class="col-md-6">
+            <h2>Meine Rezepte</h2>
+                {% for rezept in Recip %}
+                    <div class="container">
+                        <h1>{{rezept}}</h1>       
+                    </div>
+                {% endfor %}  
+        </div>
+        <div class="col-md-6">
+            <h2><a class="btn btn-secondary" href="{% url 'foodApp:Wochenplan' %}" role="button">Meine Wochenpläne &raquo;</a></h2>
+            <p>
+                
+                
+            </p>
+        </div>
+        </div>
+    </div>
+
+
+    </div> <!-- /container -->
+
+    </main>
+{% endblock main_content %}
+      
