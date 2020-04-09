@@ -14,7 +14,7 @@ class Recipe(models.Model):
     description = models.CharField(max_length=200,default="")
     preparation = models.TextField(default="")
     work_time = models.IntegerField(default=0)
-    avg_rating = models.FloatField(default=0) #durchschnitt berechnen aus allen kommentaren, neuberechnung wenn neuer kommentar/ kommnetar änderung/ löschung
+    avg_rating = models.FloatField(default=0) #@TODO: durchschnitt berechnen aus allen kommentaren, neuberechnung wenn neuer kommentar/ kommnetar änderung/ löschung
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     ingredients = models.ManyToManyField(Grocerie, through='Ingredient', through_fields=('recipe', 'grocerie'))
     

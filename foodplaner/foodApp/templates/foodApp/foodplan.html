@@ -1,15 +1,24 @@
 {% extends "foodApp/base.html" %}
 {% block main_content %}
     <main role="main" class="container">
-        {% for object in object_list  %}
-            <div class="jumbotron">
-                <h1>{{object.title}}</h1>
-                {% if object.avg_rating > 0 %}
-                    <p class="lead">Bewertung: {{object.avg_rating}}</p>
-                {% endif %}
-                <p class="lead">{{object.description}}</p>
-                <a class="btn btn-lg btn-primary" href="{% url 'foodApp:recipesDetail' object.id %}" role="button">{{object.title}} &raquo;</a>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for object in object_list  %}
+                <div class="jumbotron">
+                    <div class="form-group">
+                        <button class="btn btn-dark float-sm-right " name="reload"  value={{object.id}} type="reload"><i class="fa fa-repeat"><!--i class="fa fa-edit"--></i></button>
+                    </div>
+                    <h1>{{object.title}}</h1>
+                    {% if object.avg_rating > 0 %}
+                        <p class="lead">Bewertung: {{object.avg_rating}}</p>
+                    {% endif %}
+                    <p class="lead">{{object.description}}</p>
+                    <a class="btn btn-lg btn-primary" href="{% url 'foodApp:recipesDetail' object.id %}" role="button">{{object.title}} &raquo;</a>
+                </div>
+            {% endfor %}    
+            <div class="form-group">
+                <button class="btn btn-outline-info float-right" name="submit" value="0" type="submit">Save <i class="fa fa-arrow-circle-right"></i></button>
             </div>
-        {% endfor %}        
+        </form>
     </main>
 {% endblock main_content %}
