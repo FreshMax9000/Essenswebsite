@@ -22,6 +22,12 @@ class RecipesDetailView(generic.DetailView):
 def foodplan(request):
     recipe_objects = Recipe.objects.filter(avg_rating__gt=3) #filter this list for an filterd result .all() for unfilterd
     foodplan = Foodplan.objects.filter(user=request.user).first()
+    if foodplan is None:
+        messages.info(request, f'Erzeuge Essenplan!')
+        new_foodplan = Foodplan(user=request.user)
+        new_foodplan.save()
+        foodplan = new_foodplan
+
     if request.method == 'POST' and 'submit' not in request.POST:
         if 'reload' in request.POST:
             # select recipe to remove it from Foodplan
@@ -40,7 +46,7 @@ def foodplan(request):
                 random_recipes =recipe_objects.order_by('?').first()
                 foodplan.recipes.add(random_recipes)
             else:
-                messages.success(request, f'Keine Rezepte vorhanden!')
+                messages.info(request, f'Keine Rezepte vorhanden!')
             # get all recipes in foodplan
             object_list = foodplan.recipes.all()
     else:
