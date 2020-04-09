@@ -1,54 +1,66 @@
-{% extends "foodApp/base.html" %}
-{% block main_content %}
-    <main role="main">
-    <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-        <div class="container">
-        <h1 class="display-3">Foodplaner!</h1>
-        </div>
-    </div>
-
+{% extends "foodApp/base.html" %} {% block main_content %}
+<main role="main">
+  <!-- Main jumbotron for a primary marketing message or call to action -->
+  <div class="jumbotron">
     <div class="container">
-        <!-- Example row of columns -->
-        <div class="row">
-        <div class="col-md-3">
-            <h2>Mein Profil</h2>
-            <p>
-                
-                
-            </p>
-            <p><a class="btn btn-secondary" href="{% url 'foodApp:myProfil' %}" role="button">Anzeigen &raquo;</a></p>
-        </div>
-        <div class="col-md-3">
-            <h2>Rezept suchen</h2>
-            <p>
-                
-                
-            </p>
-            <p><a class="btn btn-secondary" href="#" role="button">Suchen &raquo;</a></p>
-        </div>
-        <div class="col-md-3">
-            <h2>Rezept hinzufügen</h2>
-            <p>
-                
-                
-            </p>
-            <p><a class="btn btn-secondary" href="#" role="button">Hinzufügen &raquo;</a></p>
-        </div>
-        <div class="col-md-3">
-            <h2>Wochenplan generieren</h2>
-            <p>
-                
-                
-            </p>
-            <p><a class="btn btn-secondary" href="#" role="button">Generieren &raquo;</a></p>
-        </div>
-        </div>
+      <h1 class="display-3">Foodplaner!</h1>
     </div>
+  </div>
 
-
-    </div> <!-- /container -->
-
-    </main>
+  <div class="container">
+    <!-- Example row of columns -->
+    <div class="row">
+      <div class="col-md-3">
+        <h2>Mein Profil</h2>
+        <p></p>
+        <p>
+          <a
+            class="btn btn-secondary"
+            href="{% url 'foodApp:myProfil' %}"
+            role="button"
+            >Anzeigen &raquo;</a
+          >
+        </p>
+      </div>
+      <div class="col-md-3">
+        <form
+          id="search-form"
+          class="form-inline d-flex justify-content-center md-form form-sm mt-0"
+          method="GET"
+          action="{% url 'foodApp:searchRecipes' %}"
+        >
+          <input
+            name="q"
+            class="searchfield form-control form-control-sm ml-3 w-75"
+            type="text"
+            placeholder="Im Rezeptbuch suchen ..."
+            aria-label="Search"
+          />
+          <button class="btn btn-secondary" type="submit">
+            Suchen &raquo;
+          </button>
+        </form>
+      </div>
+      <div class="col-md-3">
+        <h2>Rezept hinzufügen</h2>
+        <p></p>
+        <p>
+          <a class="btn btn-secondary" href="#" role="button"
+            >Hinzufügen &raquo;</a
+          >
+        </p>
+      </div>
+      <div class="col-md-3">
+        <h2>Wochenplan generieren</h2>
+        <p></p>
+        <p>
+          <a class="btn btn-secondary" href="#" role="button"
+            >Generieren &raquo;</a
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- /container -->
+</main>
 {% endblock main_content %}
-      
