@@ -1,0 +1,19 @@
+{% extends "foodapp/base.html" %}
+{% load crispy_forms_tags %}
+{% block main_content %}
+<main role="main" class="container">
+    <div class="jumbotron">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Neues Rezept erstellen</legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+            <p><a class="btn btn-secondary" href="{% url 'foodApp:addGrocery' %}" role="button">Neue Zutat erstellen</a></p>
+                <button class="btn btn-outline-info" type="submit">Hinzufügen</button>
+            </div>
+        </form>
+    </div>
+</main>
+{% endblock main_content %}
