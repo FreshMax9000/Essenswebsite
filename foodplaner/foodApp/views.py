@@ -17,14 +17,19 @@ class RecipesDetailView(generic.DetailView):
     model = Recipe
 
 class MyProfil(generic.ListView):
-    model = Recipe
+    context_object_name = 'myrecipes'
     queryset = Recipe.objects.order_by('title')
+
     template_name = "foodApp/myprofil.html"
 
+    def get_context_data(self, **kwargs):
+        context = super(MyProfil, self).get_context_data(**kwargs)
+        context['myfoodplans'] = Foodplan.objects.order_by('user')
+        return context
 
-class Agenda(generic.ListView):
+
+class Agenda(generic.DetailView):
     model = Foodplan
-    queryset = Foodplan.objects.order_by('title')
     template_name = "foodApp/agenda.html"
 
 class Shopping(generic.ListView):

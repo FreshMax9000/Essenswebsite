@@ -20,10 +20,10 @@
       <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="min-height: 120px">
         <img src="/media/Logo.png" alt="My image" class="rounded" height="60" max="30"class="img-fluid"> 
         <a class="navbar-brand" href="{% url 'foodApp:home' %}" style="height: 70px"> <h1 class="display-4">Essensplan!</h1> </a>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="{% url 'foodApp:home' %}" style="font-size: x-large; height: 55px; color:azure ;">Home<span class="sr-only">(current)</span></a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="{% url 'foodApp:recipesList' %}" style="font-size: x-large; height: 55px; color:azure ;">Rezepte</a>
         </li>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,7 +39,7 @@
             {% if user.is_authenticated %}
               <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 70px; ; width: 150px; background-color: transparent;"> 
-                  <img src="/media/default.png" style="max-height: 30px"; alt="Profli"><br><p style="font-size: medium">Profil</p></button>
+                  <img src="/media/profil.png" style="max-height: 30px;"; alt="Profli"><br><p style="font-size: medium">{{user}}</p></button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" >
                   <a class="dropdown-item" href="{% url 'profile' %}">Einstellungen</a>
                   <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
