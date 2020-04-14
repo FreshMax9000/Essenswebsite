@@ -16,17 +16,18 @@ class RecipesListView(generic.ListView):
 class RecipesDetailView(generic.DetailView):
     model = Recipe
 
-class myprofil(generic.ListView):
+class MyProfil(generic.ListView):
     model = Recipe
     queryset = Recipe.objects.order_by('title')
     template_name = "foodApp/myprofil.html"
 
-class agenda(generic.ListView):
+
+class Agenda(generic.ListView):
     model = Foodplan
     queryset = Foodplan.objects.order_by('title')
     template_name = "foodApp/agenda.html"
 
-class shopping(generic.ListView):
+class Shopping(generic.ListView):
     model = Recipe
     queryset = Recipe.objects.order_by('title')
     template_name = "foodApp/shopping.html"
