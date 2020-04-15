@@ -1,10 +1,10 @@
+from django.db import transaction
 from django.shortcuts import render
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 from . import models
-from .models import Recipe
 
 
 def home(request):
@@ -20,20 +20,31 @@ class RecipesDetailView(generic.DetailView):
     model = models.Recipe
 
 
-def MyProfil(request):
-    Recipes = [Recipe.title]
-    return render(request, 'foodApp/myProfil.html', {'Recip' : Recipes})
+class MyProfil(generic.ListView):
+    context_object_name = 'myrecipes'
+    queryset = models.Recipe.objects.order_by('title')
+    template_name = "foodApp/myprofil.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(MyProfil, self).get_context_data(**kwargs)
+        context['myfoodplans'] = models.Foodplan.objects.order_by('user')
+        return context
 
 
-def Wochenplan(request):
-    return render(request, 'foodApp/Wochenplan.html')
+class Agenda(generic.DetailView):
+    model = models.Foodplan
+    template_name = "foodApp/agenda.html"
+
+
+class Shopping(generic.ListView):
+    model = models.Recipe
+    queryset = models.Recipe.objects.order_by('title')
+    template_name = "foodApp/shopping.html"
 
 
 class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
     model = models.Recipe
     fields = ['title', 'description', 'preparation', 'work_time', 'ingredients']
-
-    success_url = '/'  # home
 
     def form_valid(self, form):
         form.instance.author = self.request.user

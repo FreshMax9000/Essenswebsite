@@ -1,37 +1,42 @@
 {% extends "foodApp/base.html" %}
 {% block main_content %}
     <main role="main">
-    <!-- Main jumbotron for a primary marketing message or call to action -->
+   
     <div class="jumbotron">
         <div class="container">
-        <h1 class="display-3">Hallo Du!</h1>
+        <h1 class="display-3" style="text-align: center;">Hallo {{user}}!</h1>
         </div>
     </div>
 
     <div class="container">
-        <!-- Example row of columns -->
+        <!-- Lists the agenda and recipes from the User -->
         <div class="row">
 
         <div class="col-md-6">
-            <h2>Meine Rezepte</h2>
-                {% for rezept in Recip %}
-                    <div class="container">
-                        <h1>{{rezept}}</h1>       
-                    </div>
-                {% endfor %}  
+            <h1>Meine Rezepte</h1>
+                {% for recipe in myrecipes  %}
+                    {% if recipe.author == request.user %}
+                        <div class="jumbotron">
+                            <a class="btn btn-lg btn-primary" href="{% url 'foodApp:recipesDetail' recipe.id %}" role="button">{{recipe.title}} &raquo;</a>
+                        </div>
+                    {% endif %}
+                {% endfor %}       
         </div>
         <div class="col-md-6">
-            <h2><a class="btn btn-secondary" href="{% url 'foodApp:Wochenplan' %}" role="button">Meine Wochenpläne &raquo;</a></h2>
-            <p>
-                
-                
-            </p>
+            <h1>Meine Wochenpläne</h1>
+                {% for plan in myfoodplans  %}
+                    {% if plan.user == request.user %}
+                        <div class="jumbotron">
+                            <a class="btn btn-lg btn-primary" href="{% url 'foodApp:agenda' plan.id %}" role="button">Wochenplan &raquo;</a>
+                        </div>
+                    {% endif %}
+                {% endfor %}  
         </div>
         </div>
     </div>
 
 
-    </div> <!-- /container -->
+    </div> <!-- /container  -->
 
     </main>
 {% endblock main_content %}
