@@ -1,0 +1,70 @@
+{% extends "foodApp/base.html" %}
+{% block main_content %}
+    <main role="main">
+    
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10">
+                    <h1 class="display-3">Mein Wochenplan</h1>
+                </div>
+                <div class="col-md-2">
+                    <p><a class="btn btn-secondary" href="{% url 'foodApp:shopping' %}" role="button">Einkaufsliste &raquo;</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Current agenda -->
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">Mittag</th>
+                <th scope="col">Abend</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Montag</th>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th scope="row">Dienstag</th>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th scope="row">Mittwoch</th>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th scope="row">Donnerstag</th>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th scope="row">Freitag</th>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th scope="row">Samstag</th>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th scope="row">Sonntag</th>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+    <!-- /container -->
+
+    </main>
+{% endblock main_content %}
