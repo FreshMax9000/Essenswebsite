@@ -1,23 +1,33 @@
 {% extends "foodApp/base.html" %}
+{% load crispy_forms_tags %}
 {% block main_content %}
     <main role="main" class="container">
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
+            <div class="jumbotron">
+                <h1>Filter</h1>
+                {{ form | crispy}}
+                {{ filter.form | crispy}}
+                <div class="form-group">
+                    <button class="btn btn-outline-info float-right" name="generate" value="0">Generate <i class="fa fa-arrow-circle-right"></i></button>
+                </div>
+            </div>
             {% for object in object_list  %}
                 <div class="jumbotron">
                     <div class="form-group">
-                        <button class="btn btn-dark float-sm-right " name="reload"  value={{object.id}} type="reload"><i class="fa fa-repeat"><!--i class="fa fa-edit"--></i></button>
+                        <button class="btn btn-dark float-sm-right " name="reload"  value={{object.recipe.id}}><i class="fa fa-repeat"><!--i class="fa fa-edit"--></i></button>
                     </div>
-                    <h1>{{object.title}}</h1>
-                    {% if object.avg_rating > 0 %}
-                        <p class="lead">Bewertung: {{object.avg_rating}}</p>
+                    <h3>{{object.date}}</h3>
+                    <h1>{{object.recipe.title}}</h1>
+                    {% if object.recipe.avg_rating > 0 %}
+                        <p class="lead">Bewertung: {{object.recipe.avg_rating}}</p>
                     {% endif %}
-                    <p class="lead">{{object.description}}</p>
-                    <a class="btn btn-lg btn-primary" href="{% url 'foodApp:recipesDetail' object.id %}" role="button">{{object.title}} &raquo;</a>
+                    <p class="lead">{{object.recipe.description}}</p>
+                    <a class="btn btn-lg btn-primary" href="{% url 'foodApp:recipesDetail' object.recipe.id %}" role="button">{{object.recipe.title}} &raquo;</a>
                 </div>
             {% endfor %}    
             <div class="form-group">
-                <button class="btn btn-outline-info float-right" name="submit" value="0" type="submit">Save <i class="fa fa-arrow-circle-right"></i></button>
+                <button class="btn btn-outline-info float-right" name="save" value="0">Save <i class="fa fa-arrow-circle-right"></i></button>
             </div>
         </form>
     </main>

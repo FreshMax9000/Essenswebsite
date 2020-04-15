@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 
 from . import  views
 
@@ -8,4 +8,4 @@ urlpatterns = [
     path('recipes/', views.RecipesListView.as_view(), name='recipesList'),
     path('recipes/<int:pk>/', views.RecipesDetailView.as_view(), name='recipesDetail'),
     path('Essenplan/', views.foodplan, name='foodplan'),
-] 
+]
