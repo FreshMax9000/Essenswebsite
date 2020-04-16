@@ -5,8 +5,11 @@ from django.shortcuts import redirect
 from django.views import generic
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 from .models import Recipe
+from .models import Grocerie
 from .models import Foodplan
 from .models import Foodplan_Recipe
 from .filters import FoodplanFilter
@@ -20,10 +23,86 @@ def home(request):
 class RecipesListView(generic.ListView):
     model = Recipe
     ordering = ['title']
+    template_name = '.\\foodApp\\recipe_list.html'
+    paginate_by = 20
+
+    def get(self, request, *args, **kwargs):
+        self.search = request.GET.get('q', '')
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Recipe.objects.filter(title__icontains=self.search)
 
 
 class RecipesDetailView(generic.DetailView):
     model = Recipe
+
+
+class MyProfil(generic.ListView):
+    context_object_name = 'myrecipes'
+    queryset = Recipe.objects.order_by('title')
+    template_name = "foodApp/myprofil.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(MyProfil, self).get_context_data(**kwargs)
+        context['myfoodplans'] = Foodplan.objects.order_by('user')
+        return context
+
+
+class Agenda(generic.DetailView):
+    model = Foodplan
+    template_name = "foodApp/agenda.html"
+
+
+class Shopping(generic.ListView):
+    model = Recipe
+    queryset = Recipe.objects.order_by('title')
+    template_name = "foodApp/shopping.html"
+
+
+class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
+    model = Recipe
+    fields = ['title', 'description', 'preparation', 'work_time', 'ingredients']
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+
+class UpdateRecipeView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+    model = Recipe
+    fields = ['title', 'description', 'preparation', 'work_time', 'ingredients']
+
+    success_url = '/'  # home
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    # A recipe can only get updated by the user that created it -> change later to admins
+    def test_func(self):
+        recipe = self.get_object()
+        return self.request.user == recipe.author
+
+
+class CreateGroceryView(LoginRequiredMixin, generic.CreateView):
+    model = Grocerie
+    fields = ['name', 'unit']
+
+    success_url = '/'
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+
+class DeleteRecipeView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+    model = Recipe
+    success_url = '/'
+
+    # A recipe can only get deleted by the user that created it -> change later to admins
+    def test_func(self):
+        recipe = self.get_object()
+        return self.request.user == recipe.author
 
 
 @login_required
