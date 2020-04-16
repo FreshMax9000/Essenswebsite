@@ -1,5 +1,4 @@
-from django.urls import path, include
-
+from django.urls import path
 
 from . import views
 
@@ -13,6 +12,7 @@ urlpatterns = [
     path('Rezepte/hinzufuegen/', views.CreateRecipeView.as_view(), name='addRecipe'),
     path('Zutat_hinzufuegen/', views.CreateGroceryView.as_view(), name='addGrocery'),
     path('MeinProfil/', views.MyProfil.as_view(), name='myprofil'),
-    path('Wochenplan/<int:pk>/', views.Agenda.as_view(), name='agenda'),
+    path('MeinWochenplan/<int:pk>/', views.Agenda.as_view(), name='agenda'),
     path('Einkaufsliste/', views.Shopping.as_view(), name='shopping'),
+    path('Essensplan/', views.foodplan, name='foodplan'),
 ]

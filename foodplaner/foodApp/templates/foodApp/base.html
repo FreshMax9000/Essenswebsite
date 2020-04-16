@@ -9,32 +9,35 @@
 
     
     <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/jumbotron/">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     
-        <title>Foodplaner</title>
+        <title>Essensplan</title>
   </head>
   <body>
       <!-- Navigation -->
       <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="min-height: 120px">
         <img src="/media/Logo.png" alt="My image" class="rounded" height="60" max="30"class="img-fluid"> 
         <a class="navbar-brand" href="{% url 'foodApp:home' %}" style="height: 70px"> <h1 class="display-4">Essensplan!</h1> </a>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'foodApp:home' %}" style="font-size: x-large; height: 55px; color:azure ;">Home<span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'foodApp:recipesList' %}" style="font-size: x-large; height: 55px; color:azure ;">Rezepte</a>
-        </li>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-  
+
         <div class="collapse navbar-collapse" id="navbarsExampleDefault" style="height: 150px">
           <ul class="navbar-nav mr-auto">
-            
-          <!-- Login/Logout -->  
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'foodApp:home' %}" style="font-size: x-large; height: 55px; color:azure ;">Home<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'foodApp:foodplan' %}" style="font-size: x-large; height: 55px; color:azure ;">Essensplan</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'foodApp:recipesList' %}" style="font-size: x-large; height: 55px; color:azure ;">Rezepte</a>
+            </li>
           </ul>
+          <!-- Login/Logout -->  
           <div class="navbar-nav">
             {% if user.is_authenticated %}
               <div class="dropdown">
@@ -53,6 +56,14 @@
         </div>
       </nav>
   
+      {% if messages %}
+        <div class="container">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>  
+          {% endfor %}
+        </div>
+      {% endif %}
+
       {% block main_content %}
       {% endblock main_content %}
   
