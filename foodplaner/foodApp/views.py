@@ -11,8 +11,11 @@ from .models import Foodplan
 from .models import Foodplan_Recipe
 from .filters import FoodplanFilter
 from .forms import FoodplanForm
+
+
 def home(request):
     return render(request, 'foodApp/home.html')
+
 
 class RecipesListView(generic.ListView):
     model = Recipe
@@ -84,6 +87,14 @@ def foodplan(request):
     return render(request, "foodApp/foodplan.html", context)
 
 def reload_recipe(request, foodplan_object, recipe_list):
+    """
+        desc:
+            - reload single recipe
+            - remove choosen recipe(id saved in request.Post)
+            - choose random recipe from recipe_list
+            - add recipe too foodplan with origin date
+            - if recipe_list only removed recipe --> do noting + warning
+    """
     # select recipe to remove it from Foodplan
     removed_recipe = Recipe.objects.filter(id=request.POST.get('reload')).first()
     temp_date = Foodplan_Recipe.objects.filter(foodplan=foodplan_object).filter(recipe=removed_recipe).last().date
@@ -102,8 +113,15 @@ def reload_recipe(request, foodplan_object, recipe_list):
         messages.warning(request, f'Keine Rezepte vorhanden! Filter anpassen!')
 
 def generate_foodplan(request, foodplan_object, recipe_list, days):
+    """
+        desc:
+            - clear foodplan
+            - choose number of days random recipes from recipe_list
+            - add choosen recipes to foodplan
+            - if recipes < days --> warning
+    """
     # check if query_set is too short
-    if len(recipe_list) >= days: #TODO replace 2 with number of days
+    if len(recipe_list) >= days:
         # clear and generate foodplan
         foodplan_object.recipes.clear()
         for count in range(days):
@@ -122,7 +140,7 @@ def generate_recipe(request, foodplan_object, recipe_list, temp_date):
         ret:
             - return recipe_list exclude the selected recipe
     """
-    random_recipes = recipe_list.order_by('?').first() #@test: generate 2 recipe
+    random_recipes = recipe_list.order_by('?').first()
     foodplan_object.recipes.add(random_recipes)
     save_date = Foodplan_Recipe.objects.filter(foodplan=foodplan_object).filter(recipe=random_recipes).last()
     save_date.date = temp_date
