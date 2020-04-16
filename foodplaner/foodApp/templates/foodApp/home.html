@@ -1,31 +1,89 @@
-{% extends "foodApp/base.html" %}
-{% block main_content %}
-    <main role="main" style="background-color: grey;">
+{% extends "foodApp/base.html" %} {% block main_content %}
+<main role="main" style="background-color: grey;">
+  <!-- Background Pisture with the buttons -->
 
-    <!-- Background Pisture with the buttons -->
-
-    <div class="container" style="align-items: center; background-color: grey;">
-        <div class="page-background" style="background-image: url('/media/Background3.jpg'); max-height: 750px; max-width: 1150px;; background-position: center;" >
-                <!-- Buttons -->
-                <div class="conatainer" style="min-height: 700px; text-align: center;">
-                    <div class="row">
-                        <div class="col-md-6" style="text-align: center; line-height: 190px;">
-                            <p><a class="btn btn-secondary" style="font-size: x-large; position: relative;background-color: rgb(241, 201, 125); border-color: white;" href="{% url 'foodApp:myprofil' %}" role="button">Mein Profil &raquo;</a></p>
-                            <p><a class="btn btn-secondary" style="font-size: x-large; text-align: center;  background-color:rgb(241, 201, 125); border-color: white;" href="#" role="button">Rezept suchen &raquo;</a></p>
-                        </div>
-                        <div class="col-md-6" style="text-align: center;line-height: 190px;">
-                            <p><a class="btn btn-secondary" style="font-size: x-large; text-align: center;  background-color:rgb(241, 201, 125); border-color: white;" href="#" role="button">Rezept hinzufügen &raquo;</a></p>
-                            <p><a class="btn btn-secondary" style="font-size: x-large; text-align: center;  background-color: rgb(241, 201, 125); border-color: white;" href="#" role="button">Wochenplan generieren &raquo;</a></p>
-                        </div>
-                        </div>
-                </div>
+  <div class="container" style="align-items: center; background-color: grey;">
+    <div
+      class="page-background"
+      style="
+        background-image: url('/media/Background3.jpg');
+        max-height: 750px;
+        max-width: 1150px;
+        background-position: center;
+      "
+    >
+      <!-- Buttons -->
+      <div class="conatainer" style="min-height: 700px; text-align: center;">
+        <div class="row">
+          <div class="col-md-6" style="text-align: center; line-height: 190px;">
+            <p>
+              <a
+                class="btn btn-secondary"
+                style="
+                  font-size: x-large;
+                  position: relative;
+                  background-color: rgb(241, 201, 125);
+                  border-color: white;
+                "
+                href="{% url 'foodApp:myprofil' %}"
+                role="button"
+                >Mein Profil &raquo;</a
+              >
+            </p>
+            <p>
+              <a
+                class="btn btn-secondary"
+                style="
+                  font-size: x-large;
+                  text-align: center;
+                  background-color: rgb(241, 201, 125);
+                  border-color: white;
+                "
+                href="{% url 'foodApp:recipesList' %}"
+                role="button"
+                >Rezept suchen &raquo;
+                </a
+              >
+            </p>
+          </div>
+          <div class="col-md-6" style="text-align: center; line-height: 190px;">
+            <p>
+              <a
+                class="btn btn-secondary"
+                style="
+                  font-size: x-large;
+                  text-align: center;
+                  background-color: rgb(241, 201, 125);
+                  border-color: white;
+                "
+                href="#"
+                role="button"
+                >Rezept hinzufügen &raquo;</a
+              >
+            </p>
+            <p>
+              <a
+                class="btn btn-secondary"
+                style="
+                  font-size: x-large;
+                  text-align: center;
+                  background-color: rgb(241, 201, 125);
+                  border-color: white;
+                "
+                href="#"
+                role="button"
+                >Wochenplan generieren &raquo;</a
+              >
+            </p>
+          </div>
         </div>
+      </div>
     </div>
-    <div class="container" style="background-color: grey; min-height: 80px;"></div>
-
-
-    </div> <!-- /container -->
-
-    </main>
+  </div>
+  <div
+    class="container"
+    style="background-color: grey; min-height: 80px;"
+  ></div>
+  <!-- /container -->
+</main>
 {% endblock main_content %}
-      

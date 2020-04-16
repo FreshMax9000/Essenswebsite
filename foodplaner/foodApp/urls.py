@@ -1,11 +1,12 @@
 from django.urls import path, include
 
+
 from . import views
 
 app_name = 'foodApp'
 urlpatterns = [
     path('', views.home, name='home'),
-    path('Rezepte/', views.RecipesListView.as_view(), name='recipesList'),
+    path('Suche', views.RecipesListView.as_view(), name='recipesList'),
     path('Rezepte/<int:pk>/', views.RecipesDetailView.as_view(), name='recipesDetail'),
     path('Rezepte/<int:pk>/loeschen/', views.DeleteRecipeView.as_view(), name='recipesDelete'),
     path('Rezepte/<int:pk>/bearbeiten/', views.UpdateRecipeView.as_view(), name='recipesUpdate'),

@@ -14,6 +14,15 @@ def home(request):
 class RecipesListView(generic.ListView):
     model = models.Recipe
     ordering = ['title']
+    template_name = '.\\foodApp\\recipe_list.html'
+    paginate_by = 20
+
+    def get(self, request, *args, **kwargs):
+        self.search = request.GET.get('q', '')
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return models.Recipe.objects.filter(title__icontains=self.search)
 
 
 class RecipesDetailView(generic.DetailView):
