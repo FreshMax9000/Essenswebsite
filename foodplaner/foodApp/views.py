@@ -11,7 +11,6 @@ from .models import Foodplan
 from .models import Foodplan_Recipe
 from .filters import FoodplanFilter
 from .forms import FoodplanForm
-
 def home(request):
     return render(request, 'foodApp/home.html')
 
@@ -47,25 +46,16 @@ def foodplan(request):
         new_foodplan.save()
         foodplan_object = new_foodplan
 
-    if request.method == 'POST' and 'generate' not in request.POST:
+    if request.method == 'POST':
         form = FoodplanForm(request.POST)
         if 'reload' in request.POST:
+            reload_recipe(request, foodplan_object, recipe_list)
+
+        if 'delete' in request.POST:
             # select recipe to remove it from Foodplan
-            removed_recipe = Recipe.objects.filter(id=request.POST.get('reload')).first()
-            temp_date = Foodplan_Recipe.objects.filter(foodplan=foodplan_object).filter(recipe=removed_recipe).last().date
-
-            # filter the remaining recipes
-            recipe_list = recipe_list.exclude(id=removed_recipe.id)
-            for foodplan_recipe in foodplan_object.recipes.all():
-                recipe_list = recipe_list.exclude(id=foodplan_recipe.id)
-
-            # check if query_set is empty
-            if recipe_list.first() is not None:
-                # remove recipe from Foodplan
-                foodplan_object.recipes.remove(removed_recipe)
-                recipe_list = generate_recipe(request, recipe_list, foodplan_object, temp_date)
-            else:
-                messages.warning(request, f'Keine Rezepte vorhanden! Filter anpassen!')
+            removed_recipe = Recipe.objects.filter(id=request.POST.get('delete')).first()
+            # remove recipe from Foodplan
+            foodplan_object.recipes.remove(removed_recipe)
 
         # Save Foodplan (last foodplan only for temporary use!)
         # TODO: ignore last foodplan in other functions
@@ -75,21 +65,15 @@ def foodplan(request):
             new_foodplan.pk = None
             new_foodplan.save()
             return redirect('foodApp:home')
+
+        if 'generate' in request.POST:
+            days = int(request.POST.get('days'))
+            generate_foodplan(request, foodplan_object, recipe_list, days)
+
     else:
         days = 5 # default value
-        if request.method == 'POST':
-            form = FoodplanForm(request.POST)
-            days = int(request.POST.get('days'))
-        else:
-            form = FoodplanForm()
-        # check if query_set is too short
-        if len(recipe_list) >= days: #TODO replace 2 with number of days
-            # clear and generate foodplan
-            foodplan_object.recipes.clear()
-            for count in range(days):
-                recipe_list = generate_recipe(request, recipe_list, foodplan_object, date.today() + timedelta(days=count))
-        else:
-            messages.warning(request, f'Keine Rezepte vorhanden! Filter anpassen!')
+        form = FoodplanForm()
+        generate_foodplan(request, foodplan_object, recipe_list, days)
 
     # parameter list for the template
     context = {
@@ -99,8 +83,35 @@ def foodplan(request):
     }
     return render(request, "foodApp/foodplan.html", context)
 
+def reload_recipe(request, foodplan_object, recipe_list):
+    # select recipe to remove it from Foodplan
+    removed_recipe = Recipe.objects.filter(id=request.POST.get('reload')).first()
+    temp_date = Foodplan_Recipe.objects.filter(foodplan=foodplan_object).filter(recipe=removed_recipe).last().date
 
-def generate_recipe(request, recipe_list, foodplan_object, temp_date):
+    # filter the remaining recipes
+    recipe_list = recipe_list.exclude(id=removed_recipe.id)
+    for foodplan_recipe in foodplan_object.recipes.all():
+        recipe_list = recipe_list.exclude(id=foodplan_recipe.id)
+
+    # check if query_set is empty
+    if recipe_list.first() is not None:
+        # remove recipe from Foodplan
+        foodplan_object.recipes.remove(removed_recipe)
+        recipe_list = generate_recipe(request, foodplan_object, recipe_list, temp_date)
+    else:
+        messages.warning(request, f'Keine Rezepte vorhanden! Filter anpassen!')
+
+def generate_foodplan(request, foodplan_object, recipe_list, days):
+    # check if query_set is too short
+    if len(recipe_list) >= days: #TODO replace 2 with number of days
+        # clear and generate foodplan
+        foodplan_object.recipes.clear()
+        for count in range(days):
+            recipe_list = generate_recipe(request, foodplan_object, recipe_list, date.today() + timedelta(days=count))
+    else:
+        messages.warning(request, f'Keine Rezepte vorhanden! Filter anpassen!')
+
+def generate_recipe(request, foodplan_object, recipe_list, temp_date):
     """
         desc:
             - select(randomly) and add new recipe to foodplan
