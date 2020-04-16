@@ -1,15 +1,38 @@
-{% extends "foodApp/base.html" %}
-{% block main_content %}
-    <main role="main" class="container">
-        {% for object in object_list  %}
-            <div class="jumbotron">
-                <h1>{{object.title}}</h1>
-                {% if object.avg_rating > 0 %}
-                    <p class="lead">Bewertung: {{object.avg_rating}}</p>
-                {% endif %}
-                <p class="lead">{{object.description}}</p>
-                <a class="btn btn-lg btn-primary" href="{% url 'foodApp:recipesDetail' object.id %}" role="button">{{object.title}} &raquo;</a>
-            </div>
-        {% endfor %}        
-    </main>
+{% extends "foodApp/base.html" %} {% block main_content %}
+<main role="main" class="container">
+  <div>
+    <br />
+    <form
+      id="search-form"
+      class="form-inline d-flex justify-content-center md-form form-sm mt-0"
+      method="GET"
+      action="{% url 'foodApp:recipesList' %}"
+    >
+      <input
+        name="q"
+        class="searchfield form-control form-control-sm ml-3 w-75"
+        type="text"
+        placeholder="Im Rezeptbuch suchen ..."
+        aria-label="Search"
+      />
+      <button class="btn btn-secondary" type="submit">Suchen &raquo;</button>
+    </form>
+    <br />
+    {% for object in object_list %}
+    <div class="jumbotron">
+      <h1>{{object.title}}</h1>
+      {% if object.avg_rating > 0 %}
+      <p class="lead">Bewertung: {{object.avg_rating}}</p>
+      {% endif %}
+      <p class="lead">{{object.description}}</p>
+      <a
+        class="btn btn-lg btn-primary"
+        href="{% url 'foodApp:recipesDetail' object.id %}"
+        role="button"
+        >{{object.title}} &raquo;</a
+      >
+    </div>
+    {% endfor %}
+  </div>
+</main>
 {% endblock main_content %}

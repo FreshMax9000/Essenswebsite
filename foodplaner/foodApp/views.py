@@ -9,14 +9,8 @@ def home(request):
 
 class RecipesListView(generic.ListView):
     model = models.Recipe
-    paginate_by = 20
     ordering = ['title']
-
-
-class SearchRecipesView(generic.ListView):
-    model = models.Recipe
-    ordering = ['title']
-    template_name = '.\\foodApp\\search_recipe.html'
+    template_name = '.\\foodApp\\recipe_list.html'
     paginate_by = 20
 
     def get(self, request, *args, **kwargs):
