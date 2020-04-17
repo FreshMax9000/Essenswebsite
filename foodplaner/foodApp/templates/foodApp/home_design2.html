@@ -1,0 +1,86 @@
+{% extends "foodApp/base_design2.html" %} {% block main_content %}
+<main role="main">
+  <div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+      <li data-target="#myCarousel" data-slide-to="1"></li>
+      <li data-target="#myCarousel" data-slide-to="2"></li>
+      <li data-target="#myCarousel" data-slide-to="3"></li>
+    </ol>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img class="mx-auto d-block w-100" src="/media/Background4.jpg" preserveAspectRatio="xMidYMid slice" role="img">
+        <div class="container">
+          <div class="carousel-caption d-none d-md-block text-left">
+            <h1><kbd>Essensplan</kbd></h1>
+            <p><kbd>Lass dir deinen persönlichen Essensplan generiernen.</kbd></p>
+            <p><a class="btn btn-lg btn-dark" href="{% url 'foodApp:foodplan' %}" role="button">Generiernen</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img class="mx-auto d-block w-100" src="/media/Background4.jpg" preserveAspectRatio="xMidYMid slice" role="img">
+        <div class="container">
+          <div class="carousel-caption d-none d-md-block rounded" style="background-color: rgba(10, 10, 10, 0.4);">
+            <h1>Mein Profil</h1>
+            <p>Schau dir unter Mein Profil deine gespeicherten Pläne und Rezepte an.</p>
+            <p><a class="btn btn-lg btn-primary" href="{% url 'foodApp:myprofil' %}" role="button">Mein Profil</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img class="mx-auto d-block w-100" src="/media/Background5.jpg" preserveAspectRatio="xMidYMid slice" role="img">
+        <div class="container">
+          <div class="carousel-caption d-none d-md-block text-right">
+            <h1><kbd>Rezepte</kbd></h1>
+            <p><kbd>Schau dir alle unsere Rezepte an.</kbd></p>
+            <p><a class="btn btn-lg btn-primary" href="{% url 'foodApp:recipesList' %}" role="button">Rezepte durchsuchen</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img class="mx-auto d-block w-100" src="/media/Background6.jpg" preserveAspectRatio="xMidYMid slice" role="img">
+        <div class="container">
+          <div class="carousel-caption d-none d-md-block">
+            <h1>Neue Rezepte</h1>
+            <p>Füge neue Rezepte hinzu.</p>
+            <p><a class="btn btn-lg btn-primary" href="{% url 'foodApp:addRecipe' %}" role="button">Rezept hinzufügen</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+  
+  <div class="container">
+      <div class="jumbotron">
+        <h1>Essensplan</h1>
+        <p>Lass dir deinen persönlichen Essensplan generiernen.</p>
+        <p><a class="btn btn-lg btn-primary" href="{% url 'foodApp:foodplan' %}" role="button">Generiernen</a></p>
+    </div>
+      <div class="jumbotron">
+        <h1>Mein Profil</h1>
+        <p>Schau dir unter Mein Profil deine gespeicherten Pläne und Rezepte an.</p>
+        <p><a class="btn btn-lg btn-primary" href="{% url 'foodApp:myprofil' %}" role="button">Mein Profil</a></p>
+    </div>
+      <div class="jumbotron">
+        <h1>Rezepte</h1>
+        <p>Schau dir alle unsere Rezepte an.</p>
+        <p><a class="btn btn-lg btn-primary" href="{% url 'foodApp:recipesList' %}" role="button">Rezepte durchsuchen</a></p>
+    </div>
+      <div class="jumbotron">
+        <h1>Neue Rezepte</h1>
+        <p>Füge neue Rezepte hinzu.</p>
+        <p><a class="btn btn-lg btn-primary" href="{% url 'foodApp:addRecipe' %}" role="button">Rezept hinzufügen</a></p>
+      </div>
+  </div>
+  
+</main>
+{% endblock main_content %}

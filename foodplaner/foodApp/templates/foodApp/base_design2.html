@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <link rel="icon" href="/media/Logo.png">
 
     
     <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/jumbotron/">
@@ -18,34 +19,31 @@
   </head>
   <body>
       <!-- Navigation -->
-      <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="min-height: 120px">
-        <img src="/media/Logo.png" alt="My image" class="rounded" height="60" max="30"class="img-fluid"> 
-        <a class="navbar-brand" href="{% url 'foodApp:home' %}" style="height: 70px"> <h1 class="display-4">Essensplan!</h1> </a>
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'foodApp:foodplan' %}"><img src="/media/Logo.png" alt="My image" class="rounded" height="60" max="30"class="img-fluid"></a>
+        <a class="navbar-brand" href="{% url 'foodApp:home' %}"><h1 class="display-6">Essensplan!</h1></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarsExampleDefault" style="height: 150px">
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault" >
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'foodApp:home_design2' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 20px;">Design2</a>
+              <a class="nav-link" href="{% url 'foodApp:home' %}">Home<span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'foodApp:recipesList' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 20px;">Rezepte</a>
+              <a class="nav-link" href="{% url 'foodApp:foodplan' %}" >Essensplan</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'foodApp:foodplan' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 20px;">Essensplan</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'foodApp:myprofil' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 20px;">Mein Profil</a>
+              <a class="nav-link" href="{% url 'foodApp:recipesList' %}" >Rezepte</a>
             </li>
           </ul>
           <!-- Login/Logout -->  
           <div class="navbar-nav">
             {% if user.is_authenticated %}
               <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 70px; ; width: 150px; background-color: transparent;"> 
-                  <img src="/media/profil.png" style="max-height: 30px;"; alt="Profli"><br><p style="font-size: medium">{{user}}</p></button>
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 60px; ; width: 150px; background-color: transparent;"> 
+                  <img src="/media/profil.png" style="max-height: 30px;" alt="Profli"><br><p>{{user}}</p></button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" >
                   <a class="dropdown-item" href="{% url 'profile' %}">Einstellungen</a>
                   <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
@@ -53,7 +51,7 @@
               </div>
 
             {% else %}
-              <a class="btn btn-outline-success" style="font-size: x-large" href="{% url 'login' %}">Login</a>
+              <a class="btn btn-outline-success" href="{% url 'login' %}">Login</a>
             {% endif %}
           </div>
         </div>
