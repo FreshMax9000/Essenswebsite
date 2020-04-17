@@ -27,40 +27,13 @@
             </thead>
             <tbody>
               <tr>
-                <th scope="row">Montag</th>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row">Dienstag</th>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row">Mittwoch</th>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row">Donnerstag</th>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row">Freitag</th>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row">Samstag</th>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row">Sonntag</th>
-                <td></td>
-                <td></td>
-              </tr>
+                {% for object in object.recipes.all %}
+                <tr>
+                  <th scope="row">{{ object.date }}</th>
+                  <td>{{ object.titel }}</td>
+                  <td></td>
+                </tr>
+                {% endfor %}
             </tbody>
           </table>
     </div>
