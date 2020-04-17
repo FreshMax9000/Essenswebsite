@@ -65,7 +65,6 @@ class Agenda(LoginRequiredMixin, generic.DetailView):
 
 class Shopping(LoginRequiredMixin, generic.ListView):
     model = Recipe
-    queryset = Recipe.objects.order_by('title')
     template_name = "foodApp/shopping.html"
 
 

@@ -18,35 +18,14 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row"></th>
-                <td></td>
-
-              </tr>
-              <tr>
-                <th scope="row"></th>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row"></th>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row"></th>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row"></th>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row"></th>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row"></th>
-                <td></td>
-              </tr>
+              {% for object in object_list%}
+                {% for each in object.ingredient_set.all %}
+                <tr>
+                  <th scope="row">{{ each.quantity }}{{ each.grocerie.unit }} </th>
+                  <td>{{ each.grocerie.name }} </td>
+                </tr>
+                {% endfor %}
+              {% endfor %}   
             </tbody>
           </table>
     </div>
