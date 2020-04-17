@@ -38,23 +38,32 @@ class RecipesDetailView(generic.DetailView):
     model = Recipe
 
 
-class MyProfil(generic.ListView):
-    context_object_name = 'myrecipes'
-    queryset = Recipe.objects.order_by('title')
+class MyProfil(LoginRequiredMixin, generic.ListView):
     template_name = "foodApp/myprofil.html"
+
+    def get_queryset(self):
+        self.context_object_name = 'myrecipes'
+        queryset = Recipe.objects.filter(author=self.request.user).order_by('title')
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super(MyProfil, self).get_context_data(**kwargs)
-        context['myfoodplans'] = Foodplan.objects.order_by('user')
+        # exclude last foodplan --> only for temporary use
+        foodplan_object = Foodplan.objects.filter(user=self.request.user)
+        context['myfoodplans'] = foodplan_object.exclude(id=foodplan_object.last().id)
         return context
 
 
-class Agenda(generic.DetailView):
+class Agenda(LoginRequiredMixin, generic.DetailView):
     model = Foodplan
     template_name = "foodApp/agenda.html"
 
+    def get_context_data(self, **kwargs):
+        context = super(Agenda, self).get_context_data(**kwargs)
+        context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk')).order_by('date')
+        return context
 
-class Shopping(generic.ListView):
+class Shopping(LoginRequiredMixin, generic.ListView):
     model = Recipe
     queryset = Recipe.objects.order_by('title')
     template_name = "foodApp/shopping.html"
@@ -63,6 +72,8 @@ class Shopping(generic.ListView):
 class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
     model = Recipe
     fields = ['title', 'description', 'preparation', 'work_time', 'ingredients']
+
+    success_url = '/'  # home
 
     def form_valid(self, form):
         form.instance.author = self.request.user
