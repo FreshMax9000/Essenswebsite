@@ -1,41 +1,48 @@
 {% extends "foodApp/base.html" %} {% block main_content %}
 <main role="main" style="background-color: grey;">
-  
-  <div class="jumbotron">
-    <div class="container">
-      <a class="btn btn-secondary" href="{% url 'foodApp:foodplan' %}"role="button" >Wochenplan generieren &raquo;</a>
-    </div>
-</div>
 
-<div class="container" style="align-items: center;">
-<div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel" style="text-align: center;" >
+<div class="jumbotron">
+
+<div id="multi-item-slide" class="carousel slide carousel-multi-item" data-ride="carousel" style="text-align: center;" >
   <div class="carousel-inner" >
     <div class="carousel-item active">
-      <div class="card" style="width: 18rem;">
-        <img class="card-img-top" src="/media/Background3.jpg" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">Rezept 1</h5>
+      <div class="col-md-3" style="float:left">
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="/media/Background3.jpg" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Rezept 1</h5>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="carousel-item">
-      <div class="card" style="width: 18rem;">
-        <img class="card-img-top" src="/media/Background3.jpg" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">Rezept 4</h5>
+      <div class="col-md-3" style="float:left">
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="/media/Background3.jpg" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Rezept 4</h5>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="carousel-item">
-      <div class="card" style="width: 18rem;">
-        <img class="card-img-top" src="/media/Background3.jpg" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">Rezept 7</h5>
+      <div class="col-md-3" style="float:left">
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="/media/Background3.jpg" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Rezept 324</h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3" style="float:left">
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="/media/Background3.jpg" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Rezept df</h5>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+
 </div>
 
   <!-- Background Pisture with the buttons
