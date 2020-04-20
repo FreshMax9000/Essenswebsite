@@ -26,7 +26,7 @@ class RecipesListView(generic.ListView):
     model = Recipe
     ordering = ['title']
     template_name = "foodApp/recipe_list.html"
-    paginate_by = 20
+    paginate_by = 10
 
     def get(self, request, *args, **kwargs):
         self.search = request.GET.get('q', '')
@@ -98,7 +98,7 @@ class Shopping(LoginRequiredMixin, generic.ListView):
                 # If not, ad the ingrediant to Dictionary
                 quantity = ingrediant.quantity
                 if ingrediant.grocerie.name in dict_ingrediant_value:
-                    quantity = quantity + dict_ingrediant_value.get(ingrediant.grocerie.name)[0]
+                    quantity += dict_ingrediant_value.get(ingrediant.grocerie.name)[0]
                     dict_ingrediant_value[ingrediant.grocerie.name] = (quantity, ingrediant.grocerie.unit)
                 else:
                     dict_ingrediant_value[ingrediant.grocerie.name] = (quantity, ingrediant.grocerie.unit)
