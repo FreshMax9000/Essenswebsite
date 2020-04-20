@@ -1,5 +1,6 @@
 from datetime import date
 from datetime import timedelta
+from django.http import Http404
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.views import generic
@@ -61,18 +62,24 @@ class Agenda(LoginRequiredMixin, generic.DetailView):
     template_name = "foodApp/agenda.html"
 
     def get_context_data(self, **kwargs):
-        context = super(Agenda, self).get_context_data(**kwargs)
-        context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk'))
-        return context
+        if Foodplan.objects.get(id=self.kwargs.get('pk')).user == self.request.user:
+            context = super(Agenda, self).get_context_data(**kwargs)
+            context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk'))
+            return context
+        else:
+            raise Http404 # raise Http404 exeption if unauthorized access to foodplan 
 
 class Shopping(LoginRequiredMixin, generic.ListView):
-    model = Recipe
+    model = Foodplan
     template_name = "foodApp/shopping.html"
 
     def get_context_data(self, **kwargs):
-        context = super(Shopping, self).get_context_data(**kwargs)
-        context['object_list'] = self.get_ingrediant_list(Foodplan.objects.get(id=self.kwargs.get('pk')).recipes)
-        return context
+        if Foodplan.objects.get(id=self.kwargs.get('pk')).user == self.request.user:
+            context = super(Shopping, self).get_context_data(**kwargs)
+            context['object_list'] = self.get_ingrediant_list(Foodplan.objects.get(id=self.kwargs.get('pk')).recipes)
+            return context
+        else:
+            raise Http404 # raise Http404 exeption if unauthorized access to foodplan 
 
     def get_ingrediant_list(self, recipe_list):
         """
