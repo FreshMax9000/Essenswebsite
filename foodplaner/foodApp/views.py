@@ -64,7 +64,7 @@ class Agenda(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         if Foodplan.objects.get(id=self.kwargs.get('pk')).user == self.request.user:
             context = super(Agenda, self).get_context_data(**kwargs)
-            context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk'))
+            context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk')).order_by('date')
             return context
         else:
             raise Http404 # raise Http404 exeption if unauthorized access to foodplan 
@@ -97,14 +97,15 @@ class Shopping(LoginRequiredMixin, generic.ListView):
                 # If ingrediant already exists in dictionary, sum the quantity
                 # If not, ad the ingrediant to Dictionary
                 quantity = ingrediant.quantity
-                if ingrediant.grocerie.name in dict_ingrediant_value:
-                    quantity += dict_ingrediant_value.get(ingrediant.grocerie.name)[0]
-                    dict_ingrediant_value[ingrediant.grocerie.name] = (quantity, ingrediant.grocerie.unit)
+                key = ingrediant.grocerie.name
+                if key in dict_ingrediant_value:
+                    quantity += dict_ingrediant_value.get(key)[0]
+                    dict_ingrediant_value[key] = (quantity, ingrediant.grocerie.unit)
                 else:
-                    dict_ingrediant_value[ingrediant.grocerie.name] = (quantity, ingrediant.grocerie.unit)
+                    dict_ingrediant_value[key] = (quantity, ingrediant.grocerie.unit)
 
-            for key, value in dict_ingrediant_value.items():
-                dict_ingrediant_as_string[key] = str(value[0]) + str(" ") + str(value[1])
+        for key in sorted(dict_ingrediant_value.keys()):
+            dict_ingrediant_as_string[key] = str(dict_ingrediant_value.get(key)[0]) + " " + dict_ingrediant_value.get(key)[1]
 
         return dict_ingrediant_as_string
 
