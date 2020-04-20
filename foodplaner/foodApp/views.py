@@ -24,7 +24,7 @@ def home(request):
 class RecipesListView(generic.ListView):
     model = Recipe
     ordering = ['title']
-    template_name = '.\\foodApp\\recipe_list.html'
+    template_name = "foodApp/recipe_list.html"
     paginate_by = 20
 
     def get(self, request, *args, **kwargs):
@@ -32,7 +32,7 @@ class RecipesListView(generic.ListView):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        return Recipe.objects.filter(title__icontains=self.search)
+        return Recipe.objects.filter(title__icontains=self.search).order_by('title')
 
 
 class RecipesDetailView(generic.DetailView):
@@ -184,13 +184,11 @@ def foodplan(request):
             foodplan_object.recipes.remove(removed_recipe)
 
         # Save Foodplan (last foodplan only for temporary use!)
-        # TODO: ignore last foodplan in other functions
         if 'save' in request.POST:
             messages.success(request, f'Essenplan gespeichert!')
-            new_foodplan = foodplan_object
-            new_foodplan.pk = None
+            new_foodplan = Foodplan(user=request.user)
             new_foodplan.save()
-            return redirect('foodApp:home')
+            return redirect('foodApp:agenda', foodplan_object.id)
 
         if 'generate' in request.POST:
             days = int(request.POST.get('days'))
