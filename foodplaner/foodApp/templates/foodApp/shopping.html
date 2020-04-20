@@ -8,50 +8,26 @@
         </div>
     </div>
 
-    <div class="container">
-        <!-- Ingerdiants from the agenda as list -->
-        <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Menge</th>
-                <th scope="col">Zutat</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row"></th>
-                <td></td>
+<main role="main">
+  <div class="container">
+    <!-- Ingerdiants from the agenda as list -->
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Menge</th>
+          <th scope="col">Zutat</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for key, value in  object_list.items %}
 
-              </tr>
-              <tr>
-                <th scope="row"></th>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row"></th>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row"></th>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row"></th>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row"></th>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row"></th>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-    </div>
-
-    </div> <!-- /container -->
-
-    </main>
+        <tr>
+          <th scope="row"> {{ value }} </th>
+          <td> {{ key }}</td>
+        </tr>
+        {% endfor %}   
+      </tbody>
+    </table>
+  </div>
+</main>
 {% endblock main_content %}
