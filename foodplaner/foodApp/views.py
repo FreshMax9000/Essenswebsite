@@ -51,7 +51,8 @@ class MyProfil(LoginRequiredMixin, generic.ListView):
         context = super(MyProfil, self).get_context_data(**kwargs)
         # exclude last foodplan --> only for temporary use
         foodplan_object = Foodplan.objects.filter(user=self.request.user)
-        context['myfoodplans'] = foodplan_object.exclude(id=foodplan_object.last().id)
+        if foodplan_object.last() is not None:
+            context['myfoodplans'] = foodplan_object.exclude(id=foodplan_object.last().id)
         return context
 
 
@@ -70,30 +71,35 @@ class Shopping(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(Shopping, self).get_context_data(**kwargs)
-        context['object_list'] = self.ingrediantslist(Foodplan.objects.get(id=self.kwargs.get('pk')).recipes)
+        context['object_list'] = self.get_ingrediant_list(Foodplan.objects.get(id=self.kwargs.get('pk')).recipes)
         return context
 
-    def ingrediantslist(self, recipe_list):
-        dictingrediant = {}
-        dictingrediantvalue = {}
-        ingrediant_object = Ingredient.objects.all()
-        for rezept in recipe_list.all():
-            
-            for ingrediant in ingrediant_object.filter(recipe_id=rezept.id):
-            # If ingrediant already exists in dictionary, sum the quantity
-            # If not, ad the ingrediant to Dictionary
+    def get_ingrediant_list(self, recipe_list):
+        """
+            desc:
+                - creates a dict from the given recipes and sums up all ingredients
+            para:
+                - recipe_list - list of recipes to be summed up
+            ret:
+                - dict_ingrediant_as_string - returns a dict of strings of summed ingredients
+        """
+        dict_ingrediant_as_string = {}
+        dict_ingrediant_value = {}
+        for recipe in recipe_list.all():
+            for ingrediant in Ingredient.objects.filter(recipe_id=recipe.id):
+                # If ingrediant already exists in dictionary, sum the quantity
+                # If not, ad the ingrediant to Dictionary
                 quantity = ingrediant.quantity
-                if ingrediant.grocerie.name in dictingrediantvalue:
-                    quantity = quantity + dictingrediantvalue.get(ingrediant.grocerie.name)[0]
-                    dictingrediantvalue[ingrediant.grocerie.name] = (quantity, ingrediant.grocerie.unit)
+                if ingrediant.grocerie.name in dict_ingrediant_value:
+                    quantity = quantity + dict_ingrediant_value.get(ingrediant.grocerie.name)[0]
+                    dict_ingrediant_value[ingrediant.grocerie.name] = (quantity, ingrediant.grocerie.unit)
                 else:
-                    dictingrediantvalue[ingrediant.grocerie.name] = (quantity, ingrediant.grocerie.unit)
+                    dict_ingrediant_value[ingrediant.grocerie.name] = (quantity, ingrediant.grocerie.unit)
 
-            for key, value in dictingrediantvalue.items():
-                newvalue = str(value[0]) + str(" ") + str(value[1])
-                dictingrediant[key] = (newvalue)
+            for key, value in dict_ingrediant_value.items():
+                dict_ingrediant_as_string[key] = str(value[0]) + str(" ") + str(value[1])
 
-        return dictingrediant
+        return dict_ingrediant_as_string
 
 
 class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
