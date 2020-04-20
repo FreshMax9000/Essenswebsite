@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 from .models import Recipe
+from .models import Ingredient
 from .models import Grocerie
 from .models import Foodplan
 from .models import Foodplan_Recipe
@@ -66,6 +67,33 @@ class Agenda(LoginRequiredMixin, generic.DetailView):
 class Shopping(LoginRequiredMixin, generic.ListView):
     model = Recipe
     template_name = "foodApp/shopping.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(Shopping, self).get_context_data(**kwargs)
+        context['object_list'] = self.ingrediantslist(Foodplan.objects.get(id=self.kwargs.get('pk')).recipes)
+        return context
+
+    def ingrediantslist(self, recipe_list):
+        dictingrediant = {}
+        dictingrediantvalue = {}
+        ingrediant_object = Ingredient.objects.all()
+        for rezept in recipe_list.all():
+            
+            for ingrediant in ingrediant_object.filter(recipe_id=rezept.id):
+            # If ingrediant already exists in dictionary, sum the quantity
+            # If not, ad the ingrediant to Dictionary
+                quantity = ingrediant.quantity
+                if ingrediant.grocerie.name in dictingrediantvalue:
+                    quantity = quantity + dictingrediantvalue.get(ingrediant.grocerie.name)[0]
+                    dictingrediantvalue[ingrediant.grocerie.name] = (quantity, ingrediant.grocerie.unit)
+                else:
+                    dictingrediantvalue[ingrediant.grocerie.name] = (quantity, ingrediant.grocerie.unit)
+
+            for key, value in dictingrediantvalue.items():
+                newvalue = str(value[0]) + str(" ") + str(value[1])
+                dictingrediant[key] = (newvalue)
+
+        return dictingrediant
 
 
 class CreateRecipeView(LoginRequiredMixin, generic.CreateView):

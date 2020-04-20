@@ -13,6 +13,6 @@ urlpatterns = [
     path('Zutat_hinzufuegen/', views.CreateGroceryView.as_view(), name='addGrocery'),
     path('MeinProfil/', views.MyProfil.as_view(), name='myprofil'),
     path('MeinWochenplan/<int:pk>/', views.Agenda.as_view(), name='agenda'),
-    path('Einkaufsliste/', views.Shopping.as_view(), name='shopping'),
+    path('Einkaufsliste/<int:pk>/', views.Shopping.as_view(), name='shopping'),
     path('Essensplan/', views.foodplan, name='foodplan'),
 ]
