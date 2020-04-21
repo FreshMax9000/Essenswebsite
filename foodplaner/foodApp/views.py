@@ -225,8 +225,8 @@ def reload_recipe(request, foodplan_object, recipe_list):
             - if recipe_list only removed recipe --> do noting + warning
     """
     # select recipe to remove it from Foodplan
-    removed_recipe = Recipe.objects.filter(id=request.POST.get('reload')).first()
-    temp_date = Foodplan_Recipe.objects.filter(foodplan=foodplan_object).filter(recipe=removed_recipe).last().date
+    removed_recipe = Recipe.objects.get(id=request.POST.get('reload'))
+    temp_date = Foodplan_Recipe.objects.filter(foodplan=foodplan_object).get(recipe=removed_recipe).date
 
     # filter the remaining recipes
     recipe_list = recipe_list.exclude(id=removed_recipe.id)
@@ -271,7 +271,7 @@ def generate_recipe(request, foodplan_object, recipe_list, temp_date):
     """
     random_recipes = recipe_list.order_by('?').first()
     foodplan_object.recipes.add(random_recipes)
-    save_date = Foodplan_Recipe.objects.filter(foodplan=foodplan_object).filter(recipe=random_recipes).last()
+    save_date = Foodplan_Recipe.objects.filter(foodplan=foodplan_object).get(recipe=random_recipes)
     save_date.date = temp_date
     save_date.save()
     return recipe_list.exclude(id=random_recipes.id)
