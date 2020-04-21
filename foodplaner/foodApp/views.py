@@ -1,3 +1,14 @@
+"""
+A view is a “type” of Web page in the Django application that generally serves a specific function and has a specific template
+    - generic.ListView: A page representing a list of objects
+    - generic.DetailView: contains the object that the view is operating upon
+    - generic.CreateView: provide a foundation for editing content
+    - generic.UpdateView: provide a foundation for editing content
+    - generic.DeleteView: provide a foundation for editing content
+    - get_context_data: adding extra context for additional information in the template
+    - LoginRequiredMixin: authentication system in its default configuration, User must be logged in
+"""
+
 from datetime import date
 from datetime import timedelta
 from django.shortcuts import render

@@ -1,3 +1,7 @@
+"""
+A view is a “type” of Web page in the Django application that generally serves a specific function and has a specific template
+"""
+
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib import messages

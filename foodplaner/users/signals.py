@@ -1,3 +1,9 @@
+"""
+Signal dispatcher which helps allow decoupled applications get notified when actions occur elsewhere in the framework. 
+In a nutshell, signals allow certain senders to notify a set of receivers that some action has taken place. 
+They’re especially useful when many pieces of code may be interested in the same events.
+"""
+
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.dispatch import receiver
