@@ -20,7 +20,7 @@ class Recipe(models.Model):
     # difficulty
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     ingredients = models.ManyToManyField(Grocerie, through='Ingredient', through_fields=('recipe', 'grocerie'))
-    # was_reviewed = models.BooleanField(default=True)  # muss später noch auf False gesetzt werden
+    reviewed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

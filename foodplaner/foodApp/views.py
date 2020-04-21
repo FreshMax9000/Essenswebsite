@@ -1,6 +1,5 @@
 from datetime import date
 from datetime import timedelta
-from django.http import Http404
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.views import generic
@@ -8,6 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 from .models import Recipe
 from .models import Ingredient
@@ -21,6 +21,14 @@ from .forms import FoodplanForm
 def home(request):
     return render(request, 'foodApp/home.html')
 
+def get_recipe_object():
+    """
+        desc:
+            - view only reviewed Recipes
+            - use this function instead of "Recipe.objects"
+    """
+    return Recipe.objects.filter(reviewed=True)
+
 
 class RecipesListView(generic.ListView):
     model = Recipe
@@ -33,19 +41,21 @@ class RecipesListView(generic.ListView):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        return Recipe.objects.filter(title__icontains=self.search).order_by('title')
+        return get_recipe_object().filter(title__icontains=self.search).order_by('title')
 
 
-class RecipesDetailView(generic.DetailView):
+class RecipesDetailView(UserPassesTestMixin, generic.DetailView):
     model = Recipe
 
+    def test_func(self):
+        return self.get_object() in get_recipe_object()
 
 class MyProfil(LoginRequiredMixin, generic.ListView):
     template_name = "foodApp/myprofil.html"
 
     def get_queryset(self):
         self.context_object_name = 'myrecipes'
-        queryset = Recipe.objects.filter(author=self.request.user).order_by('title')
+        queryset = get_recipe_object().filter(author=self.request.user).order_by('title')
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -57,29 +67,30 @@ class MyProfil(LoginRequiredMixin, generic.ListView):
         return context
 
 
-class Agenda(LoginRequiredMixin, generic.DetailView):
+class Agenda(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
     model = Foodplan
     template_name = "foodApp/agenda.html"
 
+    def test_func(self):
+        return self.request.user == self.get_object().user
+
     def get_context_data(self, **kwargs):
         context = super(Agenda, self).get_context_data(**kwargs)
-        if Foodplan.objects.get(id=self.kwargs.get('pk')).user == self.request.user:
-            context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk')).order_by('date')
-            return context
-        else:
-            raise Http404 # raise Http404 exeption if unauthorized access to foodplan 
+        context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk')).order_by('date')
+        return context
 
-class Shopping(LoginRequiredMixin, generic.ListView):
+
+class Shopping(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
     model = Foodplan
     template_name = "foodApp/shopping.html"
 
+    def test_func(self):
+        return self.request.user == self.get_object().user
+
     def get_context_data(self, **kwargs):
         context = super(Shopping, self).get_context_data(**kwargs)
-        if Foodplan.objects.get(id=self.kwargs.get('pk')).user == self.request.user:
-            context['object_list'] = self.get_ingrediant_list(Foodplan.objects.get(id=self.kwargs.get('pk')).recipes)
-            return context
-        else:
-            raise Http404 # raise Http404 exeption if unauthorized access to foodplan 
+        context['object_list'] = self.get_ingrediant_list(Foodplan.objects.get(id=self.kwargs.get('pk')).recipes)
+        return context
 
     def get_ingrediant_list(self, recipe_list):
         """
@@ -117,44 +128,35 @@ class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
     success_url = '/'  # home
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        user = self.request.user
+        form.instance.author = user
+        # Recipes of users with permissions don't have to be reviewed
+        if user.has_perm('foodApp.change_recipe'):
+            form.instance.reviewed = True
         return super().form_valid(form)
 
 
-class UpdateRecipeView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+class UpdateRecipeView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
     model = Recipe
-    fields = ['title', 'description', 'preparation', 'work_time', 'ingredients']
+    fields = ['title', 'description', 'preparation', 'work_time', 'ingredients', 'reviewed']
 
     success_url = '/'  # home
-
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
-
-    # A recipe can only get updated by the user that created it -> change later to admins
-    def test_func(self):
-        recipe = self.get_object()
-        return self.request.user == recipe.author
+    permission_required = 'foodApp.change_recipe'
 
 
-class CreateGroceryView(LoginRequiredMixin, generic.CreateView):
+
+class CreateGroceryView(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView):
     model = Grocerie
     fields = ['name', 'unit']
 
     success_url = '/'
-
-    def form_valid(self, form):
-        return super().form_valid(form)
+    permission_required = 'foodApp.add_grocerie'
 
 
-class DeleteRecipeView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+class DeleteRecipeView(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
     model = Recipe
     success_url = '/'
-
-    # A recipe can only get deleted by the user that created it -> change later to admins
-    def test_func(self):
-        recipe = self.get_object()
-        return self.request.user == recipe.author
+    permission_required = 'foodApp.delete_recipe'
 
 
 @login_required
@@ -168,7 +170,7 @@ def foodplan(request):
             - no recipes cause (of filters) --> warning message
     """
     # filter list of Recipes
-    foodplan_filter = FoodplanFilter(request.POST, queryset=Recipe.objects.all())
+    foodplan_filter = FoodplanFilter(request.POST, queryset=get_recipe_object())
     recipe_list = foodplan_filter.qs
     # select last (temporary) Foodplan of user
     foodplan_object = Foodplan.objects.filter(user=request.user).last()
@@ -187,7 +189,7 @@ def foodplan(request):
 
         if 'delete' in request.POST:
             # select recipe to remove it from Foodplan
-            removed_recipe = Recipe.objects.filter(id=request.POST.get('delete')).first()
+            removed_recipe = get_recipe_object().filter(id=request.POST.get('delete')).first()
             # remove recipe from Foodplan
             foodplan_object.recipes.remove(removed_recipe)
 
@@ -225,7 +227,7 @@ def reload_recipe(request, foodplan_object, recipe_list):
             - if recipe_list only removed recipe --> do noting + warning
     """
     # select recipe to remove it from Foodplan
-    removed_recipe = Recipe.objects.get(id=request.POST.get('reload'))
+    removed_recipe = get_recipe_object().get(id=request.POST.get('reload'))
     temp_date = Foodplan_Recipe.objects.filter(foodplan=foodplan_object).get(recipe=removed_recipe).date
 
     # filter the remaining recipes
