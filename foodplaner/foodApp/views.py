@@ -62,8 +62,8 @@ class Agenda(LoginRequiredMixin, generic.DetailView):
     template_name = "foodApp/agenda.html"
 
     def get_context_data(self, **kwargs):
+        context = super(Agenda, self).get_context_data(**kwargs)
         if Foodplan.objects.get(id=self.kwargs.get('pk')).user == self.request.user:
-            context = super(Agenda, self).get_context_data(**kwargs)
             context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk')).order_by('date')
             return context
         else:
@@ -74,8 +74,8 @@ class Shopping(LoginRequiredMixin, generic.ListView):
     template_name = "foodApp/shopping.html"
 
     def get_context_data(self, **kwargs):
+        context = super(Shopping, self).get_context_data(**kwargs)
         if Foodplan.objects.get(id=self.kwargs.get('pk')).user == self.request.user:
-            context = super(Shopping, self).get_context_data(**kwargs)
             context['object_list'] = self.get_ingrediant_list(Foodplan.objects.get(id=self.kwargs.get('pk')).recipes)
             return context
         else:
