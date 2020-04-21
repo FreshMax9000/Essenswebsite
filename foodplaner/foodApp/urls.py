@@ -15,4 +15,5 @@ urlpatterns = [
     path('MeinWochenplan/<int:pk>/', views.Agenda.as_view(), name='agenda'),
     path('Einkaufsliste/<int:pk>/', views.Shopping.as_view(), name='shopping'),
     path('Essensplan/', views.foodplan, name='foodplan'),
+    path('Essensplan/<int:pk>/loeschen/', views.DeleteFoodplanView.as_view(), name='foodplanDelete'),
 ]

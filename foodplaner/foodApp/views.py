@@ -2,6 +2,7 @@ from datetime import date
 from datetime import timedelta
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -125,7 +126,7 @@ class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
     model = Recipe
     fields = ['title', 'description', 'preparation', 'work_time', 'ingredients']
 
-    success_url = '/'  # home
+    success_url = reverse_lazy('foodApp:home')
 
     def form_valid(self, form):
         user = self.request.user
@@ -136,28 +137,36 @@ class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
 
-class UpdateRecipeView(LoginRequiredMixin, PermissionRequiredMixin, generic.UpdateView):
+class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
     model = Recipe
     fields = ['title', 'description', 'preparation', 'work_time', 'ingredients', 'reviewed']
 
-    success_url = '/'  # home
+    success_url = reverse_lazy('foodApp:home')
     permission_required = 'foodApp.change_recipe'
 
 
 
-class CreateGroceryView(LoginRequiredMixin, PermissionRequiredMixin, generic.CreateView):
+class CreateGroceryView(PermissionRequiredMixin, generic.CreateView):
     model = Grocerie
     fields = ['name', 'unit']
 
-    success_url = '/'
+    success_url = reverse_lazy('foodApp:home')
     permission_required = 'foodApp.add_grocerie'
 
 
-class DeleteRecipeView(LoginRequiredMixin, PermissionRequiredMixin, generic.DeleteView):
+class DeleteRecipeView(PermissionRequiredMixin, generic.DeleteView):
     model = Recipe
-    success_url = '/'
+    success_url = reverse_lazy('foodApp:home')
     permission_required = 'foodApp.delete_recipe'
 
+
+class DeleteFoodplanView(PermissionRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+    model = Foodplan
+    success_url = reverse_lazy('foodApp:myprofil')
+    permission_required = 'foodApp.delete_foodplan'
+
+    def test_func(self):
+        return self.request.user == self.get_object().user
 
 @login_required
 def foodplan(request):
@@ -177,7 +186,6 @@ def foodplan(request):
 
     # create new foodplan if not existing
     if foodplan_object is None:
-        messages.info(request, f'Erzeuge Essenplan!')
         new_foodplan = Foodplan(user=request.user)
         new_foodplan.save()
         foodplan_object = new_foodplan
