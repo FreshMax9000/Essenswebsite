@@ -114,11 +114,13 @@ class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+
+@login_required
 def create_recipe(request):
     template_name = 'foodApp/recipe_create.html'
     if request.method == 'GET':
-        recipe_form = CreateRecipeForm()
-        formset = IngredientFormset()
+        recipe_form = CreateRecipeForm(request.GET or None)
+        formset = IngredientFormset(queryset=Ingredient.objects.none())
     elif request.method == 'POST':
         recipe_form = CreateRecipeForm(request.POST)
         formset = IngredientFormset(request.POST)

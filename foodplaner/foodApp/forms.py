@@ -21,6 +21,15 @@ class CreateIngredientForm(forms.ModelForm):
     class Meta:
         model = Ingredient
         fields = ('quantity', 'grocerie')
+        labels = {
+                     'grocerie': 'Zutat',
+                     'quantity': 'Menge',
+                 }
+        widgets = {
+            'quantity': forms.NumberInput(attrs={
+                'min': 1,
+            }),
+        }
 
 
 
@@ -29,5 +38,30 @@ class CreateRecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
         fields = ('title', 'description', 'preparation', 'work_time')
+        labels = {
+            'title': 'Titel',
+            'description': 'Beschreibung',
+            'preparation': 'Zubereitung',
+            'work_time': 'Zubereitungszeit',
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Hier Titel eingeben'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Hier Kurzbeschreibung eingeben'
+            }),
+            'preparation': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Hier die Zubereitung beschreiben'
+            }),
+            'work_time': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'min': 1,
+            }),
+        }
+
 
 IngredientFormset = modelformset_factory(Ingredient, form=CreateIngredientForm)
