@@ -40,25 +40,29 @@
                     <button class="btn btn-outline-info float-right" name="generate" value="0">Generate <i class="fa fa-arrow-circle-right"></i></button>
                 </div>
             </div>
-            {% for object in object_list  %}
-                <div class="jumbotron">
-                    <div class="form-group">
-                        <button class="btn btn-danger float-sm-right " name="delete"  value={{object.recipe.id}}><i class="fa fa-times"></i></button>
-                        <button class="btn btn-dark float-sm-right " name="reload"  value={{object.recipe.id}}><i class="fa fa-repeat"><!--i class="fa fa-edit"--></i></button>
+            <div class="row">
+                {% for object in object_list  %}
+                <div class="col-md-6">
+                    <div class="jumbotron">
+                        <div class="form-group">
+                            <button class="btn btn-danger float-sm-right " name="delete"  value={{object.recipe.id}}><i class="fa fa-times"></i></button>
+                            <button class="btn btn-dark float-sm-right " name="reload"  value={{object.recipe.id}}><i class="fa fa-repeat"><!--i class="fa fa-edit"--></i></button>
+                            {% if object.daytime %}
+                                <h3>{{object.date | date:"l"}} - Mittag</h3> <!-- "l": Monday | "D": Mon. | "j": 1 | "N": Jan. -->
+                            {% else %}
+                                <h3>{{object.date | date:"l"}} - Abend</h3>
+                            {% endif %}
+                            <h1>{{object.recipe.title}}</h1>
+                            {% if object.recipe.avg_rating > 0 %}
+                                <p class="lead">Bewertung: {{object.recipe.avg_rating}}</p>
+                            {% endif %}
+                            <p class="lead">{{object.recipe.description}}</p>
+                            <a class="btn btn-lg btn-primary" href="{% url 'foodApp:recipesDetail' object.recipe.id %}" role="button">{{object.recipe.title}} &raquo;</a>
+                        </div>
                     </div>
-                    {% if object.daytime %}
-                        <h3>{{object.date}} - Mittag</h3>
-                    {% else %}
-                        <h3>{{object.date}} - Abend</h3>
-                    {% endif %}
-                    <h1>{{object.recipe.title}}</h1>
-                    {% if object.recipe.avg_rating > 0 %}
-                        <p class="lead">Bewertung: {{object.recipe.avg_rating}}</p>
-                    {% endif %}
-                    <p class="lead">{{object.recipe.description}}</p>
-                    <a class="btn btn-lg btn-primary" href="{% url 'foodApp:recipesDetail' object.recipe.id %}" role="button">{{object.recipe.title}} &raquo;</a>
                 </div>
-            {% endfor %}    
+                {% endfor %}   
+            </div> 
             <div class="form-group">
                 <button class="btn btn-outline-info float-right" name="save" value="0">Save <i class="fa fa-arrow-circle-right"></i></button>
             </div>
