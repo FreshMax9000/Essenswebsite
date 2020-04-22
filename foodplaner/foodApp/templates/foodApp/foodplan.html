@@ -11,6 +11,11 @@
                         {{ form.days | as_crispy_field }}
                     </div>
                     <div class="form-group col-md-4 mb-0">
+                        {{ form.select_daytime | as_crispy_field}}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4 mb-0">
                         {{ filter.form.work_time|as_crispy_field }}
                     </div>
                     <div class="form-group col-md-4 mb-0">
@@ -41,7 +46,11 @@
                         <button class="btn btn-danger float-sm-right " name="delete"  value={{object.recipe.id}}><i class="fa fa-times"></i></button>
                         <button class="btn btn-dark float-sm-right " name="reload"  value={{object.recipe.id}}><i class="fa fa-repeat"><!--i class="fa fa-edit"--></i></button>
                     </div>
-                    <h3>{{object.date}}</h3>
+                    {% if object.daytime %}
+                        <h3>{{object.date}} - Mittag</h3>
+                    {% else %}
+                        <h3>{{object.date}} - Abend</h3>
+                    {% endif %}
                     <h1>{{object.recipe.title}}</h1>
                     {% if object.recipe.avg_rating > 0 %}
                         <p class="lead">Bewertung: {{object.recipe.avg_rating}}</p>

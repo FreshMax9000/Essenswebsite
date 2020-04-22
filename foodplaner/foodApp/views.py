@@ -37,12 +37,8 @@ class RecipesListView(generic.ListView):
     template_name = "foodApp/recipe_list.html"
     paginate_by = 10
 
-    def get(self, request, *args, **kwargs):
-        self.search = request.GET.get('q', '')
-        return super().get(request, *args, **kwargs)
-
     def get_queryset(self):
-        return get_recipe_object().filter(title__icontains=self.search).order_by('title')
+        return get_recipe_object().filter(title__icontains=self.request.GET.get('q', '')).order_by('title')
 
 
 class RecipesDetailView(UserPassesTestMixin, generic.DetailView):
@@ -145,7 +141,6 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
     permission_required = 'foodApp.change_recipe'
 
 
-
 class CreateGroceryView(PermissionRequiredMixin, generic.CreateView):
     model = Grocerie
     fields = ['name', 'unit']
@@ -167,6 +162,7 @@ class DeleteFoodplanView(PermissionRequiredMixin, UserPassesTestMixin, generic.D
 
     def test_func(self):
         return self.request.user == self.get_object().user
+
 
 @login_required
 def foodplan(request):
@@ -210,12 +206,14 @@ def foodplan(request):
 
         if 'generate' in request.POST:
             days = int(request.POST.get('days'))
-            generate_foodplan(request, foodplan_object, recipe_list, days)
+            selected_daytime = request.POST.get('select_daytime')
+            generate_foodplan(request, foodplan_object, recipe_list, days, selected_daytime)
 
     else:
         days = 5 # default value
+        selected_daytime = '1' # default
         form = FoodplanForm()
-        generate_foodplan(request, foodplan_object, recipe_list, days)
+        generate_foodplan(request, foodplan_object, recipe_list, days, selected_daytime)
 
     # parameter list for the template
     context = {
@@ -237,6 +235,7 @@ def reload_recipe(request, foodplan_object, recipe_list):
     # select recipe to remove it from Foodplan
     removed_recipe = get_recipe_object().get(id=request.POST.get('reload'))
     temp_date = Foodplan_Recipe.objects.filter(foodplan=foodplan_object).get(recipe=removed_recipe).date
+    daytime = Foodplan_Recipe.objects.filter(foodplan=foodplan_object).get(recipe=removed_recipe).daytime
 
     # filter the remaining recipes
     recipe_list = recipe_list.exclude(id=removed_recipe.id)
@@ -247,11 +246,11 @@ def reload_recipe(request, foodplan_object, recipe_list):
     if recipe_list.first() is not None:
         # remove recipe from Foodplan
         foodplan_object.recipes.remove(removed_recipe)
-        recipe_list = generate_recipe(request, foodplan_object, recipe_list, temp_date)
+        recipe_list = generate_recipe(request, foodplan_object, recipe_list, temp_date, daytime)
     else:
         messages.warning(request, f'Keine Rezepte vorhanden! Filter anpassen!')
 
-def generate_foodplan(request, foodplan_object, recipe_list, days):
+def generate_foodplan(request, foodplan_object, recipe_list, days, selected_daytime):
     """
         desc:
             - clear foodplan
@@ -259,16 +258,30 @@ def generate_foodplan(request, foodplan_object, recipe_list, days):
             - add choosen recipes to foodplan
             - if recipes < days --> warning
     """
+    if selected_daytime == '1':
+        days = days * 2
+        daytime = True
+    elif selected_daytime == '2':
+        daytime = True
+    else:
+        daytime = False
     # check if query_set is too short
     if len(recipe_list) >= days:
         # clear and generate foodplan
         foodplan_object.recipes.clear()
+        temp_date = date.today()
         for count in range(days):
-            recipe_list = generate_recipe(request, foodplan_object, recipe_list, date.today() + timedelta(days=count))
+            recipe_list = generate_recipe(request, foodplan_object, recipe_list, temp_date, daytime)
+            if selected_daytime == '1':
+                daytime = not daytime
+                if daytime:
+                    temp_date += timedelta(days=1)
+            else:
+                temp_date += timedelta(days=1)
     else:
         messages.warning(request, f'Keine Rezepte vorhanden! Filter anpassen!')
 
-def generate_recipe(request, foodplan_object, recipe_list, temp_date):
+def generate_recipe(request, foodplan_object, recipe_list, temp_date, daytime):
     """
         desc:
             - select(randomly) and add new recipe to foodplan
@@ -276,6 +289,7 @@ def generate_recipe(request, foodplan_object, recipe_list, temp_date):
             - recipe_list --> select one recipe from the list of recipes
             - foodplan --> foodplan instance of current user
             - temp_date --> set Day of foodplan
+            - daytime --> True = lunch, False = dinner
         ret:
             - return recipe_list exclude the selected recipe
     """
@@ -283,5 +297,6 @@ def generate_recipe(request, foodplan_object, recipe_list, temp_date):
     foodplan_object.recipes.add(random_recipes)
     save_date = Foodplan_Recipe.objects.filter(foodplan=foodplan_object).get(recipe=random_recipes)
     save_date.date = temp_date
+    save_date.daytime = daytime
     save_date.save()
     return recipe_list.exclude(id=random_recipes.id)

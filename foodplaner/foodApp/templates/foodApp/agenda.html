@@ -31,12 +31,23 @@
             </thead>
             <tbody>
                 {% for object in object_list %}
-                <tr>
-                  <th scope="row">{{ object.date }}</th>
-                  <td>{{ object.recipe.title }}</td>
-                  <td></td>
-                </tr>
+                    {% ifchanged object.date %}
+                        {% if not forloop.first %}
+                            </tr>
+                        {%endif%}
+                        <tr>
+                        <th scope="row">{{ object.date }}</th>
+                        {% if object.daytime %} <!-- datetime = True: lunch -->
+                            <td>{{ object.recipe.title }}</td>
+                        {% else %} <!-- datetime = False: dinner -->
+                            <td></td>
+                            <td>{{ object.recipe.title }}</td>
+                        {%endif%}
+                    {% else %} <!-- datetime = False: dinner -->
+                        <td>{{ object.recipe.title }}</td>
+                    {%endifchanged%}
                 {% endfor %}
+                </tr>
             </tbody>
         </table>
     </div>

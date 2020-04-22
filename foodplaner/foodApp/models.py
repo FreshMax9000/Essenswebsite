@@ -54,7 +54,8 @@ class Foodplan(models.Model):
 
 
 class Foodplan_Recipe(models.Model):
-    date = models.DateField(default=date.today) #TODO: 2 Meals per day
+    date = models.DateField(default=date.today)
+    daytime = models.BooleanField(default=True) # True = lunch | False = dinner
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     foodplan = models.ForeignKey(Foodplan, on_delete=models.CASCADE)
 
