@@ -15,6 +15,8 @@ from .models import Foodplan
 from .models import Foodplan_Recipe
 from .filters import FoodplanFilter
 from .forms import FoodplanForm
+from .forms import IngredientFormset
+from .forms import CreateRecipeForm
 
 
 def home(request):
@@ -112,6 +114,26 @@ class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+def create_recipe(request):
+    template_name = 'foodApp/recipe_create.html'
+    if request.method == 'GET':
+        recipe_form = CreateRecipeForm()
+        formset = IngredientFormset()
+    elif request.method == 'POST':
+        recipe_form = CreateRecipeForm(request.POST)
+        formset = IngredientFormset(request.POST)
+        print(formset.errors)
+        if recipe_form.is_valid() and formset.is_valid():
+            recipe_form.instance.author = request.user
+            recipe = recipe_form.save()
+            print(recipe)
+            
+            for form in formset:
+                ingredient = form.save(commit=False)
+                ingredient.recipe = recipe
+                ingredient.save()
+            return redirect('foodApp:home')
+    return render(request, template_name, {'recipe_form': recipe_form, 'formset': formset})
 
 class UpdateRecipeView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Recipe
