@@ -36,7 +36,7 @@
                             </tr>
                         {%endif%}
                         <tr>
-                        <th scope="row">{{ object.date | date:"l j. N" }}</th> <!-- "l": Monday | "j": 1 | "F": January -->
+                        <th scope="row">{{ object.date | date:"l j. F" }}</th> <!-- "l": Monday | "j": 1 | "F": January -->
                         {% if object.daytime %} <!-- datetime = True: lunch -->
                             <td>{{ object.recipe.title }}</td>
                         {% else %} <!-- datetime = False: dinner -->
