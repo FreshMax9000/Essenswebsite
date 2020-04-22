@@ -116,11 +116,13 @@ def create_recipe(request):
     elif request.method == 'POST':
         recipe_form = CreateRecipeForm(request.POST)
         formset = IngredientFormset(request.POST)
-        print(formset.errors)
         if recipe_form.is_valid() and formset.is_valid():
-            recipe_form.instance.author = request.user
+            user = request.user
+            recipe_form.instance.author = user
+            if user.has_perm('foodApp.change_recipe'):
+                #form.instance.reviewed = True
+                pass
             recipe = recipe_form.save()
-            print(recipe)
             
             for form in formset:
                 ingredient = form.save(commit=False)
