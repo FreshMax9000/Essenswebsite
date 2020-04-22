@@ -113,7 +113,15 @@ class Shopping(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
                     dict_ingrediant_value[key] = (quantity, ingrediant.grocerie.unit)
 
         for key in sorted(dict_ingrediant_value.keys()):
-            dict_ingrediant_as_string[key] = str(dict_ingrediant_value.get(key)[0]) + " " + dict_ingrediant_value.get(key)[1]
+            quantity = dict_ingrediant_value.get(key)[0]
+            unit = dict_ingrediant_value.get(key)[1]
+            if dict_ingrediant_value.get(key)[0] >= 1000:
+                quantity = quantity/1000
+                if dict_ingrediant_value.get(key)[1] == 'ml':
+                    unit = 'l'
+                elif dict_ingrediant_value.get(key)[1] == 'g':
+                    unit = 'kg'
+            dict_ingrediant_as_string[key] = str(quantity) + " " + unit
 
         return dict_ingrediant_as_string
 
