@@ -10,6 +10,7 @@
                 {{ recipe_form | crispy}}
             </fieldset>
             <div class="container">
+                <p><a class="btn btn-secondary" href="{% url 'foodApp:addGrocery' %}" role="button">Neue Zutat erstellen</a></p>
                 {{ formset.management_form }}
                 {% for form in formset %}
                     {{ form.id }}

@@ -14,6 +14,17 @@ class FoodplanForm(forms.ModelForm):
         model = Foodplan
         fields = ['days']
 
+
+class CreateGroceryForm(forms.ModelForm):
+    class Meta:
+        model = Grocerie
+        fields = ('name', 'unit')
+        labels = {
+            'name': 'Name:',
+            'unit': 'Einheit (g, ml, mg, Kg, ...):',
+        }
+
+
 class CreateIngredientForm(forms.ModelForm):
     quantity = forms.NumberInput()
     grocerie = forms.ModelChoiceField(queryset=Grocerie.objects.all(), empty_label="wählen", label="Zutat:", localize=True)
@@ -22,8 +33,8 @@ class CreateIngredientForm(forms.ModelForm):
         model = Ingredient
         fields = ('quantity', 'grocerie')
         labels = {
-                     'grocerie': 'Zutat',
-                     'quantity': 'Menge',
+                     'grocerie': 'Zutat:',
+                     'quantity': 'Menge:',
                  }
         widgets = {
             'quantity': forms.NumberInput(attrs={

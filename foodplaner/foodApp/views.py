@@ -1,5 +1,7 @@
 from datetime import date
 from datetime import timedelta
+
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.views import generic
@@ -17,6 +19,7 @@ from .filters import FoodplanFilter
 from .forms import FoodplanForm
 from .forms import IngredientFormset
 from .forms import CreateRecipeForm
+from .forms import CreateGroceryForm
 
 
 def home(request):
@@ -104,17 +107,6 @@ class Shopping(LoginRequiredMixin, generic.ListView):
         return dict_ingrediant_as_string
 
 
-class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
-    model = Recipe
-    fields = ['title', 'description', 'preparation', 'work_time', 'ingredients']
-
-    success_url = '/'  # home
-
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
-
-
 @login_required
 def create_recipe(request):
     template_name = 'foodApp/recipe_create.html'
@@ -137,6 +129,7 @@ def create_recipe(request):
             return redirect('foodApp:home')
     return render(request, template_name, {'recipe_form': recipe_form, 'formset': formset})
 
+
 class UpdateRecipeView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Recipe
     fields = ['title', 'description', 'preparation', 'work_time', 'ingredients']
@@ -155,8 +148,7 @@ class UpdateRecipeView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateVi
 
 class CreateGroceryView(LoginRequiredMixin, generic.CreateView):
     model = Grocerie
-    fields = ['name', 'unit']
-
+    form_class = CreateGroceryForm
     success_url = '/'
 
     def form_valid(self, form):
