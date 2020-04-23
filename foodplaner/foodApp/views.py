@@ -110,7 +110,7 @@ class Shopping(LoginRequiredMixin, generic.ListView):
 class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
     model = Recipe
     form_class = CreateRecipeForm
-    template_name = 'foodApp/recipe_create.html'
+    template_name = 'foodApp/recipe_form.html'
     success_url = '/'
 
     def get_context_data(self, **kwargs):
@@ -150,7 +150,7 @@ class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
 
 class UpdateRecipeView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Recipe
-    template_name = 'foodApp/recipe_create.html'
+    template_name = 'foodApp/recipe_form.html'
     success_url = '/'
 
     form_class = CreateRecipeForm
@@ -190,13 +190,12 @@ class UpdateRecipeView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateVi
             recipe_form = CreateRecipeForm(self.request.POST)
             formset = IngredientFormset(self.request.POST)
 
-            ingredient_list = Ingredient.objects.filter(recipe_id=self.kwargs['pk'])
-            for i in range(len(formset), len(ingredient_list)):
-                list[len(formset)].delete()
-            #for element in list:
-
-            #    if list.index(element) >= len(formset):
-            #        element.delete()
+            # necessary because the updateView didn't delete any ingredients
+            # ingredients only got updated or added
+            # -> delete excess ingredients and update the rest
+            ingredient_list = Ingredient.objects.filter(recipe_id=self.kwargs['pk'])[len(formset):]
+            for element in ingredient_list:
+                element.delete()
 
             for form in formset:
                 ingredient = form.save(commit=False)
