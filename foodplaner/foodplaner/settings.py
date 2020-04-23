@@ -112,8 +112,15 @@ PROJECT_APPS = (
 JENKINS_TASKS = (
     #style convention tests
     'django_jenkins.tasks.run_pep8',
-    # code checking helper (like pylint/pychecker
-    'django_jenkins.tasks.run_pyflakes'
+    # code checking helper
+    'django_jenkins.tasks.run_pyflakes',
+    # pylint codeconvention checker
+    'django_jenkins.tasks.run_pylint',
+    # count lines of codes 
+    'django_jenkins.tasks.run_sloccount',
+    # for css!  uses nmp i csslint to install 
+    #'django_jenkins.tasks.run_csslint',
+    
 )
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
