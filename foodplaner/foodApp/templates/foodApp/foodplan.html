@@ -28,9 +28,9 @@
                             {{ filter.form.ingredients.label }}<i class="fa fa-chevron-right ml-2"></i>
                         </button>
                         <div class="collapse" id="showIngredients">
-                            {% for grocerie in filter.form.ingredients %}
+                            {% for grocery in filter.form.ingredients %}
                                 <label class="checkbox-inline ml-2">
-                                {{ grocerie.tag }} {{ grocerie.choice_label }}
+                                {{ grocery.tag }} {{ grocery.choice_label }}
                                 </label>
                             {% endfor %}
                         </div>

@@ -1,8 +1,7 @@
 from datetime import date
 from datetime import timedelta
 
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views import generic
@@ -14,13 +13,14 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 
 from .models import Recipe
 from .models import Ingredient
-from .models import Grocerie
+from .models import Grocery
 from .models import Foodplan
 from .models import Foodplan_Recipe
 from .filters import FoodplanFilter
 from .forms import FoodplanForm
 from .forms import IngredientFormset
 from .forms import CreateRecipeForm
+from .forms import UpdateRecipeForm
 from .forms import CreateGroceryForm
 
 
@@ -110,12 +110,12 @@ class Shopping(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
                 # If ingrediant already exists in dictionary, sum the quantity
                 # If not, ad the ingrediant to Dictionary
                 quantity = ingrediant.quantity
-                key = ingrediant.grocerie.name
+                key = ingrediant.grocery.name
                 if key in dict_ingrediant_value:
                     quantity += dict_ingrediant_value.get(key)[0]
-                    dict_ingrediant_value[key] = (quantity, ingrediant.grocerie.unit)
+                    dict_ingrediant_value[key] = (quantity, ingrediant.grocery.unit)
                 else:
-                    dict_ingrediant_value[key] = (quantity, ingrediant.grocerie.unit)
+                    dict_ingrediant_value[key] = (quantity, ingrediant.grocery.unit)
 
         for key in sorted(dict_ingrediant_value.keys()):
             quantity = dict_ingrediant_value.get(key)[0]
@@ -131,12 +131,12 @@ class Shopping(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
         return dict_ingrediant_as_string
 
 
-class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
+class CreateRecipeView(PermissionRequiredMixin, generic.CreateView):
     model = Recipe
     form_class = CreateRecipeForm
-    
     success_url = reverse_lazy('foodApp:home')
-    
+    permission_required = 'foodApp.add_recipe'
+
     def get_context_data(self, **kwargs):
         if self.request.method == 'GET':
             recipe_form = CreateRecipeForm(self.request.GET or None)
@@ -162,11 +162,7 @@ class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
             formset = IngredientFormset(self.request.POST)
 
         recipe = recipe_form.save(commit=False)
-        user = self.request.user
-        form.instance.author = user
-        # Recipes of users with permissions don't have to be reviewed
-        if user.has_perm('foodApp.change_recipe'):
-            form.instance.reviewed = True
+        recipe.author = self.request.user
         recipe.save()
 
         for form in formset:
@@ -179,46 +175,42 @@ class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
 class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
     model = Recipe
 
-    success_url = reverse_lazy('foodApp:home')
+    success_url = reverse_lazy('foodApp:recipesList')
     permission_required = 'foodApp.change_recipe'
-
-    form_class = CreateRecipeForm
+    form_class = UpdateRecipeForm
 
     def get_context_data(self, **kwargs):
         if self.request.method == 'GET':
-            self.recipe_form = CreateRecipeForm(self.request.GET)
+            recipe_form = UpdateRecipeForm(self.request.GET)
 
             recipe = Recipe.objects.get(id=self.kwargs['pk'])
-            self.recipe_form = CreateRecipeForm(initial={
+            recipe_form = UpdateRecipeForm(initial={
                 'title': recipe.title,
                 'description': recipe.description,
                 'preparation': recipe.preparation,
                 'work_time': recipe.work_time,
             })
 
-            self.formset = IngredientFormset
-            ingredient_list = []
-            for ingredient in Ingredient.objects.all():
-                if ingredient.recipe_id == self.kwargs['pk']:
-                    ingredient_list.append({'grocerie': ingredient.grocerie, 'quantity': ingredient.quantity})
-
-            self.formset = IngredientFormset(queryset=Ingredient.objects.filter(recipe_id=self.kwargs['pk']))
+            formset = IngredientFormset(queryset=Ingredient.objects.filter(recipe_id=self.kwargs['pk']))
         elif self.request.method == 'POST':
-            self.recipe_form = CreateRecipeForm(self.request.POST)
-            self.formset = IngredientFormset(self.request.POST)
+            recipe_form = UpdateRecipeForm(self.request.POST)
+            formset = IngredientFormset(self.request.POST)
 
         context = super(UpdateRecipeView, self).get_context_data(**kwargs)
-        context['recipe_form'] = self.recipe_form
-        context['formset'] = self.formset
+        context['recipe_form'] = recipe_form
+        context['formset'] = formset
         return context
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
-
+        print('valid')
         if self.request.method == 'POST':
-            recipe_form = CreateRecipeForm(self.request.POST)
+            recipe_form = UpdateRecipeForm(self.request.POST)
             formset = IngredientFormset(self.request.POST)
 
+            #recipe_form.save()
+            #recipe.author = self.request.user
+            #recipe.save()
+            print(recipe_form)
             # necessary because the updateView didn't delete any ingredients
             # ingredients only got updated or added
             # -> delete excess ingredients and update the rest
@@ -232,16 +224,12 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
                 ingredient.save()
         return super().form_valid(form)
 
-    def test_func(self):
-        recipe = self.get_object()
-        return self.request.user == recipe.author
-
 
 class CreateGroceryView(LoginRequiredMixin, generic.CreateView):
-    model = Grocerie
+    model = Grocery
     form_class = CreateGroceryForm
     success_url = reverse_lazy('foodApp:home')
-    permission_required = 'foodApp.add_grocerie'
+    permission_required = 'foodApp.add_grocery'
 
     def form_valid(self, form):
         return super().form_valid(form)

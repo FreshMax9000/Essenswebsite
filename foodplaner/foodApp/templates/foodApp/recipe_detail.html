@@ -11,7 +11,7 @@
             <p class="lead">Zutaten:
                 <div class="lead container">
                     {% for each in object.ingredient_set.all %}
-                        <li>{{ each.quantity }}{{ each.grocerie.unit }} {{ each.grocerie.name }}</li>
+                        <li>{{ each.quantity }}{{ each.grocery.unit }} {{ each.grocery.name }}</li>
                     {% endfor %}
                 </div>
             </p>
