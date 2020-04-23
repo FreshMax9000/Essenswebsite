@@ -169,11 +169,17 @@ class CreateRecipeView(PermissionRequiredMixin, generic.CreateView):
         if user.has_perm('foodApp.change_recipe'):
             recipe.reviewed = True
         recipe.save()
-
-        for form in formset:
-            ingredient = form.save(commit=False)
-            ingredient.recipe = recipe
-            ingredient.save()
+            
+        for ingredient_form in formset:
+            # skip if a form is invalid
+            try:
+                ingredient = ingredient_form.save(commit=False)
+            except:
+                print('Error Input')
+            else:
+                if ingredient_form.cleaned_data:
+                    ingredient.recipe = recipe
+                    ingredient.save()
         return super().form_valid(form)
 
 
@@ -213,14 +219,14 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
 
             form.save()
             count_saved_forms = 0
-            for form1 in formset:
+            for ingredient_form in formset:
                 # skip if a form is invalid
                 try:
-                    ingredient = form1.save(commit=False)
+                    ingredient = ingredient_form.save(commit=False)
                 except:
                     print('Error Input')
                 else:
-                    if form1.cleaned_data:
+                    if ingredient_form.cleaned_data:
                         count_saved_forms += 1
                         ingredient.recipe = Recipe.objects.get(id=self.kwargs['pk'])
                         ingredient.save()
