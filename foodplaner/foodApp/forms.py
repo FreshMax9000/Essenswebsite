@@ -20,28 +20,18 @@ class CreateGroceryForm(forms.ModelForm):
         model = Grocerie
         fields = ('name', 'unit')
         labels = {
-            'name': 'Name:',
-            'unit': 'Einheit (g, ml, mg, Kg, ...):',
+            'name': 'Name: ',
+            'unit': 'Einheit (g, ml, mg, Kg, ...): ',
         }
 
 
 class CreateIngredientForm(forms.ModelForm):
-    quantity = forms.NumberInput()
-    grocerie = forms.ModelChoiceField(queryset=Grocerie.objects.all(), empty_label="wählen", label="Zutat:", localize=True)
+    quantity = forms.DecimalField(min_value=0, label='Menge: ')
+    grocerie = forms.ModelChoiceField(queryset=Grocerie.objects.all().order_by('name'), empty_label=" --- ", label="Zutat: ", localize=True)
 
     class Meta:
         model = Ingredient
         fields = ('quantity', 'grocerie')
-        labels = {
-                     'grocerie': 'Zutat:',
-                     'quantity': 'Menge:',
-                 }
-        widgets = {
-            'quantity': forms.NumberInput(attrs={
-                'min': 1,
-            }),
-        }
-
 
 
 class CreateRecipeForm(forms.ModelForm):
@@ -51,9 +41,9 @@ class CreateRecipeForm(forms.ModelForm):
         fields = ('title', 'description', 'preparation', 'work_time')
         labels = {
             'title': 'Titel',
-            'description': 'Beschreibung',
-            'preparation': 'Zubereitung',
-            'work_time': 'Zubereitungszeit',
+            'description': 'Beschreibung: ',
+            'preparation': 'Zubereitung: ',
+            'work_time': 'Zubereitungszeit: ',
         }
         widgets = {
             'title': forms.TextInput(attrs={
