@@ -161,8 +161,13 @@ class CreateRecipeView(PermissionRequiredMixin, generic.CreateView):
             recipe_form = CreateRecipeForm(self.request.POST)
             formset = IngredientFormset(self.request.POST)
 
+
+        user = self.request.user
         recipe = recipe_form.save(commit=False)
-        recipe.author = self.request.user
+        recipe.author = user
+        # Recipes of users with permissions don't have to be reviewed
+        if user.has_perm('foodApp.change_recipe'):
+            recipe.reviewed = True
         recipe.save()
 
         for form in formset:
@@ -189,6 +194,7 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
                 'description': recipe.description,
                 'preparation': recipe.preparation,
                 'work_time': recipe.work_time,
+                'reviewed': recipe.reviewed,
             })
 
             formset = IngredientFormset(queryset=Ingredient.objects.filter(recipe_id=self.kwargs['pk']))
@@ -202,30 +208,33 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
         return context
 
     def form_valid(self, form):
-        print('valid')
         if self.request.method == 'POST':
-            recipe_form = UpdateRecipeForm(self.request.POST)
             formset = IngredientFormset(self.request.POST)
 
-            #recipe_form.save()
-            #recipe.author = self.request.user
-            #recipe.save()
-            print(recipe_form)
+            form.save()
+            count_saved_forms = 0
+            for form1 in formset:
+                # skip if a form is invalid
+                try:
+                    ingredient = form1.save(commit=False)
+                except:
+                    print('Error Input')
+                else:
+                    if form1.cleaned_data:
+                        count_saved_forms += 1
+                        ingredient.recipe = Recipe.objects.get(id=self.kwargs['pk'])
+                        ingredient.save()
+
             # necessary because the updateView didn't delete any ingredients
             # ingredients only got updated or added
-            # -> delete excess ingredients and update the rest
-            ingredient_list = Ingredient.objects.filter(recipe_id=self.kwargs['pk'])[len(formset):]
+            # -> delete ingredients that had not been updated
+            ingredient_list = Ingredient.objects.filter(recipe_id=self.kwargs['pk'])[count_saved_forms:]
             for element in ingredient_list:
                 element.delete()
-
-            for form in formset:
-                ingredient = form.save(commit=False)
-                ingredient.recipe = Recipe.objects.get(id=self.kwargs['pk'])
-                ingredient.save()
         return super().form_valid(form)
 
 
-class CreateGroceryView(LoginRequiredMixin, generic.CreateView):
+class CreateGroceryView(PermissionRequiredMixin, generic.CreateView):
     model = Grocery
     form_class = CreateGroceryForm
     success_url = reverse_lazy('foodApp:home')

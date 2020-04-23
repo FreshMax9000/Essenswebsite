@@ -28,7 +28,7 @@ class CreateGroceryForm(forms.ModelForm):
 
 class CreateIngredientForm(forms.ModelForm):
     quantity = forms.DecimalField(min_value=0, label='Menge: ')
-    grocery = forms.ModelChoiceField(queryset=Grocery.objects.all().order_by('name'), empty_label=" --- ", label="Zutat: ", localize=True)
+    grocery = forms.ModelChoiceField(queryset=Grocery.objects.all().order_by('name'), empty_label=" --- ", label="Zutat: ")
 
     class Meta:
         model = Ingredient
@@ -57,7 +57,7 @@ class UpdateRecipeForm(forms.ModelForm):
     preparation = forms.CharField(label='Zubereitung: ')
     preparation.widget = forms.Textarea(attrs={'placeholder': 'Hier die Zubereitung beschreiben'})
     work_time = forms.IntegerField(min_value=1, label='Zubereitungszeit: ')
-    reviewed = forms.BooleanField(label='Rezept veröffentlichen')
+    reviewed = forms.BooleanField(required=False, label='Rezept veröffentlichen')
   
     class Meta:
         model = Recipe
