@@ -163,7 +163,7 @@ class CreateRecipeView(PermissionRequiredMixin, generic.CreateView):
 
 
         user = self.request.user
-        recipe = recipe_form.save(commit=False)
+        recipe = form.save(commit=False)
         recipe.author = user
         # Recipes of users with permissions don't have to be reviewed
         if user.has_perm('foodApp.change_recipe'):
