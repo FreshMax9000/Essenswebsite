@@ -107,31 +107,6 @@ class Shopping(LoginRequiredMixin, generic.ListView):
         return dict_ingrediant_as_string
 
 
-@login_required
-def create_recipe(request):
-    template_name = 'foodApp/recipe_create.html'
-    if request.method == 'GET':
-        recipe_form = CreateRecipeForm(request.GET or None)
-        formset = IngredientFormset(queryset=Ingredient.objects.none())
-    elif request.method == 'POST':
-        recipe_form = CreateRecipeForm(request.POST)
-        formset = IngredientFormset(request.POST)
-        if recipe_form.is_valid() and formset.is_valid():
-            user = request.user
-            recipe_form.instance.author = user
-            if user.has_perm('foodApp.change_recipe'):
-                #form.instance.reviewed = True
-                pass
-            recipe = recipe_form.save()
-            
-            for form in formset:
-                ingredient = form.save(commit=False)
-                ingredient.recipe = recipe
-                ingredient.save()
-            return redirect('foodApp:home')
-    return render(request, template_name, {'recipe_form': recipe_form, 'formset': formset})
-
-
 class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
     model = Recipe
     form_class = CreateRecipeForm
@@ -175,15 +150,60 @@ class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
 
 class UpdateRecipeView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Recipe
-    fields = ['title', 'description', 'preparation', 'work_time', 'ingredients']
+    template_name = 'foodApp/recipe_create.html'
+    success_url = '/'
 
-    success_url = '/'  # home
+    form_class = CreateRecipeForm
+
+    def get_context_data(self, **kwargs):
+        if self.request.method == 'GET':
+            self.recipe_form = CreateRecipeForm(self.request.GET)
+
+            recipe = Recipe.objects.get(id=self.kwargs['pk'])
+            self.recipe_form = CreateRecipeForm(initial={
+                'title': recipe.title,
+                'description': recipe.description,
+                'preparation': recipe.preparation,
+                'work_time': recipe.work_time,
+            })
+
+            self.formset = IngredientFormset
+            ingredient_list = []
+            for ingredient in Ingredient.objects.all():
+                if ingredient.recipe_id == self.kwargs['pk']:
+                    ingredient_list.append({'grocerie': ingredient.grocerie, 'quantity': ingredient.quantity})
+
+            self.formset = IngredientFormset(queryset=Ingredient.objects.filter(recipe_id=self.kwargs['pk']))
+        elif self.request.method == 'POST':
+            self.recipe_form = CreateRecipeForm(self.request.POST)
+            self.formset = IngredientFormset(self.request.POST)
+
+        context = super(UpdateRecipeView, self).get_context_data(**kwargs)
+        context['recipe_form'] = self.recipe_form
+        context['formset'] = self.formset
+        return context
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+
+        if self.request.method == 'POST':
+            recipe_form = CreateRecipeForm(self.request.POST)
+            formset = IngredientFormset(self.request.POST)
+
+            ingredient_list = Ingredient.objects.filter(recipe_id=self.kwargs['pk'])
+            for i in range(len(formset), len(ingredient_list)):
+                list[len(formset)].delete()
+            #for element in list:
+
+            #    if list.index(element) >= len(formset):
+            #        element.delete()
+
+            for form in formset:
+                ingredient = form.save(commit=False)
+                ingredient.recipe = Recipe.objects.get(id=self.kwargs['pk'])
+                ingredient.save()
         return super().form_valid(form)
 
-    # A recipe can only get updated by the user that created it -> change later to admins
     def test_func(self):
         recipe = self.get_object()
         return self.request.user == recipe.author
