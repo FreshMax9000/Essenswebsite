@@ -2,7 +2,7 @@ from datetime import date
 from datetime import timedelta
 
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 from django.views import generic
 from django.contrib import messages
@@ -128,6 +128,47 @@ def create_recipe(request):
                 ingredient.save()
             return redirect('foodApp:home')
     return render(request, template_name, {'recipe_form': recipe_form, 'formset': formset})
+
+
+class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
+    model = Recipe
+    form_class = CreateRecipeForm
+    template_name = 'foodApp/recipe_create.html'
+    success_url = '/'
+
+    def get_context_data(self, **kwargs):
+        if self.request.method == 'GET':
+            recipe_form = CreateRecipeForm(self.request.GET or None)
+            formset = IngredientFormset(queryset=Ingredient.objects.none())
+        elif self.request.method == 'POST':
+            recipe_form = CreateRecipeForm(self.request.POST)
+            formset = IngredientFormset(self.request.POST)
+
+        context = super(CreateRecipeView, self).get_context_data(**kwargs)
+        context['formset'] = formset
+        context['recipe_form'] = recipe_form
+        return context
+
+    # self.recipe_form and self.formset didn't get saved in get_context_data
+    # initializing them in __init__() led to errors
+    # -> unclean solution by turning them into local variables
+    def form_valid(self, form):
+        if self.request.method == 'GET':
+            recipe_form = CreateRecipeForm(self.request.GET) or None
+            formset = IngredientFormset(queryset=Ingredient.objects.none())
+        elif self.request.method == 'POST':
+            recipe_form = CreateRecipeForm(self.request.POST)
+            formset = IngredientFormset(self.request.POST)
+
+        recipe = recipe_form.save(commit=False)
+        recipe.author = self.request.user
+        recipe.save()
+
+        for form in formset:
+            ingredient = form.save(commit=False)
+            ingredient.recipe = recipe
+            ingredient.save()
+        return super().form_valid(form)
 
 
 class UpdateRecipeView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
