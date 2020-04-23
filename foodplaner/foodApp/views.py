@@ -1,3 +1,8 @@
+"""
+Views load the template and eventually modify the content with logic.
+"""
+
+
 from datetime import date
 from datetime import timedelta
 from django.shortcuts import render
@@ -76,12 +81,12 @@ class Shopping(LoginRequiredMixin, generic.ListView):
 
     def get_ingrediant_list(self, recipe_list):
         """
-            desc:
-                - creates a dict from the given recipes and sums up all ingredients
-            para:
-                - recipe_list - list of recipes to be summed up
-            ret:
-                - dict_ingrediant_as_string - returns a dict of strings of summed ingredients
+        Creates a dict from the given recipes and sums up all ingredients.
+
+        Args:
+            recipe_list: list of recipes to be summed up.
+        Returns:
+            Returns a dict of strings of summed ingredients.
         """
         dict_ingrediant_as_string = {}
         dict_ingrediant_value = {}
@@ -152,12 +157,15 @@ class DeleteRecipeView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteVi
 @login_required
 def foodplan(request):
     """
-        desc:
-            - generate Random Foodplan
-            - generate complete Foodplan (for every day) or only single days
-            - if User has no Foodplan object --> create new one
-            - Recipes filtered in class filters.FoodplanFilter
-            - no recipes cause (of filters) --> warning message
+    Generates a random foodplan.
+
+    Generates a foodplan for everyday or only single days.
+    If the user has no foodplan object it creates a new one.
+    The Recipes are filtered by the class filter.FoodplanFilter.
+    If there are no recipes because of the given filter there is a warning message.
+
+    Returns:
+        HTTP Response with the template foodplan and specific context.
     """
     # filter list of Recipes
     foodplan_filter = FoodplanFilter(request.POST, queryset=Recipe.objects.all())
@@ -211,12 +219,13 @@ def foodplan(request):
 
 def reload_recipe(request, foodplan_object, recipe_list):
     """
-        desc:
-            - reload single recipe
-            - remove choosen recipe(id saved in request.Post)
-            - choose random recipe from recipe_list
-            - add recipe too foodplan with origin date
-            - if recipe_list only removed recipe --> do noting + warning
+    Reloads a single recipe.
+
+    Removes the chosen recipe from foodplan.
+    Choses a new random recipe from recipe_list.
+    Adds the new recipe to the foodplan with original date.
+    If recipe_list contains only removed recipes it does nothing and
+    produces a warning.
     """
     # select recipe to remove it from Foodplan
     removed_recipe = Recipe.objects.filter(id=request.POST.get('reload')).first()
@@ -237,11 +246,11 @@ def reload_recipe(request, foodplan_object, recipe_list):
 
 def generate_foodplan(request, foodplan_object, recipe_list, days):
     """
-        desc:
-            - clear foodplan
-            - choose number of days random recipes from recipe_list
-            - add choosen recipes to foodplan
-            - if recipes < days --> warning
+    Clears the foodplan and generates a new foodplan.
+
+    Generates a new foodplan with random recipes from recipe_list for
+    the given length in days. If there are more days than recipes it produces
+    a warning.
     """
     # check if query_set is too short
     if len(recipe_list) >= days:
@@ -254,14 +263,14 @@ def generate_foodplan(request, foodplan_object, recipe_list, days):
 
 def generate_recipe(request, foodplan_object, recipe_list, temp_date):
     """
-        desc:
-            - select(randomly) and add new recipe to foodplan
-        para:
-            - recipe_list --> select one recipe from the list of recipes
-            - foodplan --> foodplan instance of current user
-            - temp_date --> set Day of foodplan
-        ret:
-            - return recipe_list exclude the selected recipe
+    Selects a random recipe and add it to the foodplan.
+
+    Params:
+        recipe_list: a list of recipes
+        foodplan: foodplan instance of current user
+        temp_date: The date at which this recipe is to be used
+    Returns:
+        Returns the recipe list without the selected recipe.
     """
     random_recipes = recipe_list.order_by('?').first()
     foodplan_object.recipes.add(random_recipes)

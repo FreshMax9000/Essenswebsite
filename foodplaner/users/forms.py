@@ -1,3 +1,6 @@
+"""
+Module is used to provide forms to gather formatted user input.
+"""
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
@@ -5,6 +8,9 @@ from .models import Profile
 
 
 class UserRegisterForm(UserCreationForm):
+    """
+    Reads user input about the chosen username, email, password and password generation.
+    """
     email = forms.EmailField()
 
     class Meta:
@@ -13,6 +19,9 @@ class UserRegisterForm(UserCreationForm):
 
 
 class UserUpdateForm(forms.ModelForm):
+    """
+    Reads user input containing a new username and a new email.
+    """
     email = forms.EmailField()
 
     class Meta:
@@ -21,6 +30,9 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
+    """
+    Reads user input containing a new profile picture.
+    """
     class Meta:
         model = Profile
         fields = ['image']

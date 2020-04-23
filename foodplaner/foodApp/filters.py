@@ -1,5 +1,6 @@
 """
     This modul uses django-filter.
+
     Django-filter provides a simple way to filter down a queryset based on parameters a user provides.
     Guide: https://simpleisbetterthancomplex.com/tutorial/2016/11/28/how-to-filter-querysets-dynamically.html
 """
@@ -10,8 +11,7 @@ from .models import Grocerie
 
 class FoodplanFilter(django_filters.FilterSet): #TODO:additional filters?
     """
-        desc:
-            - selcet attributes from Recipe to generate a filterd recipe list for Foodplan
+    Select attributes from Recipe to generate a filterd recipe list for Foodplan.
     """
     #title = django_filters.CharFilter(lookup_expr='icontains',label="Titel enthält:")
     work_time = django_filters.NumberFilter(lookup_expr='lte', label="Maximal benötigte Zeit:")

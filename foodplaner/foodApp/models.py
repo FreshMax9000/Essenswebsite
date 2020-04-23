@@ -1,9 +1,15 @@
+"""
+Models represent the database provided by Django.
+"""
 from datetime import date
 from django.db import models
 from django.contrib.auth.models import User
 
 
 class Grocerie(models.Model):
+    """
+    Represents a kind of grocerie with its name and unit.
+    """
     name = models.CharField(max_length=100)
     unit = models.CharField(max_length=100, default="")
 
@@ -12,6 +18,9 @@ class Grocerie(models.Model):
 
 
 class Recipe(models.Model):
+    """
+    Represents a recipe.
+    """
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=200, default="")
     preparation = models.TextField(default="")
@@ -30,6 +39,9 @@ class Recipe(models.Model):
 
 
 class Ingredient(models.Model):
+    """
+    Represents a Ingridient of a recipe.
+    """
     quantity = models.FloatField(default=0)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     grocerie = models.ForeignKey(Grocerie, on_delete=models.CASCADE)
@@ -39,6 +51,9 @@ class Ingredient(models.Model):
 
 
 class Commentary(models.Model):
+    """
+    Represents a commentary with a rating which belongs to a recipe.
+    """
     text = models.TextField(default="")
     rating = models.IntegerField(default=0)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -46,6 +61,9 @@ class Commentary(models.Model):
 
 
 class Foodplan(models.Model):
+    """
+    Represents a foodplan consisting of many recipes.
+    """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipes = models.ManyToManyField(Recipe, through='Foodplan_Recipe')
 
@@ -54,6 +72,9 @@ class Foodplan(models.Model):
 
 
 class Foodplan_Recipe(models.Model):
+    """
+    Represents a Recipe belonging to a specific foodplan with a specific date.
+    """
     date = models.DateField(default=date.today) #TODO: 2 Meals per day
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     foodplan = models.ForeignKey(Foodplan, on_delete=models.CASCADE)

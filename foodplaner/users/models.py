@@ -1,9 +1,15 @@
+"""
+Models represent the database provided by Django.
+"""
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
 
 
 class Profile(models.Model):
+    """
+    Represents a Profile containing a profile picture and a link to a user.
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='default.png', upload_to='profile_pics')
 

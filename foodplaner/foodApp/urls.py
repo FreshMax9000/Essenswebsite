@@ -1,3 +1,6 @@
+"""
+This file links the URLs to specific views.
+"""
 from django.urls import path
 
 from . import views
