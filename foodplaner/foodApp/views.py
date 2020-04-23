@@ -1,6 +1,8 @@
 from datetime import date
 from datetime import timedelta
-from django.shortcuts import render
+
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
 from django.shortcuts import redirect
 from django.views import generic
 from django.contrib import messages
@@ -15,6 +17,9 @@ from .models import Foodplan
 from .models import Foodplan_Recipe
 from .filters import FoodplanFilter
 from .forms import FoodplanForm
+from .forms import IngredientFormset
+from .forms import CreateRecipeForm
+from .forms import CreateGroceryForm
 
 
 def home(request):
@@ -104,26 +109,100 @@ class Shopping(LoginRequiredMixin, generic.ListView):
 
 class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
     model = Recipe
-    fields = ['title', 'description', 'preparation', 'work_time', 'ingredients']
+    form_class = CreateRecipeForm
+    template_name = 'foodApp/recipe_form.html'
+    success_url = '/'
 
-    success_url = '/'  # home
+    def get_context_data(self, **kwargs):
+        if self.request.method == 'GET':
+            recipe_form = CreateRecipeForm(self.request.GET or None)
+            formset = IngredientFormset(queryset=Ingredient.objects.none())
+        elif self.request.method == 'POST':
+            recipe_form = CreateRecipeForm(self.request.POST)
+            formset = IngredientFormset(self.request.POST)
 
+        context = super(CreateRecipeView, self).get_context_data(**kwargs)
+        context['formset'] = formset
+        context['recipe_form'] = recipe_form
+        return context
+
+    # self.recipe_form and self.formset didn't get saved in get_context_data
+    # initializing them in __init__() led to errors
+    # -> unclean solution by turning them into local variables
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        if self.request.method == 'GET':
+            recipe_form = CreateRecipeForm(self.request.GET) or None
+            formset = IngredientFormset(queryset=Ingredient.objects.none())
+        elif self.request.method == 'POST':
+            recipe_form = CreateRecipeForm(self.request.POST)
+            formset = IngredientFormset(self.request.POST)
+
+        recipe = recipe_form.save(commit=False)
+        recipe.author = self.request.user
+        recipe.save()
+
+        for form in formset:
+            ingredient = form.save(commit=False)
+            ingredient.recipe = recipe
+            ingredient.save()
         return super().form_valid(form)
 
 
 class UpdateRecipeView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Recipe
-    fields = ['title', 'description', 'preparation', 'work_time', 'ingredients']
+    template_name = 'foodApp/recipe_form.html'
+    success_url = '/'
 
-    success_url = '/'  # home
+    form_class = CreateRecipeForm
+
+    def get_context_data(self, **kwargs):
+        if self.request.method == 'GET':
+            self.recipe_form = CreateRecipeForm(self.request.GET)
+
+            recipe = Recipe.objects.get(id=self.kwargs['pk'])
+            self.recipe_form = CreateRecipeForm(initial={
+                'title': recipe.title,
+                'description': recipe.description,
+                'preparation': recipe.preparation,
+                'work_time': recipe.work_time,
+            })
+
+            self.formset = IngredientFormset
+            ingredient_list = []
+            for ingredient in Ingredient.objects.all():
+                if ingredient.recipe_id == self.kwargs['pk']:
+                    ingredient_list.append({'grocerie': ingredient.grocerie, 'quantity': ingredient.quantity})
+
+            self.formset = IngredientFormset(queryset=Ingredient.objects.filter(recipe_id=self.kwargs['pk']))
+        elif self.request.method == 'POST':
+            self.recipe_form = CreateRecipeForm(self.request.POST)
+            self.formset = IngredientFormset(self.request.POST)
+
+        context = super(UpdateRecipeView, self).get_context_data(**kwargs)
+        context['recipe_form'] = self.recipe_form
+        context['formset'] = self.formset
+        return context
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+
+        if self.request.method == 'POST':
+            recipe_form = CreateRecipeForm(self.request.POST)
+            formset = IngredientFormset(self.request.POST)
+
+            # necessary because the updateView didn't delete any ingredients
+            # ingredients only got updated or added
+            # -> delete excess ingredients and update the rest
+            ingredient_list = Ingredient.objects.filter(recipe_id=self.kwargs['pk'])[len(formset):]
+            for element in ingredient_list:
+                element.delete()
+
+            for form in formset:
+                ingredient = form.save(commit=False)
+                ingredient.recipe = Recipe.objects.get(id=self.kwargs['pk'])
+                ingredient.save()
         return super().form_valid(form)
 
-    # A recipe can only get updated by the user that created it -> change later to admins
     def test_func(self):
         recipe = self.get_object()
         return self.request.user == recipe.author
@@ -131,8 +210,7 @@ class UpdateRecipeView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateVi
 
 class CreateGroceryView(LoginRequiredMixin, generic.CreateView):
     model = Grocerie
-    fields = ['name', 'unit']
-
+    form_class = CreateGroceryForm
     success_url = '/'
 
     def form_valid(self, form):
