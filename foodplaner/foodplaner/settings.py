@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'foodApp.apps.FoodappConfig',
     'users.apps.UsersConfig',
+    'django_jenkins',
     'crispy_forms',
     'django_filters',
     'django.contrib.admin',
@@ -103,7 +104,24 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+PROJECT_APPS = (
+    'foodApp',
+    'users',
+)
+# Add-ons used by the Jenkinsserver to check the code
+JENKINS_TASKS = (
+    #style convention tests
+    'django_jenkins.tasks.run_pep8',
+    # code checking helper
+    'django_jenkins.tasks.run_pyflakes',
+    # pylint codeconvention checker
+    'django_jenkins.tasks.run_pylint',
+    # count lines of codes 
+    'django_jenkins.tasks.run_sloccount',
+    # for css!  uses nmp i csslint to install 
+    #'django_jenkins.tasks.run_csslint',
+    
+)
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
