@@ -107,44 +107,44 @@ class Shopping(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(Shopping, self).get_context_data(**kwargs)
-        context['object_list'] = self.get_ingrediant_list(Foodplan.objects.get(id=self.kwargs.get('pk')).recipes)
+        context['object_list'] = self.get_ingredient_list(Foodplan.objects.get(id=self.kwargs.get('pk')).recipes)
         return context
 
-    def get_ingrediant_list(self, recipe_list):
+    def get_ingredient_list(self, recipe_list):
         """
             desc:
                 - creates a dict from the given recipes and sums up all ingredients
             para:
                 - recipe_list - list of recipes to be summed up
             ret:
-                - dict_ingrediant_as_string - returns a dict of strings of summed ingredients
+                - dict_ingredient_as_string - returns a dict of strings of summed ingredients
         """
-        dict_ingrediant_as_string = {}
-        dict_ingrediant_value = {}
+        dict_ingredient_as_string = {}
+        dict_ingredient_value = {}
         for recipe in recipe_list.all():
-            for ingrediant in Ingredient.objects.filter(recipe_id=recipe.id):
-                # If ingrediant already exists in dictionary, sum the quantity
-                # If not, ad the ingrediant to Dictionary
-                quantity = ingrediant.quantity
-                key = ingrediant.grocery.name
-                if key in dict_ingrediant_value:
-                    quantity += dict_ingrediant_value.get(key)[0]
-                    dict_ingrediant_value[key] = (quantity, ingrediant.grocery.unit)
+            for ingredient in Ingredient.objects.filter(recipe_id=recipe.id):
+                # If ingredient already exists in dictionary, sum the quantity
+                # If not, ad the ingredient to Dictionary
+                quantity = ingredient.quantity
+                key = ingredient.grocery.name
+                if key in dict_ingredient_value:
+                    quantity += dict_ingredient_value.get(key)[0]
+                    dict_ingredient_value[key] = (quantity, ingredient.grocery.unit)
                 else:
-                    dict_ingrediant_value[key] = (quantity, ingrediant.grocery.unit)
+                    dict_ingredient_value[key] = (quantity, ingredient.grocery.unit)
 
-        for key in sorted(dict_ingrediant_value.keys()):
-            quantity = dict_ingrediant_value.get(key)[0]
-            unit = dict_ingrediant_value.get(key)[1]
-            if dict_ingrediant_value.get(key)[0] >= 1000:
+        for key in sorted(dict_ingredient_value.keys()):
+            quantity = dict_ingredient_value.get(key)[0]
+            unit = dict_ingredient_value.get(key)[1]
+            if dict_ingredient_value.get(key)[0] >= 1000:
                 quantity = quantity/1000
-                if dict_ingrediant_value.get(key)[1] == 'ml':
+                if dict_ingredient_value.get(key)[1] == 'ml':
                     unit = 'l'
-                elif dict_ingrediant_value.get(key)[1] == 'g':
+                elif dict_ingredient_value.get(key)[1] == 'g':
                     unit = 'kg'
-            dict_ingrediant_as_string[key] = str(quantity) + " " + unit
+            dict_ingredient_as_string[key] = str(quantity) + " " + unit
 
-        return dict_ingrediant_as_string
+        return dict_ingredient_as_string
 
 
 class CreateRecipeView(PermissionRequiredMixin, generic.CreateView):

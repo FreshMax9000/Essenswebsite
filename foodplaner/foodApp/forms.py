@@ -27,7 +27,7 @@ class CreateGroceryForm(forms.ModelForm):
 
 
 class CreateIngredientForm(forms.ModelForm):
-    quantity = forms.DecimalField(min_value=0, label='Menge: ')
+    quantity = forms.DecimalField(min_value=1, label='Menge: ')
     grocery = forms.ModelChoiceField(queryset=Grocery.objects.all().order_by('name'), empty_label=" --- ", label="Zutat: ")
 
     class Meta:
