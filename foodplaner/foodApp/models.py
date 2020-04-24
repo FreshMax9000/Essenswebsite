@@ -4,16 +4,16 @@ from django.contrib.auth.models import User
 
 
 class Grocery(models.Model):
-    name = models.CharField(max_length=100)
-    unit = models.CharField(max_length=100, default="")
+    name = models.CharField(max_length=30)
+    unit = models.CharField(max_length=15, default="")
 
     def __str__(self):
         return self.name
 
 
 class Recipe(models.Model):
-    title = models.CharField(max_length=100)
-    description = models.CharField(max_length=200, default="")
+    title = models.CharField(max_length=50)
+    description = models.CharField(max_length=100, default="")
     preparation = models.TextField(default="")
     work_time = models.IntegerField(default=0)
     avg_rating = models.FloatField(default=0) #@TODO: durchschnitt berechnen aus allen kommentaren, neuberechnung wenn neuer kommentar/ kommnetar änderung/ löschung

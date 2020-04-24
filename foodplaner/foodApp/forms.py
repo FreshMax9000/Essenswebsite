@@ -18,8 +18,8 @@ class FoodplanForm(forms.ModelForm):
 
 
 class CreateGroceryForm(forms.ModelForm):
-    name = forms.CharField(max_length=100, label='Name: ')
-    unit = forms.CharField(max_length=100, label='Einheit (g, ml, mg, Kg, ...): ')
+    name = forms.CharField(max_length=30, label='Name: ')
+    unit = forms.CharField(max_length=15, label='Einheit (g, ml, mg, Kg, ...): ')
 
     class Meta:
         model = Grocery
@@ -27,8 +27,8 @@ class CreateGroceryForm(forms.ModelForm):
 
 
 class CreateIngredientForm(forms.ModelForm):
-    quantity = forms.DecimalField(min_value=1, label='Menge: ')
-    grocery = forms.ModelChoiceField(queryset=Grocery.objects.all().order_by('name'), empty_label=" --- ", label="Zutat: ")
+    quantity = forms.DecimalField(min_value=1, required=False, label='Menge: ')
+    grocery = forms.ModelChoiceField(queryset=Grocery.objects.all().order_by('name'), empty_label=" --- ", required=False, label="Zutat: ")
 
     class Meta:
         model = Ingredient
@@ -36,9 +36,9 @@ class CreateIngredientForm(forms.ModelForm):
 
 
 class RecipeForm(forms.ModelForm):
-    title = forms.CharField(max_length=100, label='Titel: ')
+    title = forms.CharField(max_length=50, label='Titel: ')
     title.widget = forms.TextInput(attrs={'placeholder': 'Hier Titel eingeben'})
-    description = forms.CharField(max_length=200, label='Beschreibung: ')
+    description = forms.CharField(max_length=100, required=False, label='Beschreibung: ')
     description.widget = forms.TextInput(attrs={'placeholder': 'Hier Kurzbeschreibung eingeben'})
     preparation = forms.CharField(label='Zubereitung: ')
     preparation.widget = forms.Textarea(attrs={'placeholder': 'Hier die Zubereitung beschreiben'})
