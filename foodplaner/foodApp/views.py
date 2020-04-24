@@ -186,7 +186,7 @@ class CreateRecipeView(PermissionRequiredMixin, generic.CreateView):
 class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
     model = Recipe
 
-    success_url = reverse_lazy('foodApp:recipesList')
+    success_url = reverse_lazy('foodApp:home')
     permission_required = 'foodApp.change_recipe'
     form_class = UpdateRecipeForm
 
@@ -240,18 +240,28 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
         return super().form_valid(form)
 
 
+class DeleteRecipeView(PermissionRequiredMixin, generic.DeleteView):
+    model = Recipe
+    success_url = reverse_lazy('foodApp:home')
+    permission_required = 'foodApp.delete_recipe'
+
+
 class CreateGroceryView(PermissionRequiredMixin, generic.CreateView):
     model = Grocery
     form_class = CreateGroceryForm
     success_url = reverse_lazy('foodApp:home')
     permission_required = 'foodApp.add_grocery'
 
-    def form_valid(self, form):
-        return super().form_valid(form)
+
+class UpdateGroceryView(PermissionRequiredMixin, generic.UpdateView):
+    model = Grocery
+    form_class = CreateGroceryForm
+    success_url = reverse_lazy('foodApp:home')
+    permission_required = 'foodApp.change_grocery'
 
 
-class DeleteRecipeView(PermissionRequiredMixin, generic.DeleteView):
-    model = Recipe
+class DeleteGroceryView(PermissionRequiredMixin, generic.DeleteView):
+    model = Grocery
     success_url = reverse_lazy('foodApp:home')
     permission_required = 'foodApp.delete_recipe'
 
