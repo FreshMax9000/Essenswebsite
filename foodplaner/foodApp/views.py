@@ -174,8 +174,8 @@ class CreateRecipeView(PermissionRequiredMixin, generic.CreateView):
             # skip if a form is invalid
             try:
                 ingredient = ingredient_form.save(commit=False)
-            except:
-                print('Error Input')
+            except ValueError:
+                print('ValueError ')
             else:
                 if ingredient_form.cleaned_data:
                     ingredient.recipe = recipe
@@ -223,8 +223,8 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
                 # skip if a form is invalid
                 try:
                     ingredient = ingredient_form.save(commit=False)
-                except:
-                    print('Error Input')
+                except ValueError:
+                    print('ValueError ')
                 else:
                     if ingredient_form.cleaned_data:
                         count_saved_forms += 1
