@@ -168,23 +168,14 @@ class CreateRecipeView(PermissionRequiredMixin, generic.CreateView):
         context['recipe_form'] = recipe_form
         return context
 
-    # self.recipe_form and self.formset didn't get saved in get_context_data
-    # initializing them in __init__() led to errors
-    # -> unclean solution by turning them into local variables
     def form_valid(self, form):
         if self.request.method == 'GET':
-            recipe_form = RecipeForm(self.request.GET) or None
             formset = IngredientFormset(queryset=Ingredient.objects.none())
         elif self.request.method == 'POST':
-            recipe_form = RecipeForm(self.request.POST)
             formset = IngredientFormset(self.request.POST)
 
-        user = self.request.user
         recipe = form.save(commit=False)
-        recipe.author = user
-        # Recipes of users with permissions don't have to be reviewed
-        if user.has_perm('foodApp.change_recipe'):
-            recipe.reviewed = True
+        recipe.author = self.request.user
         recipe.save()
             
         for ingredient_form in formset:
