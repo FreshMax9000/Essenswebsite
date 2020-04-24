@@ -26,6 +26,7 @@ from .forms import CreateGroceryForm
 def home(request):
     return render(request, 'foodApp/home.html')
 
+
 def get_recipe_object():
     """
         desc:
@@ -45,7 +46,7 @@ class RecipesListView(generic.ListView):
         return get_recipe_object().filter(title__icontains=self.request.GET.get('q', '')).order_by('title')
 
 
-class ReviewedRecipesListView(PermissionRequiredMixin, generic.ListView):
+class ReviewRecipesListView(PermissionRequiredMixin, generic.ListView):
     model = Recipe
     ordering = ['title']
     template_name = "foodApp/recipe_list.html"
@@ -67,6 +68,7 @@ class RecipesDetailView(UserPassesTestMixin, generic.DetailView):
         else:
             is_valid = self.get_object() in get_recipe_object()
         return is_valid
+
 
 class MyProfil(LoginRequiredMixin, generic.ListView):
     template_name = "foodApp/myprofil.html"
@@ -176,7 +178,6 @@ class CreateRecipeView(PermissionRequiredMixin, generic.CreateView):
         elif self.request.method == 'POST':
             recipe_form = RecipeForm(self.request.POST)
             formset = IngredientFormset(self.request.POST)
-
 
         user = self.request.user
         recipe = form.save(commit=False)
@@ -350,6 +351,7 @@ def foodplan(request):
     }
     return render(request, "foodApp/foodplan.html", context)
 
+
 def reload_recipe(request, foodplan_object, recipe_list):
     """
         desc:
@@ -376,6 +378,7 @@ def reload_recipe(request, foodplan_object, recipe_list):
         recipe_list = generate_recipe(request, foodplan_object, recipe_list, temp_date, daytime)
     else:
         messages.warning(request, f'Keine Rezepte vorhanden! Filter anpassen!')
+
 
 def generate_foodplan(request, foodplan_object, recipe_list, days, selected_daytime):
     """
@@ -407,6 +410,7 @@ def generate_foodplan(request, foodplan_object, recipe_list, days, selected_dayt
                 temp_date += timedelta(days=1)
     else:
         messages.warning(request, f'Keine Rezepte vorhanden! Filter anpassen!')
+
 
 def generate_recipe(request, foodplan_object, recipe_list, temp_date, daytime):
     """
