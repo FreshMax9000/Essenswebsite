@@ -36,6 +36,11 @@
             <li class="nav-item">
               <a class="nav-link" href="{% url 'foodApp:myprofil' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 30px;">MeinProfil</a>
             </li>
+            {% if perms.foodApp.change_recipe %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'foodApp:reviewedRecipesList' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 30px;">Reviewed</a>
+              </li>
+            {% endif %}
           </ul>
           <!-- Login/Logout -->  
           <div class="navbar-nav">

@@ -2,6 +2,10 @@
 {% block main_content %}
     <main role="main" class="container">
         <div class="jumbotron">
+            {% if perms.foodApp.change_recipe %}
+                <a class="btn btn-danger float-sm-right " href="{% url 'foodApp:recipesDelete' object.id %}" role="button"><i class="fa fa-times"></i></a>
+                <a class="btn btn-dark float-sm-right " href="{% url 'foodApp:recipesUpdate' object.id %}" role="button"><i class="fa fa-edit"></i></a>
+            {% endif %}
             <h1>{{object.title}}</h1>
             <p class="lead">Kurzbeschreibung: {{object.description}}</p>
             {% if object.avg_rating > 0 %}

@@ -46,11 +46,28 @@ class RecipesListView(generic.ListView):
         return get_recipe_object().filter(title__icontains=self.request.GET.get('q', '')).order_by('title')
 
 
+class ReviewedRecipesListView(PermissionRequiredMixin, generic.ListView):
+    model = Recipe
+    ordering = ['title']
+    template_name = "foodApp/recipe_list.html"
+    paginate_by = 10
+    permission_required = 'foodApp.change_recipe'
+
+    def get_queryset(self):
+        recipe_object = Recipe.objects.filter(reviewed=False)
+        return recipe_object.filter(title__icontains=self.request.GET.get('q', '')).order_by('title')
+
+
 class RecipesDetailView(UserPassesTestMixin, generic.DetailView):
     model = Recipe
 
     def test_func(self):
-        return self.get_object() in get_recipe_object()
+        is_valid = False
+        if self.request.user.has_perm('foodApp.change_recipe'):
+            is_valid = True
+        else:
+            is_valid = self.get_object() in get_recipe_object()
+        return is_valid
 
 class MyProfil(LoginRequiredMixin, generic.ListView):
     template_name = "foodApp/myprofil.html"
