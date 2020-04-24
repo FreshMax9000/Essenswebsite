@@ -8,7 +8,13 @@
             <div class="container">
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Neues Rezept erstellen</legend>
-                {{ recipe_form | crispy}}
+                {{ recipe_form.title | as_crispy_field}}
+                {{ recipe_form.description | as_crispy_field}}
+                {{ recipe_form.preparation | as_crispy_field}}
+                {{ recipe_form.work_time | as_crispy_field}}
+                {% if perms.foodApp.change_recipe %}
+                    {{ recipe_form.reviewed | as_crispy_field}}
+                {% endif %}
             </fieldset>
             </div>
             <div class="container">

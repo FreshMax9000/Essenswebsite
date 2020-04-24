@@ -19,8 +19,7 @@ from .models import Foodplan_Recipe
 from .filters import FoodplanFilter
 from .forms import FoodplanForm
 from .forms import IngredientFormset
-from .forms import CreateRecipeForm
-from .forms import UpdateRecipeForm
+from .forms import RecipeForm
 from .forms import CreateGroceryForm
 
 
@@ -150,16 +149,16 @@ class Shopping(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
 
 class CreateRecipeView(PermissionRequiredMixin, generic.CreateView):
     model = Recipe
-    form_class = CreateRecipeForm
+    form_class = RecipeForm
     success_url = reverse_lazy('foodApp:home')
     permission_required = 'foodApp.add_recipe'
 
     def get_context_data(self, **kwargs):
         if self.request.method == 'GET':
-            recipe_form = CreateRecipeForm(self.request.GET or None)
+            recipe_form = RecipeForm(self.request.GET or None)
             formset = IngredientFormset(queryset=Ingredient.objects.none())
         elif self.request.method == 'POST':
-            recipe_form = CreateRecipeForm(self.request.POST)
+            recipe_form = RecipeForm(self.request.POST)
             formset = IngredientFormset(self.request.POST)
 
         context = super(CreateRecipeView, self).get_context_data(**kwargs)
@@ -172,10 +171,10 @@ class CreateRecipeView(PermissionRequiredMixin, generic.CreateView):
     # -> unclean solution by turning them into local variables
     def form_valid(self, form):
         if self.request.method == 'GET':
-            recipe_form = CreateRecipeForm(self.request.GET) or None
+            recipe_form = RecipeForm(self.request.GET) or None
             formset = IngredientFormset(queryset=Ingredient.objects.none())
         elif self.request.method == 'POST':
-            recipe_form = CreateRecipeForm(self.request.POST)
+            recipe_form = RecipeForm(self.request.POST)
             formset = IngredientFormset(self.request.POST)
 
 
@@ -205,14 +204,14 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
 
     success_url = reverse_lazy('foodApp:home')
     permission_required = 'foodApp.change_recipe'
-    form_class = UpdateRecipeForm
+    form_class = RecipeForm
 
     def get_context_data(self, **kwargs):
         if self.request.method == 'GET':
-            recipe_form = UpdateRecipeForm(self.request.GET)
+            recipe_form = RecipeForm(self.request.GET)
 
             recipe = Recipe.objects.get(id=self.kwargs['pk'])
-            recipe_form = UpdateRecipeForm(initial={
+            recipe_form = RecipeForm(initial={
                 'title': recipe.title,
                 'description': recipe.description,
                 'preparation': recipe.preparation,
@@ -222,7 +221,7 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
 
             formset = IngredientFormset(queryset=Ingredient.objects.filter(recipe_id=self.kwargs['pk']))
         elif self.request.method == 'POST':
-            recipe_form = UpdateRecipeForm(self.request.POST)
+            recipe_form = RecipeForm(self.request.POST)
             formset = IngredientFormset(self.request.POST)
 
         context = super(UpdateRecipeView, self).get_context_data(**kwargs)

@@ -35,21 +35,7 @@ class CreateIngredientForm(forms.ModelForm):
         fields = ('quantity', 'grocery')
 
 
-class CreateRecipeForm(forms.ModelForm):
-    title = forms.CharField(max_length=100, label='Titel: ')
-    title.widget = forms.TextInput(attrs={'placeholder': 'Hier Titel eingeben'})
-    description = forms.CharField(max_length=200, label='Beschreibung: ')
-    description.widget = forms.TextInput(attrs={'placeholder': 'Hier Kurzbeschreibung eingeben'})
-    preparation = forms.CharField(label='Zubereitung: ')
-    preparation.widget = forms.Textarea(attrs={'placeholder': 'Hier die Zubereitung beschreiben'})
-    work_time = forms.IntegerField(min_value=1, label='Zubereitungszeit: ')
-  
-    class Meta:
-        model = Recipe
-        fields = ('title', 'description', 'preparation', 'work_time')
-
-
-class UpdateRecipeForm(forms.ModelForm):
+class RecipeForm(forms.ModelForm):
     title = forms.CharField(max_length=100, label='Titel: ')
     title.widget = forms.TextInput(attrs={'placeholder': 'Hier Titel eingeben'})
     description = forms.CharField(max_length=200, label='Beschreibung: ')
