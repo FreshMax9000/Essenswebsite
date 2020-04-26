@@ -1,39 +1,41 @@
 {% extends "foodApp/base.html" %}
-{% block main_content %}
-    <main role="main">
+{% block head_content %}
+<main role="main">
    
     <div class="jumbotron">
         <div class="container">
         <h1 class="display-3" style="text-align: center;">Hallo {{user}}!</h1>
         </div>
     </div>
+</main>
+{% endblock head_content %}
 
+<!--main content-->
+{% block main_content %}
+<main role="main">
     <div class="container">
         <!-- Lists the agenda and recipes from the User -->
         <div class="row">
-
-        <div class="col-md-6">
-            <h1>Meine Rezepte</h1>
+            <div class="col-md-6">
+                <h1>Meine Rezepte</h1>
                 {% for recipe in myrecipes  %}
                     <div class="jumbotron">
                         <a class="btn btn-lg btn-primary" href="{% url 'foodApp:recipesDetail' recipe.id %}" role="button">{{recipe.title}} &raquo;</a>
                     </div>
                 {% endfor %}       
-        </div>
-        <div class="col-md-6">
-            <h1>Meine Wochenpläne</h1>
+            </div>
+            <div class="col-md-6">
+                <h1>Meine Wochenpläne</h1>
                 {% for plan in myfoodplans  %}
                     <div class="jumbotron">
+                        <a class="btn btn-danger float-sm-right " href="{% url 'foodApp:foodplanDelete' plan.id %}" role="delete"><i class="fa fa-times"></i></a>
                         <a class="btn btn-lg btn-primary" href="{% url 'foodApp:agenda' plan.id %}" role="button">Wochenplan &raquo;</a>
                     </div>
                 {% endfor %}  
-        </div>
+            </div>
         </div>
     </div>
 
-
-    </div> <!-- /container  -->
-
-    </main>
+</main>
 {% endblock main_content %}
       

@@ -29,12 +29,30 @@
         class="btn btn-lg btn-primary"
         href="{% url 'foodApp:recipesDetail' object.id %}"
         role="button"
-        >{{object.title}} &raquo;</a
-      >
+        >{{object.title}} &raquo;</a>
     </div>
     {% empty %}
     <h1>Leider konnten keine Gerichte gefunden werden :(</h1>
     {% endfor %}
+    {% if page_obj %}
+      <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <!--a href="?page=1">&laquo; Erste</a-->
+                <a href="?page={{ page_obj.previous_page_number }}">&laquo; Zurück</a>
+            {% endif %}
+    
+            <span class="current">
+                Seite {{ page_obj.number }} von {{ page_obj.paginator.num_pages }}
+            </span>
+    
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Weiter &raquo;</a>
+                <!--a href="?page={{ page_obj.paginator.num_pages }}">Letzte &raquo;</a-->
+            {% endif %}
+        </span>
+    </div>
+  {% endif %}
   </div>
 </main>
 {% endblock main_content %}

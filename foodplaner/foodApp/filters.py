@@ -6,7 +6,7 @@
 import django_filters
 from django import forms
 from .models import Recipe
-from .models import Grocerie
+from .models import Grocery
 
 class FoodplanFilter(django_filters.FilterSet): #TODO:additional filters?
     """
@@ -17,7 +17,7 @@ class FoodplanFilter(django_filters.FilterSet): #TODO:additional filters?
     work_time = django_filters.NumberFilter(lookup_expr='lte', label="Maximal benötigte Zeit:")
     avg_rating = django_filters.NumberFilter(lookup_expr='gte', label="Mindest Bewertung:")
     #difficulty = django_filters.ModelMultipleChoiceFilter(queryset=['Easy','Medium,'Hard'], widget=forms.CheckboxSelectMultiple,label="Schwierigkeit:")
-    ingredients = django_filters.ModelMultipleChoiceFilter(queryset=Grocerie.objects.all(), exclude=True, widget=forms.CheckboxSelectMultiple, label="Zutaten ausschließen:")
+    ingredients = django_filters.ModelMultipleChoiceFilter(queryset=Grocery.objects.all(), exclude=True, widget=forms.CheckboxSelectMultiple, label="Zutaten ausschließen")
 
     class Meta:
         model = Recipe

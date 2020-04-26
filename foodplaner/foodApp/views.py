@@ -1,24 +1,25 @@
 from datetime import date
 from datetime import timedelta
 
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 from .models import Recipe
 from .models import Ingredient
-from .models import Grocerie
+from .models import Grocery
 from .models import Foodplan
 from .models import Foodplan_Recipe
 from .filters import FoodplanFilter
 from .forms import FoodplanForm
 from .forms import IngredientFormset
-from .forms import CreateRecipeForm
+from .forms import RecipeForm
 from .forms import CreateGroceryForm
 
 
@@ -26,22 +27,47 @@ def home(request):
     return render(request, 'foodApp/home.html')
 
 
+def get_recipe_object():
+    """
+        desc:
+            - view only reviewed Recipes
+            - use this function instead of "Recipe.objects"
+    """
+    return Recipe.objects.filter(reviewed=True)
+
+
 class RecipesListView(generic.ListView):
     model = Recipe
     ordering = ['title']
-    template_name = '.\\foodApp\\recipe_list.html'
-    paginate_by = 20
-
-    def get(self, request, *args, **kwargs):
-        self.search = request.GET.get('q', '')
-        return super().get(request, *args, **kwargs)
+    template_name = "foodApp/recipe_list.html"
+    paginate_by = 10
 
     def get_queryset(self):
-        return Recipe.objects.filter(title__icontains=self.search)
+        return get_recipe_object().filter(title__icontains=self.request.GET.get('q', '')).order_by('title')
 
 
-class RecipesDetailView(generic.DetailView):
+class ReviewRecipesListView(PermissionRequiredMixin, generic.ListView):
     model = Recipe
+    ordering = ['title']
+    template_name = "foodApp/recipe_list.html"
+    paginate_by = 10
+    permission_required = 'foodApp.change_recipe'
+
+    def get_queryset(self):
+        recipe_object = Recipe.objects.filter(reviewed=False)
+        return recipe_object.filter(title__icontains=self.request.GET.get('q', '')).order_by('title')
+
+
+class RecipesDetailView(UserPassesTestMixin, generic.DetailView):
+    model = Recipe
+
+    def test_func(self):
+        is_valid = False
+        if self.request.user.has_perm('foodApp.change_recipe'):
+            is_valid = True
+        else:
+            is_valid = self.get_object() in get_recipe_object()
+        return is_valid
 
 
 class MyProfil(LoginRequiredMixin, generic.ListView):
@@ -49,7 +75,7 @@ class MyProfil(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         self.context_object_name = 'myrecipes'
-        queryset = Recipe.objects.filter(author=self.request.user).order_by('title')
+        queryset = get_recipe_object().filter(author=self.request.user).order_by('title')
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -61,64 +87,80 @@ class MyProfil(LoginRequiredMixin, generic.ListView):
         return context
 
 
-class Agenda(LoginRequiredMixin, generic.DetailView):
+class Agenda(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
     model = Foodplan
     template_name = "foodApp/agenda.html"
 
+    def test_func(self):
+        return self.request.user == self.get_object().user
+
     def get_context_data(self, **kwargs):
         context = super(Agenda, self).get_context_data(**kwargs)
-        context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk'))
+        context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk')).order_by('date')
         return context
 
-class Shopping(LoginRequiredMixin, generic.ListView):
-    model = Recipe
+
+class Shopping(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
+    model = Foodplan
     template_name = "foodApp/shopping.html"
+
+    def test_func(self):
+        return self.request.user == self.get_object().user
 
     def get_context_data(self, **kwargs):
         context = super(Shopping, self).get_context_data(**kwargs)
-        context['object_list'] = self.get_ingrediant_list(Foodplan.objects.get(id=self.kwargs.get('pk')).recipes)
+        context['object_list'] = self.get_ingredient_list(Foodplan.objects.get(id=self.kwargs.get('pk')).recipes)
         return context
 
-    def get_ingrediant_list(self, recipe_list):
+    def get_ingredient_list(self, recipe_list):
         """
             desc:
                 - creates a dict from the given recipes and sums up all ingredients
             para:
                 - recipe_list - list of recipes to be summed up
             ret:
-                - dict_ingrediant_as_string - returns a dict of strings of summed ingredients
+                - dict_ingredient_as_string - returns a dict of strings of summed ingredients
         """
-        dict_ingrediant_as_string = {}
-        dict_ingrediant_value = {}
+        dict_ingredient_as_string = {}
+        dict_ingredient_value = {}
         for recipe in recipe_list.all():
-            for ingrediant in Ingredient.objects.filter(recipe_id=recipe.id):
-                # If ingrediant already exists in dictionary, sum the quantity
-                # If not, ad the ingrediant to Dictionary
-                quantity = ingrediant.quantity
-                if ingrediant.grocerie.name in dict_ingrediant_value:
-                    quantity = quantity + dict_ingrediant_value.get(ingrediant.grocerie.name)[0]
-                    dict_ingrediant_value[ingrediant.grocerie.name] = (quantity, ingrediant.grocerie.unit)
+            for ingredient in Ingredient.objects.filter(recipe_id=recipe.id):
+                # If ingredient already exists in dictionary, sum the quantity
+                # If not, ad the ingredient to Dictionary
+                quantity = ingredient.quantity
+                key = ingredient.grocery.name
+                if key in dict_ingredient_value:
+                    quantity += dict_ingredient_value.get(key)[0]
+                    dict_ingredient_value[key] = (quantity, ingredient.grocery.unit)
                 else:
-                    dict_ingrediant_value[ingrediant.grocerie.name] = (quantity, ingrediant.grocerie.unit)
+                    dict_ingredient_value[key] = (quantity, ingredient.grocery.unit)
 
-            for key, value in dict_ingrediant_value.items():
-                dict_ingrediant_as_string[key] = str(value[0]) + str(" ") + str(value[1])
+        for key in sorted(dict_ingredient_value.keys()):
+            quantity = dict_ingredient_value.get(key)[0]
+            unit = dict_ingredient_value.get(key)[1]
+            if dict_ingredient_value.get(key)[0] >= 1000:
+                quantity = quantity/1000
+                if dict_ingredient_value.get(key)[1] == 'ml':
+                    unit = 'l'
+                elif dict_ingredient_value.get(key)[1] == 'g':
+                    unit = 'kg'
+            dict_ingredient_as_string[key] = str(quantity) + " " + unit
 
-        return dict_ingrediant_as_string
+        return dict_ingredient_as_string
 
 
-class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
+class CreateRecipeView(PermissionRequiredMixin, generic.CreateView):
     model = Recipe
-    form_class = CreateRecipeForm
-    template_name = 'foodApp/recipe_form.html'
-    success_url = '/'
+    form_class = RecipeForm
+    success_url = reverse_lazy('foodApp:home')
+    permission_required = 'foodApp.add_recipe'
 
     def get_context_data(self, **kwargs):
         if self.request.method == 'GET':
-            recipe_form = CreateRecipeForm(self.request.GET or None)
+            recipe_form = RecipeForm(self.request.GET or None)
             formset = IngredientFormset(queryset=Ingredient.objects.none())
         elif self.request.method == 'POST':
-            recipe_form = CreateRecipeForm(self.request.POST)
+            recipe_form = RecipeForm(self.request.POST)
             formset = IngredientFormset(self.request.POST)
 
         context = super(CreateRecipeView, self).get_context_data(**kwargs)
@@ -126,105 +168,119 @@ class CreateRecipeView(LoginRequiredMixin, generic.CreateView):
         context['recipe_form'] = recipe_form
         return context
 
-    # self.recipe_form and self.formset didn't get saved in get_context_data
-    # initializing them in __init__() led to errors
-    # -> unclean solution by turning them into local variables
     def form_valid(self, form):
         if self.request.method == 'GET':
-            recipe_form = CreateRecipeForm(self.request.GET) or None
             formset = IngredientFormset(queryset=Ingredient.objects.none())
         elif self.request.method == 'POST':
-            recipe_form = CreateRecipeForm(self.request.POST)
             formset = IngredientFormset(self.request.POST)
 
-        recipe = recipe_form.save(commit=False)
+        recipe = form.save(commit=False)
         recipe.author = self.request.user
         recipe.save()
-
-        for form in formset:
-            ingredient = form.save(commit=False)
-            ingredient.recipe = recipe
-            ingredient.save()
+            
+        for ingredient_form in formset:
+            # skip if a form is invalid
+            try:
+                ingredient = ingredient_form.save(commit=False)
+            except ValueError:
+                print('ValueError ')
+            else:
+                if ingredient_form.cleaned_data:
+                    ingredient.recipe = recipe
+                    ingredient.save()
         return super().form_valid(form)
 
 
-class UpdateRecipeView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
     model = Recipe
-    template_name = 'foodApp/recipe_form.html'
-    success_url = '/'
 
-    form_class = CreateRecipeForm
+    success_url = reverse_lazy('foodApp:home')
+    permission_required = 'foodApp.change_recipe'
+    form_class = RecipeForm
 
     def get_context_data(self, **kwargs):
         if self.request.method == 'GET':
-            self.recipe_form = CreateRecipeForm(self.request.GET)
+            recipe_form = RecipeForm(self.request.GET)
 
             recipe = Recipe.objects.get(id=self.kwargs['pk'])
-            self.recipe_form = CreateRecipeForm(initial={
+            recipe_form = RecipeForm(initial={
                 'title': recipe.title,
                 'description': recipe.description,
                 'preparation': recipe.preparation,
                 'work_time': recipe.work_time,
+                'reviewed': recipe.reviewed,
             })
 
-            self.formset = IngredientFormset
-            ingredient_list = []
-            for ingredient in Ingredient.objects.all():
-                if ingredient.recipe_id == self.kwargs['pk']:
-                    ingredient_list.append({'grocerie': ingredient.grocerie, 'quantity': ingredient.quantity})
-
-            self.formset = IngredientFormset(queryset=Ingredient.objects.filter(recipe_id=self.kwargs['pk']))
+            formset = IngredientFormset(queryset=Ingredient.objects.filter(recipe_id=self.kwargs['pk']))
         elif self.request.method == 'POST':
-            self.recipe_form = CreateRecipeForm(self.request.POST)
-            self.formset = IngredientFormset(self.request.POST)
+            recipe_form = RecipeForm(self.request.POST)
+            formset = IngredientFormset(self.request.POST)
 
         context = super(UpdateRecipeView, self).get_context_data(**kwargs)
-        context['recipe_form'] = self.recipe_form
-        context['formset'] = self.formset
+        context['recipe_form'] = recipe_form
+        context['formset'] = formset
         return context
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
-
         if self.request.method == 'POST':
-            recipe_form = CreateRecipeForm(self.request.POST)
             formset = IngredientFormset(self.request.POST)
+
+            form.save()
+            count_saved_forms = 0
+            for ingredient_form in formset:
+                # skip if a form is invalid
+                try:
+                    ingredient = ingredient_form.save(commit=False)
+                except ValueError:
+                    print('ValueError ')
+                else:
+                    if ingredient_form.cleaned_data:
+                        count_saved_forms += 1
+                        ingredient.recipe = Recipe.objects.get(id=self.kwargs['pk'])
+                        ingredient.save()
 
             # necessary because the updateView didn't delete any ingredients
             # ingredients only got updated or added
-            # -> delete excess ingredients and update the rest
-            ingredient_list = Ingredient.objects.filter(recipe_id=self.kwargs['pk'])[len(formset):]
+            # -> delete ingredients that had not been updated
+            ingredient_list = Ingredient.objects.filter(recipe_id=self.kwargs['pk'])[count_saved_forms:]
             for element in ingredient_list:
                 element.delete()
-
-            for form in formset:
-                ingredient = form.save(commit=False)
-                ingredient.recipe = Recipe.objects.get(id=self.kwargs['pk'])
-                ingredient.save()
-        return super().form_valid(form)
-
-    def test_func(self):
-        recipe = self.get_object()
-        return self.request.user == recipe.author
-
-
-class CreateGroceryView(LoginRequiredMixin, generic.CreateView):
-    model = Grocerie
-    form_class = CreateGroceryForm
-    success_url = '/'
-
-    def form_valid(self, form):
         return super().form_valid(form)
 
 
-class DeleteRecipeView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+class DeleteRecipeView(PermissionRequiredMixin, generic.DeleteView):
     model = Recipe
-    success_url = '/'
+    success_url = reverse_lazy('foodApp:home')
+    permission_required = 'foodApp.delete_recipe'
 
-    # A recipe can only get deleted by the user that created it -> change later to admins
+
+class CreateGroceryView(PermissionRequiredMixin, generic.CreateView):
+    model = Grocery
+    form_class = CreateGroceryForm
+    success_url = reverse_lazy('foodApp:home')
+    permission_required = 'foodApp.add_grocery'
+
+
+class UpdateGroceryView(PermissionRequiredMixin, generic.UpdateView):
+    model = Grocery
+    form_class = CreateGroceryForm
+    success_url = reverse_lazy('foodApp:home')
+    permission_required = 'foodApp.change_grocery'
+
+
+class DeleteGroceryView(PermissionRequiredMixin, generic.DeleteView):
+    model = Grocery
+    success_url = reverse_lazy('foodApp:home')
+    permission_required = 'foodApp.delete_recipe'
+
+
+class DeleteFoodplanView(PermissionRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+    model = Foodplan
+    success_url = reverse_lazy('foodApp:myprofil')
+    permission_required = 'foodApp.delete_foodplan'
+
     def test_func(self):
-        recipe = self.get_object()
-        return self.request.user == recipe.author
+        return self.request.user == self.get_object().user
 
 
 @login_required
@@ -238,14 +294,13 @@ def foodplan(request):
             - no recipes cause (of filters) --> warning message
     """
     # filter list of Recipes
-    foodplan_filter = FoodplanFilter(request.POST, queryset=Recipe.objects.all())
+    foodplan_filter = FoodplanFilter(request.POST, queryset=get_recipe_object())
     recipe_list = foodplan_filter.qs
     # select last (temporary) Foodplan of user
     foodplan_object = Foodplan.objects.filter(user=request.user).last()
 
     # create new foodplan if not existing
     if foodplan_object is None:
-        messages.info(request, f'Erzeuge Essenplan!')
         new_foodplan = Foodplan(user=request.user)
         new_foodplan.save()
         foodplan_object = new_foodplan
@@ -257,27 +312,27 @@ def foodplan(request):
 
         if 'delete' in request.POST:
             # select recipe to remove it from Foodplan
-            removed_recipe = Recipe.objects.filter(id=request.POST.get('delete')).first()
+            removed_recipe = get_recipe_object().filter(id=request.POST.get('delete')).first()
             # remove recipe from Foodplan
             foodplan_object.recipes.remove(removed_recipe)
 
         # Save Foodplan (last foodplan only for temporary use!)
-        # TODO: ignore last foodplan in other functions
         if 'save' in request.POST:
             messages.success(request, f'Essenplan gespeichert!')
-            new_foodplan = foodplan_object
-            new_foodplan.pk = None
+            new_foodplan = Foodplan(user=request.user)
             new_foodplan.save()
-            return redirect('foodApp:home')
+            return redirect('foodApp:agenda', foodplan_object.id)
 
         if 'generate' in request.POST:
             days = int(request.POST.get('days'))
-            generate_foodplan(request, foodplan_object, recipe_list, days)
+            selected_daytime = request.POST.get('select_daytime')
+            generate_foodplan(request, foodplan_object, recipe_list, days, selected_daytime)
 
     else:
         days = 5 # default value
+        selected_daytime = '1' # default
         form = FoodplanForm()
-        generate_foodplan(request, foodplan_object, recipe_list, days)
+        generate_foodplan(request, foodplan_object, recipe_list, days, selected_daytime)
 
     # parameter list for the template
     context = {
@@ -286,6 +341,7 @@ def foodplan(request):
         'object_list': Foodplan_Recipe.objects.filter(foodplan=foodplan_object).order_by('date'),
     }
     return render(request, "foodApp/foodplan.html", context)
+
 
 def reload_recipe(request, foodplan_object, recipe_list):
     """
@@ -297,8 +353,9 @@ def reload_recipe(request, foodplan_object, recipe_list):
             - if recipe_list only removed recipe --> do noting + warning
     """
     # select recipe to remove it from Foodplan
-    removed_recipe = Recipe.objects.filter(id=request.POST.get('reload')).first()
-    temp_date = Foodplan_Recipe.objects.filter(foodplan=foodplan_object).filter(recipe=removed_recipe).last().date
+    removed_recipe = get_recipe_object().get(id=request.POST.get('reload'))
+    temp_date = Foodplan_Recipe.objects.filter(foodplan=foodplan_object).get(recipe=removed_recipe).date
+    daytime = Foodplan_Recipe.objects.filter(foodplan=foodplan_object).get(recipe=removed_recipe).daytime
 
     # filter the remaining recipes
     recipe_list = recipe_list.exclude(id=removed_recipe.id)
@@ -309,11 +366,12 @@ def reload_recipe(request, foodplan_object, recipe_list):
     if recipe_list.first() is not None:
         # remove recipe from Foodplan
         foodplan_object.recipes.remove(removed_recipe)
-        recipe_list = generate_recipe(request, foodplan_object, recipe_list, temp_date)
+        recipe_list = generate_recipe(request, foodplan_object, recipe_list, temp_date, daytime)
     else:
         messages.warning(request, f'Keine Rezepte vorhanden! Filter anpassen!')
 
-def generate_foodplan(request, foodplan_object, recipe_list, days):
+
+def generate_foodplan(request, foodplan_object, recipe_list, days, selected_daytime):
     """
         desc:
             - clear foodplan
@@ -321,16 +379,31 @@ def generate_foodplan(request, foodplan_object, recipe_list, days):
             - add choosen recipes to foodplan
             - if recipes < days --> warning
     """
+    if selected_daytime == '1':
+        days = days * 2
+        daytime = True
+    elif selected_daytime == '2':
+        daytime = True
+    else:
+        daytime = False
     # check if query_set is too short
     if len(recipe_list) >= days:
         # clear and generate foodplan
         foodplan_object.recipes.clear()
+        temp_date = date.today()
         for count in range(days):
-            recipe_list = generate_recipe(request, foodplan_object, recipe_list, date.today() + timedelta(days=count))
+            recipe_list = generate_recipe(request, foodplan_object, recipe_list, temp_date, daytime)
+            if selected_daytime == '1':
+                daytime = not daytime
+                if daytime:
+                    temp_date += timedelta(days=1)
+            else:
+                temp_date += timedelta(days=1)
     else:
         messages.warning(request, f'Keine Rezepte vorhanden! Filter anpassen!')
 
-def generate_recipe(request, foodplan_object, recipe_list, temp_date):
+
+def generate_recipe(request, foodplan_object, recipe_list, temp_date, daytime):
     """
         desc:
             - select(randomly) and add new recipe to foodplan
@@ -338,12 +411,14 @@ def generate_recipe(request, foodplan_object, recipe_list, temp_date):
             - recipe_list --> select one recipe from the list of recipes
             - foodplan --> foodplan instance of current user
             - temp_date --> set Day of foodplan
+            - daytime --> True = lunch, False = dinner
         ret:
             - return recipe_list exclude the selected recipe
     """
     random_recipes = recipe_list.order_by('?').first()
     foodplan_object.recipes.add(random_recipes)
-    save_date = Foodplan_Recipe.objects.filter(foodplan=foodplan_object).filter(recipe=random_recipes).last()
+    save_date = Foodplan_Recipe.objects.filter(foodplan=foodplan_object).get(recipe=random_recipes)
     save_date.date = temp_date
+    save_date.daytime = daytime
     save_date.save()
     return recipe_list.exclude(id=random_recipes.id)

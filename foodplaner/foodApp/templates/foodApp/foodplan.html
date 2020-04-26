@@ -6,29 +6,65 @@
             {% csrf_token %}
             <div class="jumbotron">
                 <h1>Filter</h1>
-                {{ form | crispy}}
-                {{ filter.form | crispy}}
+                <div class="form-row">
+                    <div class="form-group col-md-4 mb-0">
+                        {{ form.days | as_crispy_field }}
+                    </div>
+                    <div class="form-group col-md-4 mb-0">
+                        {{ form.select_daytime | as_crispy_field}}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4 mb-0">
+                        {{ filter.form.work_time|as_crispy_field }}
+                    </div>
+                    <div class="form-group col-md-4 mb-0">
+                        {{ filter.form.avg_rating|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-sm-12 col-md-8 mb-0">
+                        <button class="btn btn-light mb-2" type="button" data-toggle="collapse" data-target="#showIngredients">
+                            {{ filter.form.ingredients.label }}<i class="fa fa-chevron-right ml-2"></i>
+                        </button>
+                        <div class="collapse" id="showIngredients">
+                            {% for grocery in filter.form.ingredients %}
+                                <label class="checkbox-inline ml-2">
+                                {{ grocery.tag }} {{ grocery.choice_label }}
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group">
                     <button class="btn btn-outline-info float-right" name="generate" value="0">Generate <i class="fa fa-arrow-circle-right"></i></button>
                 </div>
             </div>
-            {% for object in object_list  %}
-                <div class="jumbotron">
-                    <div class="form-group">
-                        <button class="btn btn-danger float-sm-right " name="delete"  value={{object.recipe.id}}><i class="fa fa-times"></i></button>
-                        <button class="btn btn-dark float-sm-right " name="reload"  value={{object.recipe.id}}><i class="fa fa-repeat"><!--i class="fa fa-edit"--></i></button>
+            <div class="row">
+                {% for object in object_list  %}
+                <div class="col-md-6">
+                    <div class="jumbotron">
+                        <div class="form-group">
+                            <button class="btn btn-danger float-sm-right " name="delete"  value={{object.recipe.id}}><i class="fa fa-times"></i></button>
+                            <button class="btn btn-dark float-sm-right " name="reload"  value={{object.recipe.id}}><i class="fa fa-repeat"><!--i class="fa fa-edit"--></i></button>
+                            {% if object.daytime %}
+                                <h3>{{object.date | date:"l"}} - Mittag</h3> <!-- "l": Monday | "D": Mon. | "j": 1 | "N": Jan. -->
+                            {% else %}
+                                <h3>{{object.date | date:"l"}} - Abend</h3>
+                            {% endif %}
+                            <h1>{{object.recipe.title}}</h1>
+                            {% if object.recipe.avg_rating > 0 %}
+                                <p class="lead">Bewertung: {{object.recipe.avg_rating}}</p>
+                            {% endif %}
+                            <p class="lead">{{object.recipe.description}}</p>
+                            <a class="btn btn-lg btn-primary" href="{% url 'foodApp:recipesDetail' object.recipe.id %}" role="button">{{object.recipe.title}} &raquo;</a>
+                        </div>
                     </div>
-                    <h3>{{object.date}}</h3>
-                    <h1>{{object.recipe.title}}</h1>
-                    {% if object.recipe.avg_rating > 0 %}
-                        <p class="lead">Bewertung: {{object.recipe.avg_rating}}</p>
-                    {% endif %}
-                    <p class="lead">{{object.recipe.description}}</p>
-                    <a class="btn btn-lg btn-primary" href="{% url 'foodApp:recipesDetail' object.recipe.id %}" role="button">{{object.recipe.title}} &raquo;</a>
                 </div>
-            {% endfor %}    
+                {% endfor %}   
+            </div> 
             <div class="form-group">
-                <button class="btn btn-outline-info float-right" name="save" value="0">Save <i class="fa fa-arrow-circle-right"></i></button>
+                <button class="btn btn-outline-info float-right" name="save" value="0">Speichern <i class="fa fa-arrow-circle-right"></i></button>
             </div>
         </form>
     </main>
