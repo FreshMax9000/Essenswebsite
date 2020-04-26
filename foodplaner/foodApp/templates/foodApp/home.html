@@ -1,4 +1,5 @@
-{% extends "foodApp/base.html" %} {% block main_content %}
+{% extends "foodApp/base.html" %}
+{% block head_content %}
 <main role="main" style="background-color: grey;">
 
   <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -27,8 +28,20 @@
       <span class="sr-only">Next</span>
     </a>
   </div>
+<<<<<<< HEAD
 
 
   <!-- /container -->
+=======
+  <div
+    class="container"
+    style="background-color: grey; min-height: 80px;"
+  ></div>
+>>>>>>> development
 </main>
-{% endblock main_content %}
+{% endblock head_content %}
+
+
+<!--main content-->
+{% block main_content %}
+{% endblock main_content %} 

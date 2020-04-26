@@ -1,7 +1,6 @@
 {% extends "foodApp/base.html" %}
-{% block main_content %}
-    <main role="main">
-    
+{% block head_content %}
+<main role="main">
     <div class="jumbotron">
         <div class="container">
             <div class="row">
@@ -9,12 +8,17 @@
                     <h1 class="display-3">Mein Wochenplan</h1>
                 </div>
                 <div class="col-md-2">
-                    <p><a class="btn btn-secondary" href="{% url 'foodApp:shopping' object.id  %}" role="button">Einkaufsliste &raquo;</a></p>
+                    <p><a class="btn btn-secondary" href="{% url 'foodApp:shopping' object.id %}" role="button">Einkaufsliste &raquo;</a></p>
                 </div>
             </div>
         </div>
     </div>
+</main>
+{% endblock head_content %}
 
+<!--main content-->
+{% block main_content %}
+<main role="main">
     <div class="container">
         <!-- Current agenda -->
         <table class="table">
@@ -27,16 +31,25 @@
             </thead>
             <tbody>
                 {% for object in object_list %}
-                <tr>
-                  <th scope="row">{{ object.date }}</th>
-                  <td>{{ object.recipe.title }}</td>
-                  <td></td>
-                </tr>
+                    {% ifchanged object.date %}
+                        {% if not forloop.first %}
+                            </tr>
+                        {%endif%}
+                        <tr>
+                        <th scope="row">{{ object.date | date:"l j. F" }}</th> <!-- "l": Monday | "j": 1 | "F": January -->
+                        {% if object.daytime %} <!-- datetime = True: lunch -->
+                            <td>{{ object.recipe.title }}</td><td>
+                        {% else %} <!-- datetime = False: dinner -->
+                            <td></td>
+                            <td>{{ object.recipe.title }}</td>
+                        {%endif%}
+                    {% else %} <!-- datetime = False: dinner -->
+                        {{ object.recipe.title }}</td>
+                    {%endifchanged%}
                 {% endfor %}
+                </tr>
             </tbody>
-          </table>
+        </table>
     </div>
-    <!-- /container -->
-
-    </main>
+</main>
 {% endblock main_content %}

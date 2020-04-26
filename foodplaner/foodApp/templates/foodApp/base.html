@@ -36,6 +36,11 @@
             <li class="nav-item">
               <a class="nav-link" href="{% url 'foodApp:myprofil' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 30px;">MeinProfil</a>
             </li>
+            {% if perms.foodApp.change_recipe %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'foodApp:reviewRecipesList' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 30px;">Verifizieren</a>
+              </li>
+            {% endif %}
           </ul>
           <!-- Login/Logout -->  
           <div class="navbar-nav">
@@ -55,6 +60,8 @@
           </div>
         </div>
       </nav>
+      {% block head_content %}
+      {% endblock head_content %}
   
       {% if messages %}
         <div class="container">
@@ -66,7 +73,6 @@
 
       {% block main_content %}
       {% endblock main_content %}
-  
       <hr>
       <footer>
         <div class="container" style="align-items: center;">
@@ -79,5 +85,7 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    {% block custom_js %}
+    {% endblock custom_js %}
   </body>
 </html>
