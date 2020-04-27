@@ -9,7 +9,7 @@
             <h1>{{object.title}}</h1>
             <p class="lead">Kurzbeschreibung: {{object.description}}</p>
             {% if object.avg_rating > 0 %}
-                <p class="lead">Bewertung: {{object.avg_rating}}</p>
+                <p class="lead">Bewertung: {{object.avg_rating | floatformat:2 }}</p>
             {% endif %}
             <p class="lead">Verarbeitungszeit: {{object.work_time}}min</p>
             <p class="lead">Zutaten:
@@ -21,6 +21,8 @@
             </p>
             <p class="lead">Zubereitung: {{object.preparation}}</p>
             <p class="lead">Erstellt von: {{object.author}}</p>
+            <a class="btn btn-primary btn-lg float-sm-right" href="{% url 'foodApp:commentaryList' object.id %}" role="button"><i class="fa fa-comments-o"></i></a>
+            <a class="btn btn-success btn-lg float-sm-right" href="{% url 'foodApp:createCommentary' object.id %}" role="button"><i class="fa fa-plus"></i></a>
         </div>    
     </main>
 {% endblock main_content %}

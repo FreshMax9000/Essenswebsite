@@ -39,11 +39,14 @@ class Ingredient(models.Model):
 
 
 class Commentary(models.Model):
-    text = models.TextField(default="")
+    title = models.CharField(max_length=50)
+    content = models.TextField(default="")
     rating = models.IntegerField(default=0)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"Commentary {self.title} | {self.pk}"
 
 class Foodplan(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
