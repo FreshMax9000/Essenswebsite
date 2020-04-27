@@ -1,0 +1,41 @@
+{% extends "foodApp/base.html" %} 
+{% block main_content %}
+<main role="main" class="container">
+  <div>
+    {% for object in object_list %}
+    <div class="jumbotron">
+      {% if perms.foodApp.delete_commentary %}
+          <a class="btn btn-danger float-sm-right " href="{% url 'foodApp:deleteCommentary' object.id %}" role="button"><i class="fa fa-times"></i></a>
+          <a class="btn btn-dark float-sm-right " href="{% url 'foodApp:updateCommentary' object.id %}" role="button"><i class="fa fa-edit"></i></a>
+      {% endif %}
+      <h1>{{object.title}}</h1>
+      <p class="lead">Bewertung: {{object.rating | floatformat:2 }}</p>
+      <p class="lead">{{object.content}}</p>
+      <p class="lead">Erstellt von: {{object.author}}</p>
+    </div>
+    {% empty %}
+    <h1>Leider wurden noch keine Kommentate erstellt</h1>
+    {% endfor %}
+    
+    {% if page_obj %}
+      <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <!--a href="?page=1">&laquo; Erste</a-->
+                <a href="?page={{ page_obj.previous_page_number }}">&laquo; Zurück</a>
+            {% endif %}
+    
+            <span class="current">
+                Seite {{ page_obj.number }} von {{ page_obj.paginator.num_pages }}
+            </span>
+    
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Weiter &raquo;</a>
+                <!--a href="?page={{ page_obj.paginator.num_pages }}">Letzte &raquo;</a-->
+            {% endif %}
+        </span>
+    </div>
+  {% endif %}
+  </div>
+</main>
+{% endblock main_content %}
