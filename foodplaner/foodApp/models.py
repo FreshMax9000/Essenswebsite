@@ -22,17 +22,20 @@ class Recipe(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     ingredients = models.ManyToManyField(Grocery, through='Ingredient', through_fields=('recipe', 'grocery'))
     reviewed = models.BooleanField(default=False)
-    image = models.ImageField(default='default_recipe_image.png', upload_to='recipe_images')
+    image = models.ImageField(upload_to='recipe_images')
 
     def save(self, **kwargs):
-        super(Recipe, self).save(**kwargs)
+        try:
+            super(Recipe, self).save(**kwargs)
 
-        img = Image.open(self.image.path)
+            img = Image.open(self.image.path)
 
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail(output_size)
-            img.save(self.image.path)
+            if img.height > 300 or img.width > 300:
+                output_size = (300, 300)
+                img.thumbnail(output_size)
+                img.save(self.image.path)
+        except ValueError:
+            return
 
     def __str__(self):
         return self.title
