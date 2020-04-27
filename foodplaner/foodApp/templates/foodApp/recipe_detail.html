@@ -7,6 +7,9 @@
                 <a class="btn btn-dark float-sm-right " href="{% url 'foodApp:recipesUpdate' object.id %}" role="button"><i class="fa fa-edit"></i></a>
             {% endif %}
             <h1>{{object.title}}</h1>
+            {% if object.image %}
+                <img src={{object.image.url}}>
+            {% endif %}
             <p class="lead">Kurzbeschreibung: {{object.description}}</p>
             {% if object.avg_rating > 0 %}
                 <p class="lead">Bewertung: {{object.avg_rating}}</p>
