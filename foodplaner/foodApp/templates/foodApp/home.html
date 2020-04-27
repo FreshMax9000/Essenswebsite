@@ -1,5 +1,5 @@
-{% extends "foodApp/base.html" %} 
-{% block main_content %}
+{% extends "foodApp/base.html" %}
+{% block head_content %}
 <main role="main">
   <div id="myCarousel" class="carousel slide" data-ride="carousel">
     <ol class="carousel-indicators">
@@ -59,7 +59,12 @@
       <span class="sr-only">Next</span>
     </a>
   </div>
-  
+</main>
+{% endblock head_content %}
+
+<!--main content-->
+{% block main_content %}
+<main role="main">
   <div class="container">
       <div class="jumbotron">
         <h1>Essensplan</h1>
@@ -82,7 +87,5 @@
         <p><a class="btn btn-lg btn-primary" href="{% url 'foodApp:addRecipe' %}" role="button">Rezept hinzufügen</a></p>
       </div>
   </div>
-  
 </main>
-
 {% endblock main_content %} 
