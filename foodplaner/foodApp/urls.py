@@ -11,7 +11,6 @@ urlpatterns = [
     path('Rezept/hinzufuegen/', views.CreateRecipeView.as_view(), name='addRecipe'),
     path('Rezept/<int:pk>/loeschen/', views.DeleteRecipeView.as_view(), name='recipesDelete'),
     path('Rezept/<int:pk>/bearbeiten/', views.UpdateRecipeView.as_view(), name='recipesUpdate'),
-    path('Rezept/<int:pk>/Kommentare/', views.CommentaryListView.as_view(), name='commentaryList'),
     path('Rezept/<int:pk>/Kommentare/hinzufuegen/', views.CommentaryCreateView.as_view(), name='createCommentary'),
     path('Rezept/Kommentare/<int:pk>/bearbeiten/', views.CommentaryUpdateView.as_view(), name='updateCommentary'),
     path('Rezept/Kommentare/<int:pk>/loeschen/', views.CommentaryDeleteView.as_view(), name='deleteCommentary'),

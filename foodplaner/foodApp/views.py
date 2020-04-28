@@ -3,7 +3,6 @@ from datetime import timedelta
 
 from django.shortcuts import render
 from django.shortcuts import redirect
-from django.shortcuts import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib import messages
@@ -61,8 +60,14 @@ class ReviewRecipesListView(PermissionRequiredMixin, generic.ListView):
         return recipe_object.filter(title__icontains=self.request.GET.get('q', '')).order_by('title')
 
 
-class RecipesDetailView(UserPassesTestMixin, generic.DetailView):
+class RecipesDetailView(UserPassesTestMixin, generic.DetailView, generic.list.MultipleObjectMixin):
     model = Recipe
+    paginate_by = 2
+
+    def get_context_data(self, **kwargs):
+        object_list = Commentary.objects.filter(recipe_id=self.kwargs.get('pk'))
+        context = super(RecipesDetailView, self).get_context_data(object_list=object_list)
+        return context
 
     def test_func(self):
         is_valid = False
@@ -277,14 +282,6 @@ class DeleteGroceryView(PermissionRequiredMixin, generic.DeleteView):
     permission_required = 'foodApp.delete_recipe'
 
 
-class CommentaryListView(generic.ListView):
-    model = Commentary
-    paginate_by = 5
-
-    def get_queryset(self):
-        return Commentary.objects.filter(recipe_id=self.kwargs.get('pk'))
-
-
 class CommentaryCreateView(PermissionRequiredMixin, generic.CreateView):
     model = Commentary
     form_class = CommentaryForm
@@ -310,7 +307,7 @@ class CommentaryUpdateView(PermissionRequiredMixin, generic.UpdateView):
     def form_valid(self, form):
         recipe = Commentary.objects.get(id=self.kwargs.get('pk')).recipe
         commentary_list = Commentary.objects.filter(recipe_id=recipe.id).exclude(id=self.kwargs.get('pk'))
-        calc_avg_rating(recipe, commentary_list,form.instance.rating)
+        calc_avg_rating(recipe, commentary_list, form.instance.rating)
         return super().form_valid(form)
 
 
@@ -320,7 +317,6 @@ class CommentaryDeleteView(PermissionRequiredMixin, generic.DeleteView):
     permission_required = 'foodApp.delete_commentary'
 
     def delete(self, request, *args, **kwargs):
-        print("delete")
         recipe = Commentary.objects.get(id=self.kwargs.get('pk')).recipe
         commentary_list = Commentary.objects.filter(recipe_id=recipe.id).exclude(id=self.kwargs.get('pk'))
         calc_avg_rating(recipe, commentary_list, 0)
@@ -329,22 +325,23 @@ class CommentaryDeleteView(PermissionRequiredMixin, generic.DeleteView):
 
 def calc_avg_rating(recipe, commentary_list, rating):
     """
-        calculate average of all commentaries
-        param:
-            - commentary_list: list of commentaries without changed commentary
-            - rating: rating of changed commentary
-            - recipe: in which the calculated value is to be saved
+    calculate average of all commentaries
+    
+    Params:
+        commentary_list: list of commentaries without changed commentary
+        rating: rating of changed commentary
+        recipe: in which the calculated value is to be saved
     """
     avg_rating = rating
     length = len(commentary_list)
-    if rating is not 0:
+    if rating != 0:
         length += 1
 
-    if length is not 0:
+    if length != 0:
         for each in commentary_list:
             avg_rating += each.rating
         avg_rating = avg_rating/length
-    
+
     recipe.avg_rating = avg_rating
     recipe.save()
 
