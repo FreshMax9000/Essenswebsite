@@ -10,32 +10,42 @@
     >
       <input
         name="q"
-        class="searchfield form-control form-control-sm ml-3 w-75"
+        class="searchfield form-control  ml-3 w-75"
         type="text"
         placeholder="Im Rezeptbuch suchen ..."
         aria-label="Search"
       />
-      <button class="btn btn-secondary" type="submit">Suchen &raquo;</button>
+      <button class="btn btn-outline-success" type="submit">Suchen &raquo;</button>
     </form>
     <br />
     {% for object in object_list %}
-    <div class="jumbotron">
-      <h1>{{object.title}}</h1>
-      {% if object.avg_rating > 0 %}
-      <p class="lead">Bewertung: {{object.avg_rating}}</p>
-      {% endif %}
-      <p class="lead">{{object.description}}</p>
-      <a
-        class="btn btn-lg btn-primary"
-        href="{% url 'foodApp:recipesDetail' object.id %}"
-        role="button"
-        >{{object.title}} &raquo;</a>
+    <div class="jumbotron" style="text-align: center; background-color:white; max-height: 250px">
+      <div class="card">
+        <h4 class="card-header"><a style="text-decoration: none; color: black;" href="{% url 'foodApp:recipesDetail' object.id %}">{{object.title}}</a></h4>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4 my-auto">
+              <img src="/media/foodpicture3.jpg" class="card-img-top" alt="Rezept Bild">
+            </div>
+            <div class="col-md-4 my-auto">
+                <p class="lead">{{object.description}}</p>
+            </div>
+            <div class="col-md-4 my-auto">
+              {% if object.avg_rating > 0 %}
+              <p class="lead">Bewertung: {{object.avg_rating}}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+
     {% empty %}
     <h1>Leider konnten keine Gerichte gefunden werden :(</h1>
     {% endfor %}
     {% if page_obj %}
-      <div class="pagination">
+      <div class="pagination justify-content-end" >
         <span class="step-links">
             {% if page_obj.has_previous %}
                 <!--a href="?page=1">&laquo; Erste</a-->
