@@ -12,6 +12,7 @@
                 {{ recipe_form.description | as_crispy_field}}
                 {{ recipe_form.preparation | as_crispy_field}}
                 {{ recipe_form.work_time | as_crispy_field}}
+                {{ recipe_form.image | as_crispy_field }}
                 {% if perms.foodApp.change_recipe %}
                     {{ recipe_form.reviewed | as_crispy_field}}
                 {% endif %}
