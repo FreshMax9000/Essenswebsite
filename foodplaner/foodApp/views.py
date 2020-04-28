@@ -26,9 +26,6 @@ from .forms import CreateGroceryForm
 def home(request):
     return render(request, 'foodApp/home.html')
 
-def home_design2(request):
-    return render(request, 'foodApp/home_design2.html')
-
 def get_recipe_object():
     """
         desc:
