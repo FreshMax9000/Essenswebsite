@@ -56,9 +56,11 @@ class RecipeForm(forms.ModelForm):
     preparation.widget = forms.Textarea(attrs={'placeholder': 'Hier die Zubereitung beschreiben'})
     work_time = forms.IntegerField(min_value=1, label='Zubereitungszeit: ')
     reviewed = forms.BooleanField(required=False, label='Rezept veröffentlichen')
+    image = forms.ImageField(required=False, label='Bild hinzufügen')
   
     class Meta:
         model = Recipe
-        fields = ('title', 'description', 'preparation', 'work_time', 'reviewed')
+        fields = ('title', 'description', 'preparation', 'work_time', 'image', 'reviewed')
+
 
 IngredientFormset = modelformset_factory(Ingredient, form=CreateIngredientForm)
