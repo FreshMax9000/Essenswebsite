@@ -31,8 +31,8 @@
                 <h2>Meine Wochenpläne</h2>
                 {% for plan in myfoodplans  %}
                     <div class="jumbotron">
-                        <a class="btn btn-danger float-sm-right " href="{% url 'foodApp:foodplanDelete' plan.id %}" role="delete"><i class="fa fa-times"></i></a>
-                        <a class="btn btn-lg btn-primary" href="{% url 'foodApp:agenda' plan.id %}" role="button">Wochenplan &raquo;</a>
+                        <a class="btn btn-outline-success float-sm-right " href="{% url 'foodApp:foodplanDelete' plan.id %}" role="delete"><i class="fa fa-times"></i></a>
+                        <a class="btn btn-lg btn-outline-success" href="{% url 'foodApp:agenda' plan.id %}" role="button">Wochenplan &raquo;</a>
                     </div>
                 {% endfor %}  
             </div>

@@ -66,26 +66,26 @@
 {% block main_content %}
 <main role="main">
   <div class="container">
-      <div class="jumbotron">
-        <h1>Essensplan</h1>
-        <p>Lass dir deinen persönlichen Essensplan generiernen.</p>
-        <p><a class="btn btn-lg btn-primary" href="{% url 'foodApp:foodplan' %}" role="button">Generiernen</a></p>
+    <div class="jumbotron" style=" text-align: center;">
+      <h1>Essensplan</h1>
+      <p>Lass dir deinen persönlichen Essensplan generiernen.</p>
+      <p><a class="btn btn-lg btn-outline-success" href="{% url 'foodApp:foodplan' %}" role="button">Generiernen</a></p>
+  </div>
+    <div class="jumbotron" style="text-align: center">
+      <h1>Mein Profil</h1>
+      <p>Schau dir unter Mein Profil deine gespeicherten Pläne und Rezepte an.</p>
+      <p><a class="btn btn-lg btn-outline-success" href="{% url 'foodApp:myprofil' %}" role="button">Mein Profil</a></p>
+  </div>
+    <div class="jumbotron" style="text-align: center">
+      <h1>Rezepte</h1>
+      <p>Schau dir alle unsere Rezepte an.</p>
+      <p><a class="btn btn-lg btn-outline-success" href="{% url 'foodApp:recipesList' %}" role="button">Rezepte durchsuchen</a></p>
+  </div>
+    <div class="jumbotron" style="text-align: center">
+      <h1>Neue Rezepte</h1>
+      <p>Füge neue Rezepte hinzu.</p>
+      <p><a class="btn btn-lg btn-outline-success" href="{% url 'foodApp:addRecipe' %}" role="button">Rezept hinzufügen</a></p>
     </div>
-      <div class="jumbotron">
-        <h1>Mein Profil</h1>
-        <p>Schau dir unter Mein Profil deine gespeicherten Pläne und Rezepte an.</p>
-        <p><a class="btn btn-lg btn-primary" href="{% url 'foodApp:myprofil' %}" role="button">Mein Profil</a></p>
-    </div>
-      <div class="jumbotron">
-        <h1>Rezepte</h1>
-        <p>Schau dir alle unsere Rezepte an.</p>
-        <p><a class="btn btn-lg btn-primary" href="{% url 'foodApp:recipesList' %}" role="button">Rezepte durchsuchen</a></p>
-    </div>
-      <div class="jumbotron">
-        <h1>Neue Rezepte</h1>
-        <p>Füge neue Rezepte hinzu.</p>
-        <p><a class="btn btn-lg btn-primary" href="{% url 'foodApp:addRecipe' %}" role="button">Rezept hinzufügen</a></p>
-      </div>
   </div>
 </main>
 {% endblock main_content %} 
