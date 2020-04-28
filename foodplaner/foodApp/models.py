@@ -17,7 +17,7 @@ class Recipe(models.Model):
     description = models.CharField(max_length=100, default="")
     preparation = models.TextField(default="")
     work_time = models.IntegerField(default=0)
-    avg_rating = models.FloatField(default=0) #@TODO: durchschnitt berechnen aus allen kommentaren, neuberechnung wenn neuer kommentar/ kommnetar änderung/ löschung
+    avg_rating = models.FloatField(default=0)
     # difficulty
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     ingredients = models.ManyToManyField(Grocery, through='Ingredient', through_fields=('recipe', 'grocery'))
@@ -39,9 +39,6 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.title
-# wenn man das hinzugefügte Retept anzeigen will:
-#    def get_absolute_url(self):
-#        return reverse('recipesDetail', kwargs={'pk': self.pk})
 
 
 class Ingredient(models.Model):
