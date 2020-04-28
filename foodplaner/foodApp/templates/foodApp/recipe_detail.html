@@ -3,8 +3,10 @@
     <main role="main" class="container">
         <div class="jumbotron">
             {% if perms.foodApp.change_recipe %}
-                <a class="btn btn-danger float-sm-right " href="{% url 'foodApp:recipesDelete' object.id %}" role="button"><i class="fa fa-times"></i></a>
-                <a class="btn btn-dark float-sm-right " href="{% url 'foodApp:recipesUpdate' object.id %}" role="button"><i class="fa fa-edit"></i></a>
+                <a class="btn btn-danger float-sm-right " href="{% url 'foodApp:recipesDelete' object.id %}" role="button" data-toggle="tooltip" title="Löschen">
+                    <i class="fa fa-times"></i></a>
+                <a class="btn btn-dark float-sm-right " href="{% url 'foodApp:recipesUpdate' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
+                    <i class="fa fa-edit"></i></a>
             {% endif %}
             <h1>{{object.title}}</h1>
             <p class="lead">Kurzbeschreibung: {{object.description}}</p>
@@ -28,7 +30,9 @@
             <div class="card">
                 <div class="card-header" id="headingOne">
                     <h5 class="mb-0">
-                        <a class="btn btn-success float-sm-right" href="{% url 'foodApp:createCommentary' object.id %}" role="button"><i class="fa fa-plus"></i></a>
+                        <a class="btn btn-success float-sm-right" href="{% url 'foodApp:createCommentary' object.id %}" role="button" data-toggle="tooltip" title="Kommentar hinzufügen">
+                            <i class="fa fa-plus"></i>
+                        </a>
                         <button class="btn btn-info collapsed" type="button" data-toggle="collapse" data-target="#commentary_list" aria-controls="commentary_list">
                             Kommentare
                         </button>
@@ -39,8 +43,12 @@
                         {% for object in object_list %}
                             <div class="jumbotron">
                                 {% if perms.foodApp.delete_commentary %}
-                                    <a class="btn btn-danger float-sm-right " href="{% url 'foodApp:deleteCommentary' object.id %}" role="button"><i class="fa fa-times"></i></a>
-                                    <a class="btn btn-dark float-sm-right " href="{% url 'foodApp:updateCommentary' object.id %}" role="button"><i class="fa fa-edit"></i></a>
+                                    <a class="btn btn-danger float-right " href="{% url 'foodApp:deleteCommentary' object.id %}" role="button" data-toggle="tooltip" title="Löschen">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                    <a class="btn btn-dark float-right " href="{% url 'foodApp:updateCommentary' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
                                 {% endif %}
                                 <h1>{{object.title}}</h1>
                                 <p class="lead">Bewertung: {{object.rating }}</p>

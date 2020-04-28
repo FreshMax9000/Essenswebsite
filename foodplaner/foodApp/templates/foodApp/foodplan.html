@@ -45,8 +45,12 @@
                 <div class="col-md-6">
                     <div class="jumbotron">
                         <div class="form-group">
-                            <button class="btn btn-danger float-sm-right " name="delete"  value={{object.recipe.id}}><i class="fa fa-times"></i></button>
-                            <button class="btn btn-dark float-sm-right " name="reload"  value={{object.recipe.id}}><i class="fa fa-repeat"><!--i class="fa fa-edit"--></i></button>
+                            <button class="btn btn-danger float-sm-right " name="delete"  value={{object.recipe.id}} data-toggle="tooltip" title="Löschen">
+                                <i class="fa fa-times"></i>
+                            </button>
+                            <button class="btn btn-dark float-sm-right " name="reload"  value={{object.recipe.id}} data-toggle="tooltip" title="Neuladen">
+                                <i class="fa fa-repeat"><!--i class="fa fa-edit"--></i>
+                            </button>
                             {% if object.daytime %}
                                 <h3>{{object.date | date:"l"}} - Mittag</h3> <!-- "l": Monday | "D": Mon. | "j": 1 | "N": Jan. -->
                             {% else %}
