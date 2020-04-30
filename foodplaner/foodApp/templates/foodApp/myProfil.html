@@ -22,7 +22,7 @@
                     <div class="jumbotron" >
                         <div class="row">
                             <div class="col-md-6">
-                                <img src="/media/Background3.jpg" class="figure-img img-fluid rounded" style="max-height: 150px;" alt="Rezept Bild">
+                                <img src={{recipe.image.url}} class="figure-img img-fluid rounded" style="max-height: 150px;" alt="Rezept Bild">
                             </div>
                             <div class="col-md-6 my-auto">
                                 <h3><a  style=" color: black;"  href="{% url 'foodApp:recipesDetail' recipe.id %}" >{{recipe.title}} </a></h3>
