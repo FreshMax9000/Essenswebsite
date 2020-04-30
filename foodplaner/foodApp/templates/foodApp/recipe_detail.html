@@ -3,8 +3,10 @@
     <main role="main" class="container">
         <div class="jumbotron">
             {% if perms.foodApp.change_recipe %}
-                <a class="btn btn-danger float-sm-right " href="{% url 'foodApp:recipesDelete' object.id %}" role="button"><i class="fa fa-times"></i></a>
-                <a class="btn btn-dark float-sm-right " href="{% url 'foodApp:recipesUpdate' object.id %}" role="button"><i class="fa fa-edit"></i></a>
+                <a class="btn btn-danger float-sm-right " href="{% url 'foodApp:recipesDelete' object.id %}" role="button" data-toggle="tooltip" title="Löschen">
+                    <i class="fa fa-times"></i></a>
+                <a class="btn btn-dark float-sm-right " href="{% url 'foodApp:recipesUpdate' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
+                    <i class="fa fa-edit"></i></a>
             {% endif %}
             <h1>{{object.title}}</h1>
             {% if object.image %}
@@ -12,7 +14,7 @@
             {% endif %}
             <p class="lead">Kurzbeschreibung: {{object.description}}</p>
             {% if object.avg_rating > 0 %}
-                <p class="lead">Bewertung: {{object.avg_rating}}</p>
+                <p class="lead">Bewertung: {{object.avg_rating | floatformat:1 }}</p>
             {% endif %}
             <p class="lead">Verarbeitungszeit: {{object.work_time}}min</p>
             <p class="lead">Zutaten:
@@ -24,6 +26,59 @@
             </p>
             <p class="lead">Zubereitung: {{object.preparation}}</p>
             <p class="lead">Erstellt von: {{object.author}}</p>
-        </div>    
+        </div>   
+
+        <!-- Commentaries in Collapsed View-->
+        <div class="accordion" id="accordion_commentary_list">
+            <div class="card">
+                <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <a class="btn btn-success float-sm-right" href="{% url 'foodApp:createCommentary' object.id %}" role="button" data-toggle="tooltip" title="Kommentar hinzufügen">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                        <button class="btn btn-info collapsed" type="button" data-toggle="collapse" data-target="#commentary_list" aria-controls="commentary_list">
+                            Kommentare
+                        </button>
+                    </h5>
+                </div>
+                <div id="commentary_list" class="collapse" aria-labelledby="headingOne" data-parent="#accordion_commentary_list">
+                    <div class="card-body">
+                        {% for object in object_list %}
+                            <div class="jumbotron">
+                                {% if perms.foodApp.delete_commentary %}
+                                    <a class="btn btn-danger float-right " href="{% url 'foodApp:deleteCommentary' object.id %}" role="button" data-toggle="tooltip" title="Löschen">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                    <a class="btn btn-dark float-right " href="{% url 'foodApp:updateCommentary' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                {% endif %}
+                                <h1>{{object.title}}</h1>
+                                <p class="lead">Bewertung: {{object.rating }}</p>
+                                <p class="lead">{{object.content}}</p>
+                                <p class="lead">Erstellt von: {{object.author}}</p>
+                            </div>
+                        {% empty %}
+                            <h5>Leider wurden noch keine Kommentate erstellt</h5>
+                        {% endfor %}
+                        {% if page_obj %}
+                            <div class="pagination">
+                                <span class="step-links">
+                                    {% if page_obj.has_previous %}
+                                        <a href="?page={{ page_obj.previous_page_number }}">&laquo; Zurück</a>
+                                    {% endif %}
+                                    <span class="current">
+                                        Seite {{ page_obj.number }} von {{ page_obj.paginator.num_pages }}
+                                    </span>
+                                    {% if page_obj.has_next %}
+                                        <a href="?page={{ page_obj.next_page_number }}">Weiter &raquo;</a>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 {% endblock main_content %}
