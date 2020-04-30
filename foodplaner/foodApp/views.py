@@ -16,11 +16,13 @@ from .models import Ingredient
 from .models import Grocery
 from .models import Foodplan
 from .models import Foodplan_Recipe
+from .models import Commentary
 from .filters import FoodplanFilter
 from .forms import FoodplanForm
 from .forms import IngredientFormset
 from .forms import RecipeForm
 from .forms import CreateGroceryForm
+from .forms import CommentaryForm
 
 
 def home(request):
@@ -58,8 +60,14 @@ class ReviewRecipesListView(PermissionRequiredMixin, generic.ListView):
         return recipe_object.filter(title__icontains=self.request.GET.get('q', '')).order_by('title')
 
 
-class RecipesDetailView(UserPassesTestMixin, generic.DetailView):
+class RecipesDetailView(UserPassesTestMixin, generic.DetailView, generic.list.MultipleObjectMixin):
     model = Recipe
+    paginate_by = 2
+
+    def get_context_data(self, **kwargs):
+        object_list = Commentary.objects.filter(recipe_id=self.kwargs.get('pk'))
+        context = super(RecipesDetailView, self).get_context_data(object_list=object_list)
+        return context
 
     def test_func(self):
         is_valid = False
@@ -273,6 +281,70 @@ class DeleteGroceryView(PermissionRequiredMixin, generic.DeleteView):
     model = Grocery
     success_url = reverse_lazy('foodApp:home')
     permission_required = 'foodApp.delete_recipe'
+
+
+class CommentaryCreateView(PermissionRequiredMixin, generic.CreateView):
+    model = Commentary
+    form_class = CommentaryForm
+    success_url = reverse_lazy('foodApp:home')
+    permission_required = 'foodApp.add_commentary'
+
+    def form_valid(self, form):
+        recipe = Recipe.objects.get(id=self.kwargs.get('pk'))
+        form.instance.recipe = recipe
+        form.instance.author = self.request.user
+
+        commentary_list = Commentary.objects.filter(recipe_id=recipe.id)
+        calc_avg_rating(recipe, commentary_list, form.instance.rating)
+        return super().form_valid(form)
+
+
+class CommentaryUpdateView(PermissionRequiredMixin, generic.UpdateView):
+    model = Commentary
+    form_class = CommentaryForm
+    success_url = reverse_lazy('foodApp:home')
+    permission_required = 'foodApp.change_commentary'
+
+    def form_valid(self, form):
+        recipe = Commentary.objects.get(id=self.kwargs.get('pk')).recipe
+        commentary_list = Commentary.objects.filter(recipe_id=recipe.id).exclude(id=self.kwargs.get('pk'))
+        calc_avg_rating(recipe, commentary_list, form.instance.rating)
+        return super().form_valid(form)
+
+
+class CommentaryDeleteView(PermissionRequiredMixin, generic.DeleteView):
+    model = Commentary
+    success_url = reverse_lazy('foodApp:home')
+    permission_required = 'foodApp.delete_commentary'
+
+    def delete(self, request, *args, **kwargs):
+        recipe = Commentary.objects.get(id=self.kwargs.get('pk')).recipe
+        commentary_list = Commentary.objects.filter(recipe_id=recipe.id).exclude(id=self.kwargs.get('pk'))
+        calc_avg_rating(recipe, commentary_list, 0)
+        return super().delete(request)
+
+
+def calc_avg_rating(recipe, commentary_list, rating):
+    """
+    calculate average of all commentaries
+    
+    Params:
+        commentary_list: list of commentaries without changed commentary
+        rating: rating of changed commentary
+        recipe: in which the calculated value is to be saved
+    """
+    avg_rating = rating
+    length = len(commentary_list)
+    if rating != 0:
+        length += 1
+
+    if length != 0:
+        for each in commentary_list:
+            avg_rating += each.rating
+        avg_rating = avg_rating/length
+
+    recipe.avg_rating = avg_rating
+    recipe.save()
 
 
 class DeleteFoodplanView(PermissionRequiredMixin, UserPassesTestMixin, generic.DeleteView):

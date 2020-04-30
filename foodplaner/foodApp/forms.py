@@ -5,6 +5,7 @@ from .models import Foodplan
 from .models import Grocery
 from .models import Recipe
 from .models import Ingredient
+from .models import Commentary
 
 
 class FoodplanForm(forms.ModelForm):
@@ -15,6 +16,17 @@ class FoodplanForm(forms.ModelForm):
     class Meta:
         model = Foodplan
         fields = ['days', 'select_daytime']
+
+class CommentaryForm(forms.ModelForm):
+    title = forms.CharField(max_length=50, label='Titel: ')
+    title.widget = forms.TextInput(attrs={'placeholder': 'Hier Titel eingeben'})
+    content = forms.CharField(label='Kommentar: ')
+    content.widget = forms.Textarea(attrs={'placeholder': 'Hier den Kommentar einfügen'})
+    rating = forms.IntegerField(min_value=1, max_value=10, label='Bewertung (1-10): ')
+
+    class Meta:
+        model = Commentary
+        fields = ['title', 'content', 'rating']
 
 
 class CreateGroceryForm(forms.ModelForm):
