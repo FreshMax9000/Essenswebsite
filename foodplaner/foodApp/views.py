@@ -207,6 +207,7 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
                 'description': recipe.description,
                 'preparation': recipe.preparation,
                 'work_time': recipe.work_time,
+                'image': recipe.image,
                 'reviewed': recipe.reviewed,
             })
 
