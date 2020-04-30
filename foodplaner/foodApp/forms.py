@@ -22,7 +22,8 @@ class CommentaryForm(forms.ModelForm):
     title.widget = forms.TextInput(attrs={'placeholder': 'Hier Titel eingeben'})
     content = forms.CharField(label='Kommentar: ')
     content.widget = forms.Textarea(attrs={'placeholder': 'Hier den Kommentar einfügen'})
-    rating = forms.IntegerField(min_value=1, max_value=10, label='Bewertung (1-10): ')
+    rating = forms.IntegerField(min_value=1, max_value=10, label='Bewertung: ')
+    rating.widget = forms.HiddenInput()
 
     class Meta:
         model = Commentary

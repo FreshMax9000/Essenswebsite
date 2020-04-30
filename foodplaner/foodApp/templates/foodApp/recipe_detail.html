@@ -13,9 +13,21 @@
                 <img src={{object.image.url}}>
             {% endif %}
             <p class="lead">Kurzbeschreibung: {{object.description}}</p>
-            {% if object.avg_rating > 0 %}
-                <p class="lead">Bewertung: {{object.avg_rating | floatformat:1 }}</p>
-            {% endif %}
+            <p class="lead">
+                {% if object.avg_rating > 0 %}
+                    {% for i in '0123456789'|make_list %}
+                        {% if forloop.counter0 >= object.avg_rating %}
+                            <span class="fa fa-star-o fa-lg"></span>
+                        {% else %}
+                            {% if forloop.counter > object.avg_rating and object.avg_rating > forloop.counter0 %}
+                                <span class="fa fa-star-half fa-lg"></span>
+                            {% else %}
+                                <span class="fa fa-star fa-lg"></span>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </p>
             <p class="lead">Verarbeitungszeit: {{object.work_time}}min</p>
             <p class="lead">Zutaten:
                 <div class="lead container">
@@ -54,7 +66,15 @@
                                     </a>
                                 {% endif %}
                                 <h1>{{object.title}}</h1>
-                                <p class="lead">Bewertung: {{object.rating }}</p>
+                                <p class="lead">
+                                    {% for i in '0123456789'|make_list %}
+                                        {% if forloop.counter > object.rating %}
+                                            <span class="fa fa-star-o fa-lg"></span>
+                                        {% else %}
+                                            <span class="fa fa-star fa-lg"></span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </p>
                                 <p class="lead">{{object.content}}</p>
                                 <p class="lead">Erstellt von: {{object.author}}</p>
                             </div>

@@ -57,9 +57,21 @@
                                 <h3>{{object.date | date:"l"}} - Abend</h3>
                             {% endif %}
                             <h1>{{object.recipe.title}}</h1>
-                            {% if object.recipe.avg_rating > 0 %}
-                                <p class="lead">Bewertung: {{object.recipe.avg_rating}}</p>
-                            {% endif %}
+                            <p class="lead">
+                                {% if object.recipe.avg_rating > 0 %}
+                                    {% for i in '0123456789'|make_list %}
+                                        {% if forloop.counter0 >= object.recipe.avg_rating %}
+                                            <span class="fa fa-star-o fa-lg"></span>
+                                        {% else %}
+                                            {% if forloop.counter > object.recipe.avg_rating and object.recipe.avg_rating > forloop.counter0 %}
+                                                <span class="fa fa-star-half fa-lg"></span>
+                                            {% else %}
+                                                <span class="fa fa-star fa-lg"></span>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </p>
                             <p class="lead">{{object.recipe.description}}</p>
                             <a class="btn btn-lg btn-primary" href="{% url 'foodApp:recipesDetail' object.recipe.id %}" role="button">{{object.recipe.title}} &raquo;</a>
                         </div>
