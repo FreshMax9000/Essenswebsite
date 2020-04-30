@@ -6,73 +6,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="https://www.dhbw-stuttgart.de/fileadmin/news_import/DHBW_Logo.jpg">
-
     
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/jumbotron/">
+    
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.1/examples/jumbotron/">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    
-        <title>Foodplaner</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <title>Essensplan</title>
   </head>
   <body>
-
-      <nav class="navbar navbar-expand-md navbar-dark navbar-static-top bg-dark">
-        <a class="navbar-brand" href="{% url 'foodApp:home' %}">Foodplaner</a>
+      <!-- Navigation -->
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="min-height: 120px">
+        <img src="/media/Logo.png" alt="My image" class="rounded" height="60" max="30"class="img-fluid"> 
+        <a class="navbar-brand" href="{% url 'foodApp:home' %}" style="height: 70px"> <h1 class="display-4">Essensplan!</h1> </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-  
-        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault" style="height: 150px">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="{% url 'foodApp:home' %}">Home<span class="sr-only">(current)</span></a>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'foodApp:home' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 30px;">Home<span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Foodplaner</a>
+              <a class="nav-link" href="{% url 'foodApp:foodplan' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 30px;">Essensplan</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'foodApp:recipesList' %}">Rezepte</a>
+              <a class="nav-link" href="{% url 'foodApp:myprofil' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 30px;">MeinProfil</a>
             </li>
-            <!--li class="nav-item">
-              <a class="nav-link disabled" href="#">Disabled</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-              <div class="dropdown-menu" aria-labelledby="dropdown01">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </div>
-            </li-->
+            {% if perms.foodApp.change_recipe %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'foodApp:reviewRecipesList' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 30px;">Verifizieren</a>
+              </li>
+            {% endif %}
           </ul>
+          <!-- Login/Logout -->  
           <div class="navbar-nav">
             {% if user.is_authenticated %}
-              <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
-              <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+              <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 70px; ; width: 150px; background-color: transparent;"> 
+                  <img src="/media/profil.png" style="max-height: 30px;"; alt="Profli"><br><p style="font-size: medium">{{user}}</p></button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" >
+                  <a class="dropdown-item" href="{% url 'profile' %}">Einstellungen</a>
+                  <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                </div>
+              </div>
+
             {% else %}
-              <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-              <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+              <a class="btn btn-outline-success" style="font-size: x-large" href="{% url 'login' %}">Login</a>
             {% endif %}
-            <!--button class="btn btn-outline-success my-2 my-sm-0" type="submit">Register</button>
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</button-->
           </div>
         </div>
       </nav>
+      {% block head_content %}
+      {% endblock head_content %}
   
+      {% if messages %}
+        <div class="container">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>  
+          {% endfor %}
+        </div>
+      {% endif %}
+
       {% block main_content %}
       {% endblock main_content %}
-  
       <hr>
-      <footer class="container">
-        <p>&copy; INF18IN - DHBW 2020</p>
+      <footer>
+        <div class="container" style="align-items: center;">
+        <p class="pull-left">&copy; INF18IN - DHBW 2020</p>
+        <div class="pull-right">
+            <div class="list-inline">
+               <a href="#">Datenschutz</a>
+               <a href="#">Impressum</a>
+            </div>
+        </div>
+        </div>
       </footer>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    {% block custom_js %}
+    {% endblock custom_js %}
   </body>
 </html>

@@ -1,0 +1,35 @@
+{% extends "foodApp/base.html" %}
+{% block head_content %}
+<main role="main">
+  <div class="jumbotron">
+    <div class="container">
+      <h1 class="display-3">Einkaufsliste!</h1>
+    </div>
+  </div>
+</main>
+{% endblock head_content %}
+
+<!--main content-->
+{% block main_content %}
+<main role="main">
+  <div class="container">
+    <!-- Ingerdiants from the agenda as list -->
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Menge</th>
+          <th scope="col">Zutat</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for key, value in  object_list.items %}
+          <tr>
+            <th scope="row"> {{ value }} </th>
+            <td> {{ key }}</td>
+          </tr>
+        {% endfor %}   
+      </tbody>
+    </table>
+  </div>
+</main>
+{% endblock main_content %}

@@ -1,6 +1,10 @@
 from django.contrib import admin
 
-from .models import Recipes, Ingredients
+from . import models
 
-admin.site.register(Recipes)
-admin.site.register(Ingredients)
+admin.site.register(models.Commentary)
+admin.site.register(models.Grocery)
+admin.site.register(models.Ingredient)
+admin.site.register(models.Recipe)
+admin.site.register(models.Foodplan_Recipe)
+admin.site.register(models.Foodplan)
