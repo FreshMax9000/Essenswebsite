@@ -18,7 +18,7 @@
   </head>
   <body>
       <!-- Navigation -->
-      <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="min-height: 100px">
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="min-height: 110px">
         <img src="/media/Logo.png" alt="My image" class="rounded" height="60" max="30"class="img-fluid"> 
         <a class="navbar-brand" href="{% url 'foodApp:home' %}" style="height: 70px"> <h1 class="display-4">Essensplan!</h1> </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,7 @@
               <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 70px; ; width: 150px; background-color: transparent;"> 
                   <img src="/media/profil.png" style="max-height: 30px;"; alt="Profli"><br><p style="font-size: medium">{{user}}</p></button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" >
+                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton" >
                   <a class="dropdown-item" href="{% url 'foodApp:myprofil' %}">Mein Profil</a>
                   {% if perms.foodApp.change_recipe %}
                     <a class="dropdown-item" href="{% url 'foodApp:reviewRecipesList' %}">Verifizieren</a>
