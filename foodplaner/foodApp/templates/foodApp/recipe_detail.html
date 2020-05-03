@@ -3,14 +3,14 @@
     <main role="main" class="container">
         <div class="jumbotron">
             {% if perms.foodApp.change_recipe %}
-                <a class="btn btn-danger float-sm-right " href="{% url 'foodApp:recipesDelete' object.id %}" role="button" data-toggle="tooltip" title="Löschen">
+                <a class="btn btn-outline-danger float-sm-right " href="{% url 'foodApp:recipesDelete' object.id %}" role="button" data-toggle="tooltip" title="Löschen">
                     <i class="fa fa-times"></i></a>
-                <a class="btn btn-dark float-sm-right " href="{% url 'foodApp:recipesUpdate' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
+                <a class="btn btn-outline-dark float-sm-right " href="{% url 'foodApp:recipesUpdate' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
                     <i class="fa fa-edit"></i></a>
             {% endif %}
             <div class="row" style="min-height: 400px;">
                 <div class="col-md-12" style="text-align: center;  min-height: 100px;">
-                    <h1>{{object.title}}</h1>
+                    <h1 style="text-decoration-line: underline;">{{object.title}}</h1>
                 </div>
                 <div class="col-md-4" style="text-align: center;">
                     <h4><small>Verarbeitungszeit: {{object.work_time}}min</small></h4>
@@ -29,15 +29,15 @@
                     {% endif %}
                 </div>
             </div>
-            <h3 style="line-height: 70px;"><small>Kurzbeschreibung</small></h3>
+            <h3 style="line-height: 70px; text-decoration-line: underline;"><small>Kurzbeschreibung</small></h3>
             <h4 style="text-indent: 30px"><small>{{object.description}}</small></h4>
-            <h3 style="line-height: 70px;"><small>Zutaten</small></h3>
+            <h3 style="line-height: 70px; text-decoration-line: underline;"><small>Zutaten</small></h3>
             <div class="list group">
                     {% for each in object.ingredient_set.all %}
                     <h4 style="text-indent: 30px"><small><li>{{ each.quantity }}{{ each.grocery.unit }} {{ each.grocery.name }}</li></small></h4>
                     {% endfor %}
             </div>
-            <h3 style="line-height: 70px;"><small>Zubereitung</small></h3>
+            <h3 style="line-height: 70px; text-decoration-line: underline;"><small>Zubereitung</small></h3>
             <h4 style="text-indent: 30px"><small>{{object.preparation}}</small></h4>
         </div>   
 
@@ -46,7 +46,7 @@
             <div class="card">
                 <div class="card-header" id="headingOne">
                     <h5 class="mb-0">
-                        <a class="btn btn-success float-sm-right" href="{% url 'foodApp:createCommentary' object.id %}" role="button" data-toggle="tooltip" title="Kommentar hinzufügen">
+                        <a class="btn btn-outline-success float-sm-right" href="{% url 'foodApp:createCommentary' object.id %}" role="button" data-toggle="tooltip" title="Kommentar hinzufügen">
                             <i class="fa fa-plus"></i>
                         </a>
                         <button class="btn btn-outline-success collapsed" type="button" data-toggle="collapse" data-target="#commentary_list" aria-controls="commentary_list">
@@ -59,20 +59,30 @@
                         {% for object in object_list %}
                             <div class="jumbotron">
                                 {% if perms.foodApp.delete_commentary %}
-                                    <a class="btn btn-danger float-right " href="{% url 'foodApp:deleteCommentary' object.id %}" role="button" data-toggle="tooltip" title="Löschen">
+                                    <a class="btn btn-outline-danger float-right " href="{% url 'foodApp:deleteCommentary' object.id %}" role="button" data-toggle="tooltip" title="Löschen">
                                         <i class="fa fa-times"></i>
                                     </a>
-                                    <a class="btn btn-dark float-right " href="{% url 'foodApp:updateCommentary' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
+                                    <a class="btn btn-outline-dark float-right " href="{% url 'foodApp:updateCommentary' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 {% endif %}
-                                <h1>{{object.title}}</h1>
-                                <p class="lead">Bewertung: {{object.rating }}</p>
-                                <p class="lead">{{object.content}}</p>
-                                <p class="lead">Erstellt von: {{object.author}}</p>
+                                <div class="row">
+                                    <div class="col-md-12" style="text-align: center;">
+                                        <h3 style="text-decoration: underline;"><small>{{object.title}}</small></h3>
+                                    </div>
+                                    <div class="col-md-12" style="text-align: center;">
+                                        <h4 style="text-indent: 30px"><small>{{object.content}}</small></h4>
+                                    </div>
+                                    <div class="col-md-6" style="text-align: center;">
+                                        <h4 style="text-indent: 30px"><small>Bewertung: {{object.rating }}</small></h4>
+                                    </div>
+                                    <div class="col-md-6" style="text-align: center;">
+                                        <h4 style="text-indent: 30px"><small>Erstellt von: {{object.author}}</small></h4>
+                                    </div>
+                                </div>
                             </div>
                         {% empty %}
-                            <h5>Leider wurden noch keine Kommentate erstellt</h5>
+                            <h3>Zu diesem Rezept gobt es noch keine Kommentare</h3>
                         {% endfor %}
                         {% if page_obj %}
                             <div class="pagination">
