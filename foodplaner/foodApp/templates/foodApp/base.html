@@ -46,11 +46,11 @@
                     <a class="dropdown-item" href="{% url 'foodApp:reviewRecipesList' %}">Verifizieren</a>
                   {% endif %}
                   <a class="dropdown-item" href="{% url 'profile' %}">Einstellungen</a>
-                  <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                  <a class="dropdown-item" href="{% url 'logout' %}">Abmelden</a>
                 </div>
               </div>
             {% else %}
-              <a class="btn btn-outline-success" style="font-size: x-large" href="{% url 'login' %}">Login</a>
+              <a class="btn btn-outline-success" style="font-size: x-large" href="{% url 'login' %}">Anmelden</a>
             {% endif %}
           </div>
         </div>
