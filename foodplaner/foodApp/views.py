@@ -28,7 +28,6 @@ from .forms import CommentaryForm
 def home(request):
     return render(request, 'foodApp/home.html')
 
-
 def get_recipe_object():
     """
         desc:
