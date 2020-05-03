@@ -1,12 +1,14 @@
 {% extends "foodApp/base.html" %}
 {% block main_content %}
 <main role="main" class="container">
-    <div class="jumbotron">
-        <h2>You have been logged out</h2>
-        <div class="border-top pt-3">
-            <small class="text-muted">
-                <a href="{% url 'login' %}">Log In Again</a>
-            </small>
+    <div class="jumbotron" style="background-color: white;">
+        <div class="card" style="text-align: center;">
+            <div class="card-body">
+                <h2>Du wurdest abgemeldet!</h2>
+                <div class="text-muted">
+                    <a style="color: #5cb85c;" href="{% url 'login' %}">Anmelden</a>
+                </div>
+            </div>
         </div>
     </div>
 </main>

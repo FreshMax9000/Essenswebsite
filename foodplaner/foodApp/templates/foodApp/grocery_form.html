@@ -6,11 +6,11 @@
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Neue Zutat erstellen</legend>
+                <legend class="border-bottom mb-4" style="text-align: center;">Neue Zutat erstellen</legend>
                 {{ form|crispy }}
             </fieldset>
             <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Hinzufügen</button>
+                <button class="btn btn-outline-success float-right" type="submit">Hinzufügen</button>
             </div>
         </form>
     </div>
