@@ -19,9 +19,9 @@ class FoodplanForm(forms.ModelForm):
 
 class CommentaryForm(forms.ModelForm):
     title = forms.CharField(max_length=50, label='Titel: ')
-    title.widget = forms.TextInput(attrs={'placeholder': 'Hier Titel eingeben'})
+    title.widget = forms.TextInput(attrs={'placeholder': 'Titel eingeben'})
     content = forms.CharField(label='Kommentar: ')
-    content.widget = forms.Textarea(attrs={'placeholder': 'Hier den Kommentar einfügen'})
+    content.widget = forms.Textarea(attrs={'placeholder': 'Kommentar eingeben'})
     rating = forms.IntegerField(min_value=1, max_value=10, label='Bewertung (1-10): ')
 
     class Meta:
