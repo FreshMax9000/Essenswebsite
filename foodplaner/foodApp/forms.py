@@ -49,14 +49,14 @@ class CreateIngredientForm(forms.ModelForm):
 
 class RecipeForm(forms.ModelForm):
     title = forms.CharField(max_length=50, label='Titel: ')
-    title.widget = forms.TextInput(attrs={'placeholder': 'Hier Titel eingeben'})
+    title.widget = forms.TextInput(attrs={'placeholder': 'Titel eingeben'})
     description = forms.CharField(max_length=100, required=False, label='Beschreibung: ')
-    description.widget = forms.TextInput(attrs={'placeholder': 'Hier Kurzbeschreibung eingeben'})
+    description.widget = forms.TextInput(attrs={'placeholder': 'Kurzbeschreibung eingeben'})
     preparation = forms.CharField(label='Zubereitung: ')
-    preparation.widget = forms.Textarea(attrs={'placeholder': 'Hier die Zubereitung beschreiben'})
+    preparation.widget = forms.Textarea(attrs={'placeholder': 'Zubereitung eingeben'})
     work_time = forms.IntegerField(min_value=1, label='Zubereitungszeit: ')
     reviewed = forms.BooleanField(required=False, label='Rezept veröffentlichen')
-    image = forms.ImageField(required=False, label='Bild hinzufügen')
+    image = forms.ImageField(required=False, label='Bild hinzufügen:')
   
     class Meta:
         model = Recipe
