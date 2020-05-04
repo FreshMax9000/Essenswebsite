@@ -15,7 +15,7 @@ class FoodplanFilter(django_filters.FilterSet): #TODO:additional filters?
     """
     #title = django_filters.CharFilter(lookup_expr='icontains',label="Titel enthält:")
     work_time = django_filters.NumberFilter(lookup_expr='lte', label="Maximal benötigte Zeit:")
-    avg_rating = django_filters.NumberFilter(lookup_expr='gte', label="Mindest Bewertung:")
+    avg_rating = django_filters.NumberFilter(lookup_expr='gte', widget=forms.HiddenInput, label="Mindest Bewertung:")
     #difficulty = django_filters.ModelMultipleChoiceFilter(queryset=['Easy','Medium,'Hard'], widget=forms.CheckboxSelectMultiple,label="Schwierigkeit:")
     ingredients = django_filters.ModelMultipleChoiceFilter(queryset=Grocery.objects.all(), exclude=True, widget=forms.CheckboxSelectMultiple, label="Zutaten ausschließen")
 

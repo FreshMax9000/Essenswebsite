@@ -28,8 +28,14 @@
                     <div class="form-group col-md-4 mb-0">
                         {{ filter.form.work_time|as_crispy_field }}
                     </div>
-                    <div class="form-group col-md-4 mb-0">
-                        {{ filter.form.avg_rating|as_crispy_field }}
+                    <div class="form-group col-md-5 mb-0 rating-select">
+                        {{ filter.form.avg_rating.label }} 
+                        {{ filter.form.avg_rating }}
+                        <div class="rating-select my-3">
+                            {% for i in '0123456789'|make_list %}
+                                <span class="fa fa-star-o fa-lg" data-rating="{{ forloop.counter }}"></span>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
                 <div class="form-row">
@@ -76,7 +82,7 @@
                                             <span class="fa fa-star-o fa-lg"></span>
                                         {% else %}
                                             {% if forloop.counter > object.recipe.avg_rating and object.recipe.avg_rating > forloop.counter0 %}
-                                                <span class="fa fa-star-half fa-lg"></span>
+                                                <span class="fa fa-star-half-o fa-lg"></span>
                                             {% else %}
                                                 <span class="fa fa-star fa-lg"></span>
                                             {% endif %}
@@ -96,3 +102,45 @@
         </form>
     </main>
 {% endblock main_content %}
+
+{% block custom_js %}
+<script>
+$(function(){
+    $('.rating-select .fa').on('mouseover', function(){
+        $(this).removeClass('fa-star-o').addClass('fa-star');
+        $(this).prevAll().removeClass('fa-star-o').addClass('fa-star');;
+        $(this).nextAll().removeClass('fa-star').addClass('fa-star-o');;
+    });
+
+    $('.rating-select').on('mouseleave', function(){
+        active = $(this).parent().find('.selected');
+        if(active.length) {
+            active.removeClass('fa-star-o').addClass('fa-star');
+            active.prevAll().removeClass('fa-star-o').addClass('fa-star');
+            active.nextAll().removeClass('fa-star').addClass('fa-star-o');
+        } else {
+            $(this).find('.fa').removeClass('fa-star').addClass('fa-star-o');
+        }
+
+    });
+
+    $('.rating-select .fa').click(function(){
+        var num = 0
+        if($(this).hasClass('selected')) {
+            $('.rating-select .selected').removeClass('selected');
+        } else {
+            $('.rating-select .selected').removeClass('selected');
+            $(this).addClass('selected');
+            num = parseInt($(this).attr("data-rating"));
+        }
+        $('#id_avg_rating').val(num);
+    });
+});
+$(document).ready(function() {
+    var num =  $('#id_avg_rating').val();
+    active = $("span[data-rating='"+num+"']")
+    active.removeClass('fa-star-o').addClass('fa-star selected');
+    active.prevAll().removeClass('fa-star-o').addClass('fa-star');
+});
+</script>
+{% endblock custom_js %}

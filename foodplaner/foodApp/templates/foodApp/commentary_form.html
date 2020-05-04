@@ -44,15 +44,22 @@ $(function(){
     });
 
     $('.rating-select .fa').click(function(){
+        var num = 0
         if($(this).hasClass('selected')) {
             $('.rating-select .selected').removeClass('selected');
         } else {
             $('.rating-select .selected').removeClass('selected');
             $(this).addClass('selected');
-            var num = parseInt($(this).attr("data-rating"));
-            document.getElementById('id_rating').value = num;
+            num = parseInt($(this).attr("data-rating"));
         }
+        $('#id_rating').val(num);
     });
+});
+$(document).ready(function() {
+    var num =  $('#id_rating').val();
+    active = $("span[data-rating='"+num+"']")
+    active.removeClass('fa-star-o').addClass('fa-star selected');
+    active.prevAll().removeClass('fa-star-o').addClass('fa-star');
 });
 </script>
 {% endblock custom_js %}
