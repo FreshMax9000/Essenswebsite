@@ -96,9 +96,6 @@
                                         <h3 style="text-decoration: underline;"><small>{{object.title}}</small></h3>
                                     </div>
                                     <div class="col-md-12" style="text-align: center;">
-                                        <h4 style="text-indent: 30px"><small>{{object.content}}</small></h4>
-                                    </div>
-                                    <div class="col-md-6" style="text-align: center;">
                                         {% for i in '0123456789'|make_list %}
                                             {% if forloop.counter > object.rating %}
                                                 <span class="fa fa-star-o fa-lg"></span>
@@ -107,8 +104,14 @@
                                             {% endif %}
                                         {% endfor %}
                                     </div>
+                                    <div class="col-md-12" style="text-align: center;">
+                                        <h4 style="text-indent: 30px"><small>{{object.content}}</small></h4>
+                                    </div>
                                     <div class="col-md-6" style="text-align: center;">
                                         <h4 style="text-indent: 30px"><small>Erstellt von: {{object.author}}</small></h4>
+                                    </div>
+                                    <div class="col-md-6" style="text-align: center;">
+                                        <h4 style="text-indent: 30px"><small>Erstellt am: {{object.date}}</small></h4>
                                     </div>
                                 </div>
                             </div>

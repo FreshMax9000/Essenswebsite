@@ -54,6 +54,7 @@ class Commentary(models.Model):
     title = models.CharField(max_length=50)
     content = models.TextField(default="")
     rating = models.IntegerField(default=0)
+    date = models.DateField(default=date.today)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
