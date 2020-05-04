@@ -61,10 +61,10 @@ class ReviewRecipesListView(PermissionRequiredMixin, generic.ListView):
 
 class RecipesDetailView(UserPassesTestMixin, generic.DetailView, generic.list.MultipleObjectMixin):
     model = Recipe
-    paginate_by = 2
+    paginate_by = 4
 
     def get_context_data(self, **kwargs):
-        object_list = Commentary.objects.filter(recipe_id=self.kwargs.get('pk'))
+        object_list = Commentary.objects.filter(recipe_id=self.kwargs.get('pk')).order_by('pk')
         context = super(RecipesDetailView, self).get_context_data(object_list=object_list)
         return context
 
@@ -103,7 +103,7 @@ class Agenda(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(Agenda, self).get_context_data(**kwargs)
-        context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk')).order_by('date')
+        context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk')).order_by('date', '-daytime')
         return context
 
 
@@ -414,7 +414,7 @@ def foodplan(request):
     context = {
         'filter': foodplan_filter,
         'form': form,
-        'object_list': Foodplan_Recipe.objects.filter(foodplan=foodplan_object).order_by('date'),
+        'object_list': Foodplan_Recipe.objects.filter(foodplan=foodplan_object).order_by('date', '-daytime'),
     }
     return render(request, "foodApp/foodplan.html", context)
 

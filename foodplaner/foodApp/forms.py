@@ -58,10 +58,12 @@ class RecipeForm(forms.ModelForm):
     work_time = forms.IntegerField(min_value=1, label='Zubereitungszeit: ')
     reviewed = forms.BooleanField(required=False, label='Rezept veröffentlichen')
     image = forms.ImageField(required=False, label='Bild hinzufügen:')
-  
+    difficulty_choices = {(1, 'Einfach'), (2, 'Mittel'), (3, 'Schwer')}
+    difficulty = forms.ChoiceField(choices=difficulty_choices, initial=1, label='Schwierigkeit: ')
+
     class Meta:
         model = Recipe
-        fields = ('title', 'description', 'preparation', 'work_time', 'image', 'reviewed')
+        fields = ('title', 'description', 'preparation', 'work_time', 'image', 'reviewed', 'difficulty')
 
 
 IngredientFormset = modelformset_factory(Ingredient, form=CreateIngredientForm)
