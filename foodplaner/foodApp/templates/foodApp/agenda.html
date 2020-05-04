@@ -34,18 +34,18 @@
                     {% ifchanged object.date %}
                         {% if not forloop.first %}
                             </tr>
-                        {%endif%}
+                        {% endif %}
                         <tr>
                         <th scope="row">{{ object.date | date:"l j. F" }}</th> <!-- "l": Monday | "j": 1 | "F": January -->
                         {% if object.daytime %} <!-- datetime = True: lunch -->
-                            <td>{{ object.recipe.title }}</td><td>
+                            <td><a style=" color: black;" href="{% url 'foodApp:recipesDetail' object.recipe.id %}" >{{ object.recipe.title }}</a></td><td>
                         {% else %} <!-- datetime = False: dinner -->
                             <td></td>
-                            <td>{{ object.recipe.title }}</td>
-                        {%endif%}
+                            <td><a style=" color: black;" href="{% url 'foodApp:recipesDetail' object.recipe.id %}" >{{ object.recipe.title }}</a></td>
+                        {% endif %}
                     {% else %} <!-- datetime = False: dinner -->
-                        {{ object.recipe.title }}</td>
-                    {%endifchanged%}
+                        <a style=" color: black;" href="{% url 'foodApp:recipesDetail' object.recipe.id %}" >{{ object.recipe.title }}</a></td>
+                    {% endifchanged %}
                 {% endfor %}
                 </tr>
             </tbody>
