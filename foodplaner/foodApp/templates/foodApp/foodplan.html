@@ -63,14 +63,26 @@
                             </button>
                             <div class="container" style="text-align: center; min-height: 50px;">
                                 {% if object.daytime %}
-                                <h4 style="align-items: center;">{{object.date | date:"l"}} - Mittag</h4> <!-- "l": Monday | "D": Mon. | "j": 1 | "N": Jan. -->
+                                    <h4 style="align-items: center;">{{object.date | date:"l"}} - Mittag</h4> <!-- "l": Monday | "D": Mon. | "j": 1 | "N": Jan. -->
                                 {% else %}
-                                <h4>{{object.date | date:"l"}} - Abend</h4>
+                                    <h4>{{object.date | date:"l"}} - Abend</h4>
                                 {% endif %}
                             </div>
                             <h3><a style=" color: black;" href="{% url 'foodApp:recipesDetail' object.recipe.id %}" >{{object.recipe.title}} </a></h3>
                             {% if object.recipe.avg_rating > 0 %}
-                                <p class="lead">Bewertung: {{object.recipe.avg_rating}}</p>
+                                <p class="lead">
+                                    {% for i in '0123456789'|make_list %}
+                                        {% if forloop.counter0 >= object.recipe.avg_rating %}
+                                            <span class="fa fa-star-o fa-lg"></span>
+                                        {% else %}
+                                            {% if forloop.counter > object.recipe.avg_rating and object.recipe.avg_rating > forloop.counter0 %}
+                                                <span class="fa fa-star-half fa-lg"></span>
+                                            {% else %}
+                                                <span class="fa fa-star fa-lg"></span>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </p>
                             {% endif %}
                             <p class="lead">{{object.recipe.description}}</p>
                         </div>

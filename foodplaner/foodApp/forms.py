@@ -22,7 +22,8 @@ class CommentaryForm(forms.ModelForm):
     title.widget = forms.TextInput(attrs={'placeholder': 'Titel eingeben'})
     content = forms.CharField(label='Kommentar: ')
     content.widget = forms.Textarea(attrs={'placeholder': 'Kommentar eingeben'})
-    rating = forms.IntegerField(min_value=1, max_value=10, label='Bewertung (1-10): ')
+    rating = forms.IntegerField(min_value=1, max_value=10, label='Bewertung: ')
+    rating.widget = forms.HiddenInput()
 
     class Meta:
         model = Commentary
@@ -39,7 +40,7 @@ class CreateGroceryForm(forms.ModelForm):
 
 
 class CreateIngredientForm(forms.ModelForm):
-    quantity = forms.DecimalField(min_value=0.1, required=False, label='Menge: ')
+    quantity = forms.DecimalField(min_value=0, required=False, label='Menge: ')
     grocery = forms.ModelChoiceField(queryset=Grocery.objects.all().order_by('name'), empty_label=" --- ", required=False, label="Zutat: ")
 
     class Meta:

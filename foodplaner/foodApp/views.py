@@ -78,7 +78,7 @@ class RecipesDetailView(UserPassesTestMixin, generic.DetailView, generic.list.Mu
 
 
 class MyProfil(LoginRequiredMixin, generic.ListView):
-    template_name = "foodApp/myprofil.html"
+    template_name = "foodApp/myProfil.html"
 
     def get_queryset(self):
         self.context_object_name = 'myrecipes'
@@ -192,7 +192,9 @@ class CreateRecipeView(PermissionRequiredMixin, generic.CreateView):
             except ValueError:
                 print('ValueError ')
             else:
-                if ingredient_form.cleaned_data:
+                check_formset = ingredient_form.cleaned_data.get('quantity') is not None
+                check_formset = check_formset and ingredient_form.cleaned_data.get('grocery') is not None
+                if check_formset:
                     ingredient.recipe = recipe
                     ingredient.save()
         return super().form_valid(form)
@@ -242,7 +244,9 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
                 except ValueError:
                     print('ValueError ')
                 else:
-                    if ingredient_form.cleaned_data:
+                    check_formset = ingredient_form.cleaned_data.get('quantity') is not None
+                    check_formset = check_formset and ingredient_form.cleaned_data.get('grocery') is not None
+                    if check_formset:
                         count_saved_forms += 1
                         ingredient.recipe = Recipe.objects.get(id=self.kwargs['pk'])
                         ingredient.save()
@@ -265,7 +269,7 @@ class DeleteRecipeView(PermissionRequiredMixin, generic.DeleteView):
 class CreateGroceryView(PermissionRequiredMixin, generic.CreateView):
     model = Grocery
     form_class = CreateGroceryForm
-    success_url = reverse_lazy('foodApp:home')
+    success_url = reverse_lazy('foodApp:addRecipe')
     permission_required = 'foodApp.add_grocery'
 
 
