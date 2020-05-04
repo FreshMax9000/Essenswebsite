@@ -23,10 +23,13 @@
                     <div class="form-group col-md-4 mb-0">
                         {{ form.select_daytime | as_crispy_field}}
                     </div>
+                    <div class="form-group col-md-4 mb-0">
+                        {{ filter.form.difficulty | as_crispy_field }}
+                    </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-4 mb-0">
-                        {{ filter.form.work_time|as_crispy_field }}
+                        {{ filter.form.work_time | as_crispy_field }}
                     </div>
                     <div class="form-group col-md-5 mb-0 rating-select">
                         {{ filter.form.avg_rating.label }} 

@@ -18,7 +18,7 @@ class Recipe(models.Model):
     preparation = models.TextField(default="")
     work_time = models.IntegerField(default=0)
     avg_rating = models.FloatField(default=0)
-    # difficulty
+    difficulty = models.IntegerField(default=0)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     ingredients = models.ManyToManyField(Grocery, through='Ingredient', through_fields=('recipe', 'grocery'))
     reviewed = models.BooleanField(default=False)

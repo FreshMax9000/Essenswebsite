@@ -35,6 +35,19 @@
                 <div class="col-md-4" style="text-align: center;">
                     <h4><small>Erstellt von: {{object.author}}</small></h4>
                 </div>
+                <div class="col-md-4" style="text-align: center;">
+                    <h4><small>Schwierigkeit:
+                        {% if object.difficulty == 1 %}
+                            Einfach
+                        {% endif %}
+                        {% if object.difficulty == 2 %}
+                            Mittel
+                        {% endif %}
+                        {% if object.difficulty == 3 %}
+                            Schwer
+                        {% endif %}
+                    </small></h4>
+                </div>
                 <div class="col-md-12" style="text-align: center;  min-height: 100px;">
                     {% if object.image %}
                     <img src={{object.image.url}} >

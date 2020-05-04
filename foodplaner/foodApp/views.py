@@ -61,10 +61,10 @@ class ReviewRecipesListView(PermissionRequiredMixin, generic.ListView):
 
 class RecipesDetailView(UserPassesTestMixin, generic.DetailView, generic.list.MultipleObjectMixin):
     model = Recipe
-    paginate_by = 2
+    paginate_by = 4
 
     def get_context_data(self, **kwargs):
-        object_list = Commentary.objects.filter(recipe_id=self.kwargs.get('pk'))
+        object_list = Commentary.objects.filter(recipe_id=self.kwargs.get('pk')).order_by('pk')
         context = super(RecipesDetailView, self).get_context_data(object_list=object_list)
         return context
 
