@@ -8,32 +8,29 @@
                 <a class="btn btn-outline-dark float-sm-right " href="{% url 'foodApp:recipesUpdate' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
                     <i class="fa fa-edit"></i></a>
             {% endif %}
-            <div class="row" style="min-height: 400px;">
+            <div class="row">
                 <div class="col-md-12" style="text-align: center;  min-height: 100px;">
                     <h1 style="text-decoration-line: underline;">{{object.title}}</h1>
                 </div>
+                {% if object.avg_rating > 0 %}
+                    <div class="col-md-12" style="text-align: center;">
+                            <h4><small>
+                                {% for i in '0123456789'|make_list %}
+                                    {% if forloop.counter0 >= object.avg_rating %}
+                                        <span class="fa fa-star-o fa-lg"></span>
+                                    {% else %}
+                                        {% if forloop.counter > object.avg_rating and object.avg_rating > forloop.counter0 %}
+                                            <span class="fa fa-star-half-o fa-lg"></span>
+                                        {% else %}
+                                            <span class="fa fa-star fa-lg"></span>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </small></h4>
+                    </div>
+                {% endif %}
                 <div class="col-md-4" style="text-align: center;">
                     <h4><small>Verarbeitungszeit: {{object.work_time}}min</small></h4>
-                </div>
-                <div class="col-md-4" style="text-align: center;">
-                    {% if object.avg_rating > 0 %}
-                        <h4><small>
-                            {% for i in '0123456789'|make_list %}
-                                {% if forloop.counter0 >= object.avg_rating %}
-                                    <span class="fa fa-star-o fa-lg"></span>
-                                {% else %}
-                                    {% if forloop.counter > object.avg_rating and object.avg_rating > forloop.counter0 %}
-                                        <span class="fa fa-star-half-o fa-lg"></span>
-                                    {% else %}
-                                        <span class="fa fa-star fa-lg"></span>
-                                    {% endif %}
-                                {% endif %}
-                            {% endfor %}
-                        </small></h4>
-                    {% endif %}
-                </div>
-                <div class="col-md-4" style="text-align: center;">
-                    <h4><small>Erstellt von: {{object.author}}</small></h4>
                 </div>
                 <div class="col-md-4" style="text-align: center;">
                     <h4><small>Schwierigkeit:
@@ -48,11 +45,14 @@
                         {% endif %}
                     </small></h4>
                 </div>
-                <div class="col-md-12" style="text-align: center;  min-height: 100px;">
-                    {% if object.image %}
-                    <img src={{object.image.url}} >
-                    {% endif %}
+                <div class="col-md-4" style="text-align: center;">
+                    <h4><small>Erstellt von: {{object.author}}</small></h4>
                 </div>
+                {% if object.image %}
+                    <div class="col-md-12" style="text-align: center;  min-height: 100px;">
+                        <img src={{object.image.url}} >
+                    </div>
+                {% endif %}
             </div>
             <h3 style="line-height: 70px; text-decoration-line: underline;"><small>Kurzbeschreibung</small></h3>
             <h4 style="text-indent: 30px"><small>{{object.description}}</small></h4>

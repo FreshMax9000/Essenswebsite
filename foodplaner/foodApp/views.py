@@ -195,15 +195,14 @@ class CreateRecipeView(PermissionRequiredMixin, generic.CreateView):
                 check_formset = ingredient_form.cleaned_data.get('quantity') is not None
                 check_formset = check_formset and ingredient_form.cleaned_data.get('grocery') is not None
                 if check_formset:
-                    ingredient.recipe = recipe
-                    ingredient.save()
+                    if ingredient.quantity > 0:
+                        ingredient.recipe = recipe
+                        ingredient.save()
         return super().form_valid(form)
 
 
 class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
     model = Recipe
-
-    success_url = reverse_lazy('foodApp:home')
     permission_required = 'foodApp.change_recipe'
     form_class = RecipeForm
 
@@ -218,6 +217,7 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
                 'preparation': recipe.preparation,
                 'work_time': recipe.work_time,
                 'image': recipe.image,
+                'difficulty': recipe.difficulty,
                 'reviewed': recipe.reviewed,
             })
 
@@ -247,9 +247,10 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
                     check_formset = ingredient_form.cleaned_data.get('quantity') is not None
                     check_formset = check_formset and ingredient_form.cleaned_data.get('grocery') is not None
                     if check_formset:
-                        count_saved_forms += 1
-                        ingredient.recipe = Recipe.objects.get(id=self.kwargs['pk'])
-                        ingredient.save()
+                        if ingredient.quantity > 0:
+                            count_saved_forms += 1
+                            ingredient.recipe = Recipe.objects.get(id=self.kwargs['pk'])
+                            ingredient.save()
 
             # necessary because the updateView didn't delete any ingredients
             # ingredients only got updated or added
@@ -258,6 +259,9 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
             for element in ingredient_list:
                 element.delete()
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('foodApp:recipesDetail', kwargs={'pk': self.kwargs['pk']})
 
 
 class DeleteRecipeView(PermissionRequiredMixin, generic.DeleteView):
@@ -289,7 +293,6 @@ class DeleteGroceryView(PermissionRequiredMixin, generic.DeleteView):
 class CommentaryCreateView(PermissionRequiredMixin, generic.CreateView):
     model = Commentary
     form_class = CommentaryForm
-    success_url = reverse_lazy('foodApp:home')
     permission_required = 'foodApp.add_commentary'
 
     def form_valid(self, form):
@@ -300,12 +303,14 @@ class CommentaryCreateView(PermissionRequiredMixin, generic.CreateView):
         commentary_list = Commentary.objects.filter(recipe_id=recipe.id)
         calc_avg_rating(recipe, commentary_list, form.instance.rating)
         return super().form_valid(form)
+        
+    def get_success_url(self):
+        return reverse_lazy('foodApp:recipesDetail', kwargs = {'pk': self.kwargs['pk']})
 
 
 class CommentaryUpdateView(PermissionRequiredMixin, generic.UpdateView):
     model = Commentary
     form_class = CommentaryForm
-    success_url = reverse_lazy('foodApp:home')
     permission_required = 'foodApp.change_commentary'
 
     def form_valid(self, form):
@@ -313,6 +318,9 @@ class CommentaryUpdateView(PermissionRequiredMixin, generic.UpdateView):
         commentary_list = Commentary.objects.filter(recipe_id=recipe.id).exclude(id=self.kwargs.get('pk'))
         calc_avg_rating(recipe, commentary_list, form.instance.rating)
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('foodApp:recipesDetail', kwargs={'pk': self.kwargs['pk']})
 
 
 class CommentaryDeleteView(PermissionRequiredMixin, generic.DeleteView):
