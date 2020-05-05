@@ -12,35 +12,27 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
     <title>Essensplan</title>
   </head>
   <body>
       <!-- Navigation -->
-      <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="min-height: 120px">
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="min-height: 110px">
         <img src="/media/Logo.png" alt="My image" class="rounded" height="60" max="30"class="img-fluid"> 
         <a class="navbar-brand" href="{% url 'foodApp:home' %}" style="height: 70px"> <h1 class="display-4">Essensplan!</h1> </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarsExampleDefault" style="height: 150px">
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault" style="height: 110px">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'foodApp:home' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 30px;">Home<span class="sr-only">(current)</span></a>
-            </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'foodApp:foodplan' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 30px;">Essensplan</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'foodApp:myprofil' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 30px;">MeinProfil</a>
+              <a class="nav-link" href="{% url 'foodApp:recipesList' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 30px;">Rezepte</a>
             </li>
-            {% if perms.foodApp.change_recipe %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'foodApp:reviewRecipesList' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 30px;">Verifizieren</a>
-              </li>
-            {% endif %}
           </ul>
           <!-- Login/Logout -->  
           <div class="navbar-nav">
@@ -48,14 +40,18 @@
               <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 70px; ; width: 150px; background-color: transparent;"> 
                   <img src="/media/profil.png" style="max-height: 30px;"; alt="Profli"><br><p style="font-size: medium">{{user}}</p></button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" >
+                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton" >
+                  <a class="dropdown-item" href="{% url 'foodApp:myprofil' %}">Mein Profil</a>
+                  {% if perms.foodApp.change_recipe %}
+                    <a class="dropdown-item" href="{% url 'foodApp:reviewRecipesList' %}">Verifizieren</a>
+                  {% endif %}
                   <a class="dropdown-item" href="{% url 'profile' %}">Einstellungen</a>
-                  <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                  <a class="dropdown-item" href="{% url 'logout' %}">Abmelden</a>
                 </div>
               </div>
-
             {% else %}
-              <a class="btn btn-outline-success" style="font-size: x-large" href="{% url 'login' %}">Login</a>
+            <a class="btn btn-outline-success mx-2" style="font-size: x-large" href="{% url 'login' %}">Anmelden</a>
+            <a class="btn btn-outline-success mx-2" style="font-size: x-large" href="{% url 'register' %}">Registrieren</a>
             {% endif %}
           </div>
         </div>
@@ -77,21 +73,21 @@
       <footer>
         <div class="container" style="align-items: center;">
         <p class="pull-left">&copy; INF18IN - DHBW 2020</p>
-        <div class="pull-right">
+          <div class="pull-right">
             <div class="list-inline">
-               <a href="#">Datenschutz</a>
-               <a href="#">Impressum</a>
+               <a style="color: black;" href="#">Datenschutz</a>
+               <a style="color: black;" href="#">Impressum</a>
             </div>
-        </div>
+          </div>
         </div>
       </footer>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    {% block custom_js %}
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  {% block custom_js %}
     {% endblock custom_js %}
   </body>
 </html>

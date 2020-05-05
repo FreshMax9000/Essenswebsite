@@ -4,7 +4,7 @@
    
     <div class="jumbotron">
         <div class="container">
-        <h1 class="display-3" style="text-align: center;">Hallo {{user}}!</h1>
+        <h1 class="display-4" >Hallo {{user}}!</h1>
         </div>
     </div>
 </main>
@@ -17,21 +17,29 @@
         <!-- Lists the agenda and recipes from the User -->
         <div class="row">
             <div class="col-md-6">
-                <h1>Meine Rezepte</h1>
+                <h2>Meine Rezepte</h2>
                 {% for recipe in myrecipes  %}
-                    <div class="jumbotron">
-                        <a class="btn btn-lg btn-primary" href="{% url 'foodApp:recipesDetail' recipe.id %}" role="button">{{recipe.title}} &raquo;</a>
+                    <div class="jumbotron" >
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% if object.image %}
+                                <img src={{recipe.image.url}} class="figure-img img-fluid rounded" style="max-height: 150px;" alt="Rezept Bild">
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 my-auto">
+                                <h3><a  style=" color: black;"  href="{% url 'foodApp:recipesDetail' recipe.id %}" >{{recipe.title}} </a></h3>
+                            </div>
+                        </div>
                     </div>
                 {% endfor %}       
             </div>
             <div class="col-md-6">
-                <h1>Meine Wochenpläne</h1>
+                <h2>Meine Wochenpläne</h2>
                 {% for plan in myfoodplans  %}
-                    <div class="jumbotron">
-                        <a class="btn btn-danger float-sm-right " href="{% url 'foodApp:foodplanDelete' plan.id %}" role="delete" data-toggle="tooltip" title="Löschen">
-                            <i class="fa fa-times"></i>
-                        </a>
-                        <a class="btn btn-lg btn-primary" href="{% url 'foodApp:agenda' plan.id %}" role="button">Wochenplan &raquo;</a>
+                    <div class="jumbotron" >
+                        <a class="btn btn-outline-danger float-sm-right " href="{% url 'foodApp:foodplanDelete' plan.id %}" role="delete"><i class="fa fa-times" ></i></a>
+                        <h3><a style=" color: black;"  href="{% url 'foodApp:agenda' plan.id %}" >Wochenplan</a></h3>
+                        ab {{plan.foodplan_recipe_set.first.date | date:"l j. F" }}
                     </div>
                 {% endfor %}  
             </div>

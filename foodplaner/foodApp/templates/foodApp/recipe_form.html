@@ -7,19 +7,17 @@
             {% csrf_token %}
             <div class="container">
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Neues Rezept erstellen</legend>
+                <legend class="border-bottom mb-4" style="text-align: center;">Neues Rezept hinzufügen</legend>
                 {{ recipe_form.title | as_crispy_field}}
                 {{ recipe_form.description | as_crispy_field}}
                 {{ recipe_form.preparation | as_crispy_field}}
                 {{ recipe_form.work_time | as_crispy_field}}
+                {{ recipe_form.difficulty | as_crispy_field}}
                 {{ recipe_form.image | as_crispy_field }}
-                {% if perms.foodApp.change_recipe %}
-                    {{ recipe_form.reviewed | as_crispy_field}}
-                {% endif %}
             </fieldset>
             </div>
             <div class="container">
-                <p><a class="btn btn-secondary" href="{% url 'foodApp:addGrocery' %}" role="button">Neue Zutat erstellen</a></p>
+                <label>Zutat hinzufügen:</label>
                 {{ formset.management_form }}
                 {% for form in formset %}
                     {{ form.id }}
@@ -27,15 +25,25 @@
                         <div class="col-2">
                             <label>{{form.grocery | as_crispy_field }}</label>
                         </div>
-                        <div class="col-4">
+                        <div class="col-3">
                             <label>{{form.quantity | as_crispy_field }}</label>
-                            <button class="btn btn-success add-form-row mb-1 ml-2">+</button>
+                        </div>
+                        <div class="col-2">
+                            <button class="btn btn-success add-form-row mb-1 ml-2 float-left" style="margin: 32px;" >+</button>
                         </div>
                     </div>
                 {% endfor %}
             </div>
+            <div class="container" style="min-height: 100px;">
+                <p><a class="btn btn-outline-success float-left" href="{% url 'foodApp:addGrocery' %}" role="button">Neue Zutat erstellen</a></p>
+            </div>
             <div class="container">
-                <button type="submit" class="btn btn-primary">Rezept speichern</button>
+                {% if perms.foodApp.change_recipe %}
+                    {{ recipe_form.reviewed | as_crispy_field}}
+                {% endif %}
+            </div>
+            <div class="container" style="min-height: 30px;">
+                <button type="submit" class="btn btn-outline-success float-right">Rezept speichern</button>
             </div>
         </div>
     </form>
