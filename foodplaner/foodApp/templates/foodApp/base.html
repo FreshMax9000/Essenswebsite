@@ -70,7 +70,10 @@
       <hr>
       <footer>
         <div class="container" style="align-items: center;">
-          <p>&copy; INF18IN - DHBW 2020 </p>
+          <p>
+            &copy; INF18IN - DHBW 2020 - 
+            <a href="{% url 'foodApp:imprint' %}" style="color: inherit;text-decoration: inherit;">Impressum</a>
+          </p>
         </div>
       </footer>
 
@@ -82,4 +85,17 @@
     {% block custom_js %}
     {% endblock custom_js %}
   </body>
+  <script type="text/javascript" id="cookieinfo"
+    src="//cookieinfoscript.com/js/cookieinfo.min.js"
+    data-linkmsg="Weitere Informationen"
+    data-message="Diese Website nutzt Cookies, um bestmögliche Funktionalität bieten zu können. Bei weitere Benutzung dieser Website stimmst du der Benutzung unserer Cookies zu. "
+    data-moreinfo="https://www.cookiesandyou.com/"
+    data-close-text="Schließen"
+    data-divlinkbg="rgb(241, 201, 125)">
+  </script>
 </html>
+
+
+
+
+
