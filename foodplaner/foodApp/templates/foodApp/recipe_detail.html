@@ -33,9 +33,6 @@
                     {% endif %}
                 </div>
                 <div class="col-md-4" style="text-align: center;">
-                    <h4><small>Erstellt von: {{object.author}}</small></h4>
-                </div>
-                <div class="col-md-4" style="text-align: center;">
                     <h4><small>Schwierigkeit:
                         {% if object.difficulty == 1 %}
                             Einfach
@@ -50,7 +47,7 @@
                 </div>
                 <div class="col-md-12" style="text-align: center;  min-height: 100px;">
                     {% if object.image %}
-                    <img src={{object.image.url}} >
+                    <img src={{object.image.url}} style="max-height: 200px;">
                     {% endif %}
                 </div>
             </div>
@@ -63,7 +60,13 @@
                     {% endfor %}
             </div>
             <h3 style="line-height: 70px; text-decoration-line: underline;"><small>Zubereitung</small></h3>
-            <h4 style="text-indent: 30px"><small>{{object.preparation}}</small></h4>
+            <h4 ><small>{{object.preparation}}</small></h4>
+            <div class="container" style="min-height: 50px;"></div>
+            <div class="row">
+                <div class="col-md-12" style="text-align: center;">
+                    <h4><small>Erstellt von: {{object.author}}</small></h4>
+                </div>
+            </div>
         </div>   
 
         <!-- Commentaries in Collapsed View-->
