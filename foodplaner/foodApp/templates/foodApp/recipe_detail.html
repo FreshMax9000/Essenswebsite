@@ -58,12 +58,18 @@
             <h4 style="text-indent: 30px"><small>{{object.description}}</small></h4>
             <h3 style="line-height: 70px; text-decoration-line: underline;"><small>Zutaten</small></h3>
             <div class="list group">
-                    {% for each in object.ingredient_set.all %}
+                {% for each in object.ingredient_set.all %}
                     <h4 style="text-indent: 30px"><small><li>{{ each.quantity }}{{ each.grocery.unit }} {{ each.grocery.name }}</li></small></h4>
-                    {% endfor %}
+                {% endfor %}
             </div>
             <h3 style="line-height: 70px; text-decoration-line: underline;"><small>Zubereitung</small></h3>
-            <h4 style="text-indent: 30px"><small>{{object.preparation}}</small></h4>
+            <h4 ><small>{{object.preparation}}</small></h4>
+            <div class="container" style="min-height: 50px;"></div>
+            <div class="row">
+                <div class="col-md-12" style="text-align: center;">
+                    <h4><small>Erstellt von: {{object.author}}</small></h4>
+                </div>
+            </div>
         </div>   
 
         <!-- Commentaries in Collapsed View-->

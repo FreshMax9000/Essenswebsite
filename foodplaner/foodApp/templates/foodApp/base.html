@@ -42,7 +42,7 @@
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 70px; ; width: 150px; background-color: transparent;"> 
                   <img src="/media/profil.png" style="max-height: 30px;"; alt="Profli"><br><p style="font-size: medium">{{user}}</p></button>
                 <div class="dropdown-menu " aria-labelledby="dropdownMenuButton" >
-                  <a class="dropdown-item" href="{% url 'foodApp:myprofil' %}">Mein Profil</a>
+                  <a class="dropdown-item" href="{% url 'foodApp:myprofil' %}">Dein Profil</a>
                   {% if perms.foodApp.change_recipe %}
                     <a class="dropdown-item" href="{% url 'foodApp:reviewRecipesList' %}">Verifizieren</a>
                   {% endif %}
