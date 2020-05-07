@@ -37,11 +37,11 @@
             <div class="container" style="min-height: 100px;">
                 <p><a class="btn btn-outline-success float-left" href="{% url 'foodApp:addGrocery' %}" role="button">Neue Zutat erstellen</a></p>
             </div>
-            <div class="container">
-                {% if perms.foodApp.change_recipe %}
+            {% if perms.foodApp.can_review %}
+                <div class="container">
                     {{ recipe_form.reviewed | as_crispy_field}}
-                {% endif %}
-            </div>
+                </div>
+            {% endif %}
             <div class="container" style="min-height: 30px;">
                 <button type="submit" class="btn btn-outline-success float-right">Rezept speichern</button>
             </div>
