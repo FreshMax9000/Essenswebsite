@@ -30,6 +30,15 @@
                                 <h3><a  style=" color: black;"  href="{% url 'foodApp:recipesDetail' recipe.id %}" ><small>{{recipe.title}}</small></a></h3>
                             </div>
                         </div>
+                        {% if recipe.reviewed %}
+                            <span class="float-sm-right" style="font-size: 40px; color: green;">
+                                <i class="fa fa-check-square-o" ></i>
+                            </span>
+                        {% else %}
+                            <span class="float-sm-right" style="font-size: 40px; color: grey;">
+                                <i class="fa fa-edit" ></i>
+                            </span>
+                        {% endif %}
                     </div>
                 {% endfor %}       
             </div>
