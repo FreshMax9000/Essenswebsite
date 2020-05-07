@@ -46,12 +46,12 @@
                   <p class="lead">
                     {% for i in '0123456789'|make_list %}
                         {% if forloop.counter0 >= object.avg_rating %}
-                            <span class="fa fa-star-o fa-lg"></span>
+                            <span class="fa fa-star-o fa-lg" style="color: #28a745;"></span>
                         {% else %}
                             {% if forloop.counter > object.avg_rating and object.avg_rating > forloop.counter0 %}
-                                <span class="fa fa-star-half-o fa-lg"></span>
+                                <span class="fa fa-star-half-o fa-lg" style="color: #28a745;"></span>
                             {% else %}
-                                <span class="fa fa-star fa-lg"></span>
+                                <span class="fa fa-star fa-lg" style="color: #28a745;"></span>
                             {% endif %}
                         {% endif %}
                     {% endfor %}

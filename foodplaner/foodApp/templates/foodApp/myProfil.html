@@ -28,16 +28,17 @@
                             <div class="col-md-6 my-auto" style="text-align: center;">
                                 <h3><a  style=" color: black;"  href="{% url 'foodApp:recipesDetail' recipe.id %}" ><small>{{recipe.title}}</small></a></h3>
                             </div>
-                        </div>
+                            <div class="container" style="min-height: 20px;"></div>
                         {% if recipe.reviewed %}
-                            <span class="float-sm-right" style="font-size: 40px; color: green;">
-                                <i class="fa fa-check-square-o" ></i>
+                            <span class="col-md-12" style="font-size: 15px; color: green; text-align: center;">
+                                <i class="fa fa-check-square-o" > bereits veröffentlicht</i>
                             </span>
                         {% else %}
-                            <span class="float-sm-right" style="font-size: 40px; color: grey;">
-                                <i class="fa fa-edit" ></i>
+                            <span class="col-md-12" style="font-size: 15px; color: grey; text-align: center;">
+                                <i class="fa fa-edit" > nicht veröffentlicht</i>
                             </span>
                         {% endif %}
+                        </div>
                     </div>
                 {% endfor %}       
             </div>
