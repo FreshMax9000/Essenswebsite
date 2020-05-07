@@ -19,8 +19,11 @@
     </form>
     <br />
     
-    <div class="container" style="text-align: center;">
-      <p><a class="btn btn-lg btn-outline-success" href="{% url 'foodApp:addRecipe' %}" role="button">Rezept hinzufügen</a></p>
+    <div class="row" style="text-align: center;">
+      <div class="col-md-12" style="text-align: center;">
+        <p><a class="btn btn-lg btn-outline-success" href="{% url 'foodApp:addRecipe' %}" role="button">Rezept hinzufügen</a></p>
+        <p><a class="btn btn-outline-success" href="{% url 'foodApp:addGrocery' %}" role="button">Zutat hinzufügen</a></p>
+      </div>
     </div>
 
     <div class="row" style="text-align: center"></div>
