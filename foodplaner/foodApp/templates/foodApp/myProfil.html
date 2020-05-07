@@ -1,10 +1,9 @@
 {% extends "foodApp/base.html" %}
 {% block head_content %}
 <main role="main">
-   
     <div class="jumbotron">
         <div class="container">
-        <h1 class="display-4" >Hallo {{user}}!</h1>
+            <h1 class="display-4" >Hallo {{user}}!</h1>
         </div>
     </div>
 </main>
@@ -21,9 +20,9 @@
                 {% for recipe in myrecipes  %}
                     <div class="jumbotron" >
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-6" style="text-align: center;">
                                 {% if recipe.image %}
-                                <img src={{recipe.image.url}}  style="max-height: 150px;" alt="Rezept Bild">
+                                <img class="img-fluid" src={{recipe.image.url}}  style="max-height: 150px; width: auto;" alt="Rezept Bild">
                                 {% endif %}
                             </div>
                             <div class="col-md-6 my-auto" style="text-align: center;">
@@ -46,7 +45,8 @@
                 <h2>Deine Wochenpläne</h2>
                 {% for plan in myfoodplans  %}
                     <div class="jumbotron" >
-                        <a class="btn btn-outline-danger float-sm-right " href="{% url 'foodApp:foodplanDelete' plan.id %}" role="delete"><i class="fa fa-times" ></i></a>
+                        <a class="btn btn-outline-danger float-sm-right " href="{% url 'foodApp:foodplanDelete' plan.id %}" role="delete"data-toggle="tooltip" title="Löschen">
+                            <i class="fa fa-times" ></i></a>
                         <h3><a style=" color: black;"  href="{% url 'foodApp:agenda' plan.id %}" ><small>Wochenplan</small></a></h3>
                         ab {{plan.foodplan_recipe_set.first.date | date:"l j. F" }}
                     </div>
