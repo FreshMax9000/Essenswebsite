@@ -22,7 +22,7 @@
                 {% for form in formset %}
                     {{ form.id }}
                     <div class="row form-row">
-                        <div class="col-2">
+                        <div class="col-4">
                             <label>{{form.grocery | as_crispy_field }}</label>
                         </div>
                         <div class="col-3">
@@ -34,7 +34,7 @@
                     </div>
                 {% endfor %}
             </div>
-            {% if perms.foodApp.change_recipe %}
+            {% if perms.foodApp.can_review_recipe %}
                 <div class="container">
                     {{ recipe_form.reviewed | as_crispy_field}}
                 </div>

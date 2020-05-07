@@ -39,9 +39,9 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.title
-        
+
     class Meta:
-        permissions = (('can_review', 'Can Review Recipe'),)
+        permissions = (('can_review_recipe', 'Can review Recipe'),)
 
 
 class Ingredient(models.Model):

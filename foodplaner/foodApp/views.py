@@ -52,7 +52,7 @@ class ReviewRecipesListView(PermissionRequiredMixin, generic.ListView):
     ordering = ['title']
     template_name = "foodApp/recipe_list.html"
     paginate_by = 10
-    permission_required = 'foodApp.can_review'
+    permission_required = 'foodApp.can_review_recipe'
 
     def get_queryset(self):
         recipe_object = Recipe.objects.filter(reviewed=False)
@@ -70,7 +70,7 @@ class RecipesDetailView(UserPassesTestMixin, generic.DetailView, generic.list.Mu
 
     def test_func(self):
         is_valid = False
-        if self.request.user.has_perm('foodApp.can_review'):
+        if self.request.user.has_perm('foodApp.can_review_recipe'):
             is_valid = True
         elif self.request.user.is_authenticated and self.request.user == self.get_object().author:
                 is_valid = True
@@ -267,7 +267,7 @@ class UpdateRecipeView(UserPassesTestMixin, PermissionRequiredMixin, generic.Upd
 
     def test_func(self):
         is_valid = False
-        if self.request.user.has_perm('foodApp.can_review'):
+        if self.request.user.has_perm('foodApp.can_review_recipe'):
             is_valid = True
         elif self.request.user == self.get_object().author:
             is_valid = not self.get_object().reviewed

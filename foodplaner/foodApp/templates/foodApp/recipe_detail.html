@@ -6,7 +6,7 @@
                 <a class="btn btn-outline-danger float-sm-right " href="{% url 'foodApp:recipesDelete' object.id %}" role="button" data-toggle="tooltip" title="Löschen">
                     <i class="fa fa-times"></i></a>
             {% endif %}
-            {% if perms.foodApp.can_review %}
+            {% if perms.foodApp.can_review_recipe %}
                 <a class="btn btn-outline-dark float-sm-right " href="{% url 'foodApp:recipesUpdate' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
                     <i class="fa fa-edit"></i></a>
             {% else %}
