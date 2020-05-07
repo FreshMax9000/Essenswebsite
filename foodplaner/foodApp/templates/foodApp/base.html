@@ -6,35 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-
     
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/jumbotron/">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.1/examples/jumbotron/">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    
-        <title>Essensplan</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>Essensplan</title>
   </head>
   <body>
       <!-- Navigation -->
-      <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="min-height: 120px">
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="min-height: 110px">
         <img src="/media/Logo.png" alt="My image" class="rounded" height="60" max="30"class="img-fluid"> 
         <a class="navbar-brand" href="{% url 'foodApp:home' %}" style="height: 70px"> <h1 class="display-4">Essensplan!</h1> </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarsExampleDefault" style="height: 150px">
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault" style="height: 110px">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'foodApp:home' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 30px;">Home<span class="sr-only">(current)</span></a>
-            </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'foodApp:foodplan' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 30px;">Essensplan</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'foodApp:myprofil' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 30px;">MeinProfil</a>
+              <a class="nav-link" href="{% url 'foodApp:recipesList' %}" style="font-size: x-large; height: 55px; color:azure ; padding: 30px;">Rezepte</a>
             </li>
           </ul>
           <!-- Login/Logout -->  
@@ -43,18 +40,24 @@
               <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 70px; ; width: 150px; background-color: transparent;"> 
                   <img src="/media/profil.png" style="max-height: 30px;"; alt="Profli"><br><p style="font-size: medium">{{user}}</p></button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" >
+                <div class="dropdown-menu " aria-labelledby="dropdownMenuButton" >
+                  <a class="dropdown-item" href="{% url 'foodApp:myprofil' %}">Dein Profil</a>
+                  {% if perms.foodApp.change_recipe %}
+                    <a class="dropdown-item" href="{% url 'foodApp:reviewRecipesList' %}">Verifizieren</a>
+                  {% endif %}
                   <a class="dropdown-item" href="{% url 'profile' %}">Einstellungen</a>
-                  <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                  <a class="dropdown-item" href="{% url 'logout' %}">Abmelden</a>
                 </div>
               </div>
-
             {% else %}
-              <a class="btn btn-outline-success" style="font-size: x-large" href="{% url 'login' %}">Login</a>
+            <a class="btn btn-outline-success mx-2" style="font-size: x-large" href="{% url 'login' %}">Anmelden</a>
+            <a class="btn btn-outline-success mx-2" style="font-size: x-large" href="{% url 'register' %}">Registrieren</a>
             {% endif %}
           </div>
         </div>
       </nav>
+      {% block head_content %}
+      {% endblock head_content %}
   
       {% if messages %}
         <div class="container">
@@ -66,23 +69,25 @@
 
       {% block main_content %}
       {% endblock main_content %}
-  
       <hr>
       <footer>
         <div class="container" style="align-items: center;">
-          <p>
-            &copy; INF18IN - DHBW 2020 - 
-            <a href="{% url 'foodApp:imprint' %}" style="color: inherit;text-decoration: inherit;">Impressum</a>
-          </p>
+        <p class="pull-left">&copy; INF18IN - DHBW 2020</p>
+          <div class="pull-right">
+            <div class="list-inline">
+               <a style="color: black;" href="#">Datenschutz</a>
+               <a style="color: black;" href="#">Impressum</a>
+            </div>
+          </div>
         </div>
       </footer>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    {% block custom_js %}
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  {% block custom_js %}
     {% endblock custom_js %}
   </body>
   <script type="text/javascript" id="cookieinfo"

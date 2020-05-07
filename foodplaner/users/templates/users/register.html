@@ -2,22 +2,22 @@
 {% load crispy_forms_tags %}
 {% block main_content %}
 <main role="main" class="container">
-    <div class="jumbotron">
+    <div class="jumbotron" style="background-color: white;">
         <form method="POST">
             {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Join Today</legend>
-                {{ form|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Sign Up</button>
+            <div class="card">
+                <div class="card-header" style="text-align: center;">
+                    <legend >Registrieren</legend>
+                </div>
+                <div class="card-body">
+                    {{ form|crispy }}
+                    <div class="text-muted">
+                        Du hast bereits einen Account? <a class="ml-2" style="color: #5cb85c;" href="{% url 'login' %}">Anmelden</a>
+                    </div>
+                    <button class="btn btn-outline-success float-right" type="submit">Registrieren</button>
+                </div>
             </div>
         </form>
-        <div class="border-top pt-3">
-            <small class="text-muted">
-                Already Have An Account? <a class="ml-2" href="{% url 'login' %}">Sign In</a>
-            </small>
-        </div>
     </div>
 </main>
 {% endblock main_content %}

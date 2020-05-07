@@ -3,22 +3,25 @@
 {% block main_content %}
 <main role="main" class="container">
     <div class="jumbotron">
-      <div class="media">
-        <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
-        <div class="media-body">
+      <div class="row">
+        <div class="col-md-12" style="text-align: center;">
+          <img class="rounded account-img mr-2" src="{{ user.profile.image.url }}" style="height:120px">
+        </div>
+        <div class="col-md-12" style="text-align: center;">
           <h2 class="account-heading">{{ user.username }}</h2>
           <p class="text-secondary">{{ user.email }}</p>
         </div>
       </div>
+
       <form method="POST" enctype="multipart/form-data">
           {% csrf_token %}
           <fieldset class="form-group">
-              <legend class="border-bottom mb-4">Profile Info</legend>
+              <legend class="border-bottom mb-4">Profil Info</legend>
               {{ u_form|crispy }}
               {{ p_form|crispy }}
           </fieldset>
-          <div class="form-group">
-              <button class="btn btn-outline-info" type="submit">Update</button>
+          <div class="form-group" style="min-height: 10px;">
+              <button class="btn btn-outline-success float-right" type="submit">Update</button>
           </div>
       </form>
     </div>

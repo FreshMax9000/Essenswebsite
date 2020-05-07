@@ -1,23 +1,27 @@
 {% extends "foodApp/base.html" %}
-{% block main_content %}
-    <main role="main">
-    
+{% block head_content %}
+<main role="main">
     <div class="jumbotron">
         <div class="container">
             <div class="row">
-                <div class="col-md-10">
-                    <h1 class="display-3">Mein Wochenplan</h1>
+                <div class="col-md-12">
+                    <h1 class="display-4">Mein Wochenplan!</h1>
                 </div>
-                <div class="col-md-2">
-                    <p><a class="btn btn-secondary" href="{% url 'foodApp:shopping' object.id  %}" role="button">Einkaufsliste &raquo;</a></p>
+                <div class="col-md-12">
+                    <p><a class="btn btn-outline-success " href="{% url 'foodApp:shopping' object.id %}" role="button">Einkaufsliste &raquo;</a></p>
                 </div>
             </div>
         </div>
     </div>
+</main>
+{% endblock head_content %}
 
+<!--main content-->
+{% block main_content %}
+<main role="main">
     <div class="container">
         <!-- Current agenda -->
-        <table class="table">
+        <table class="table table-outline-success">
             <thead>
               <tr>
                 <th scope="col"></th>
@@ -27,16 +31,26 @@
             </thead>
             <tbody>
                 {% for object in object_list %}
-                <tr>
-                  <th scope="row">{{ object.date }}</th>
-                  <td>{{ object.recipe.title }}</td>
-                  <td></td>
-                </tr>
+                    {% ifchanged object.date %}
+                        {% if not forloop.first %}
+                            </tr>
+                        {% endif %}
+                        <tr>
+                        <th scope="row">{{ object.date | date:"l j. F" }}</th> <!-- "l": Monday | "j": 1 | "F": January -->
+                        {% if object.daytime %} <!-- datetime = True: lunch -->
+                            <td><a style=" color: black;" href="{% url 'foodApp:recipesDetail' object.recipe.id %}" >{{ object.recipe.title }}</a></td><td>
+                        {% else %} <!-- datetime = False: dinner -->
+                            <td></td>
+                            <td><a style=" color: black;" href="{% url 'foodApp:recipesDetail' object.recipe.id %}" >{{ object.recipe.title }}</a></td>
+                        {% endif %}
+                    {% else %} <!-- datetime = False: dinner -->
+                        <a style=" color: black;" href="{% url 'foodApp:recipesDetail' object.recipe.id %}" >{{ object.recipe.title }}</a></td>
+                    {% endifchanged %}
                 {% endfor %}
+                </tr>
             </tbody>
-          </table>
+        </table>
+        <div class="container" style="min-height: 30px;"></div>
     </div>
-    <!-- /container -->
-
-    </main>
+</main>
 {% endblock main_content %}
