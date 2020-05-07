@@ -28,16 +28,17 @@
                             <div class="col-md-6 my-auto" style="text-align: center;">
                                 <h3><a  style=" color: black;"  href="{% url 'foodApp:recipesDetail' recipe.id %}" ><small>{{recipe.title}}</small></a></h3>
                             </div>
+                            <div class="container" style="min-height: 20px;"></div>
+                            {% if recipe.reviewed %}
+                                <span class="col-md-12" style="font-size: 15px; color: #28a745; text-align: center;">
+                                    <i class="fa fa-check-square-o"></i> bereits veröffentlicht
+                                </span>
+                            {% else %}
+                                <span class="col-md-12" style="font-size: 15px; color: grey; text-align: center;">
+                                    <i class="fa fa-edit"></i> nicht veröffentlicht
+                                </span>
+                            {% endif %}
                         </div>
-                        {% if recipe.reviewed %}
-                            <span class="float-sm-right" style="font-size: 40px; color: green;">
-                                <i class="fa fa-check-square-o" ></i>
-                            </span>
-                        {% else %}
-                            <span class="float-sm-right" style="font-size: 40px; color: grey;">
-                                <i class="fa fa-edit" ></i>
-                            </span>
-                        {% endif %}
                     </div>
                 {% endfor %}       
             </div>
@@ -48,6 +49,8 @@
                         <a class="btn btn-outline-danger float-sm-right " href="{% url 'foodApp:foodplanDelete' plan.id %}" role="delete"data-toggle="tooltip" title="Löschen">
                             <i class="fa fa-times" ></i></a>
                         <h3><a style=" color: black;"  href="{% url 'foodApp:agenda' plan.id %}" ><small>Wochenplan</small></a></h3>
+
+                        
                         ab {{plan.foodplan_recipe_set.first.date | date:"l j. F" }}
                     </div>
                 {% endfor %}  

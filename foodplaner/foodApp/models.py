@@ -41,6 +41,7 @@ class Recipe(models.Model):
         return self.title
 
     class Meta:
+        ordering = ['title']
         permissions = (('can_review_recipe', 'Can review Recipe'),)
 
 
@@ -80,3 +81,6 @@ class Foodplan_Recipe(models.Model):
 
     def __str__(self):
         return f"{self.foodplan} | Day {self.date}"
+        
+    class Meta:
+        ordering = ['date', '-daytime']
