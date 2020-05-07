@@ -2,11 +2,22 @@
 {% block main_content %}
     <main role="main" class="container">
         <div class="jumbotron">
-            {% if perms.foodApp.change_recipe %}
+            {% if perms.foodApp.delete_recipe %}
                 <a class="btn btn-outline-danger float-sm-right " href="{% url 'foodApp:recipesDelete' object.id %}" role="button" data-toggle="tooltip" title="Löschen">
                     <i class="fa fa-times"></i></a>
+            {% endif %}
+            {% if perms.foodApp.can_review_recipe %}
                 <a class="btn btn-outline-dark float-sm-right " href="{% url 'foodApp:recipesUpdate' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
                     <i class="fa fa-edit"></i></a>
+            {% else %}
+                {% if perms.foodApp.change_recipe %}
+                    {% if user == object.author %}
+                        {% if not object.reviewed %}
+                        <a class="btn btn-outline-dark float-sm-right " href="{% url 'foodApp:recipesUpdate' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
+                            <i class="fa fa-edit"></i></a>
+                    {% endif %}
+                    {% endif %}
+                {% endif %}
             {% endif %}
             <div class="row">
                 <div class="col-md-12" style="text-align: center;  min-height: 100px;">

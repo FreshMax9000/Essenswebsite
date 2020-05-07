@@ -9,7 +9,7 @@ class Grocery(models.Model):
     unit = models.CharField(max_length=15, default="")
 
     def __str__(self):
-        return self.name
+        return f"{self.name} [{self.unit}]"
 
 
 class Recipe(models.Model):
@@ -39,6 +39,9 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        permissions = (('can_review_recipe', 'Can review Recipe'),)
 
 
 class Ingredient(models.Model):

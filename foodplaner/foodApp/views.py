@@ -52,7 +52,7 @@ class ReviewRecipesListView(PermissionRequiredMixin, generic.ListView):
     ordering = ['title']
     template_name = "foodApp/recipe_list.html"
     paginate_by = 10
-    permission_required = 'foodApp.change_recipe'
+    permission_required = 'foodApp.can_review_recipe'
 
     def get_queryset(self):
         recipe_object = Recipe.objects.filter(reviewed=False)
@@ -70,8 +70,10 @@ class RecipesDetailView(UserPassesTestMixin, generic.DetailView, generic.list.Mu
 
     def test_func(self):
         is_valid = False
-        if self.request.user.has_perm('foodApp.change_recipe'):
+        if self.request.user.has_perm('foodApp.can_review_recipe'):
             is_valid = True
+        elif self.request.user.is_authenticated and self.request.user == self.get_object().author:
+                is_valid = True
         else:
             is_valid = self.get_object() in get_recipe_object()
         return is_valid
@@ -82,7 +84,7 @@ class MyProfil(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         self.context_object_name = 'myrecipes'
-        queryset = get_recipe_object().filter(author=self.request.user).order_by('title')
+        queryset = Recipe.objects.filter(author=self.request.user).order_by('title')
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -199,9 +201,12 @@ class CreateRecipeView(PermissionRequiredMixin, generic.CreateView):
                         ingredient.recipe = recipe
                         ingredient.save()
         return super().form_valid(form)
+        
+    def get_success_url(self):
+        return reverse_lazy('foodApp:recipesDetail', kwargs={'pk': self.object.pk})
 
 
-class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
+class UpdateRecipeView(UserPassesTestMixin, PermissionRequiredMixin, generic.UpdateView):
     model = Recipe
     permission_required = 'foodApp.change_recipe'
     form_class = RecipeForm
@@ -260,6 +265,14 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
                 element.delete()
         return super().form_valid(form)
 
+    def test_func(self):
+        is_valid = False
+        if self.request.user.has_perm('foodApp.can_review_recipe'):
+            is_valid = True
+        elif self.request.user == self.get_object().author:
+            is_valid = not self.get_object().reviewed
+        return is_valid
+
     def get_success_url(self):
         return reverse_lazy('foodApp:recipesDetail', kwargs={'pk': self.kwargs['pk']})
 
@@ -305,7 +318,7 @@ class CommentaryCreateView(PermissionRequiredMixin, generic.CreateView):
         return super().form_valid(form)
         
     def get_success_url(self):
-        return reverse_lazy('foodApp:recipesDetail', kwargs = {'pk': self.kwargs['pk']})
+        return reverse_lazy('foodApp:recipesDetail', kwargs={'pk': self.kwargs['pk']})
 
 
 class CommentaryUpdateView(PermissionRequiredMixin, generic.UpdateView):

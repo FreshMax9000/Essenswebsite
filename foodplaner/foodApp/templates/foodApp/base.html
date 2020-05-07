@@ -40,7 +40,7 @@
                   <img src="/media/profil.png" style="max-height: 30px;"; alt="Profli"><br><p style="font-size: medium">{{user}}</p></button>
                 <div class="dropdown-menu " aria-labelledby="dropdownMenuButton" >
                   <a class="dropdown-item" href="{% url 'foodApp:myprofil' %}">Dein Profil</a>
-                  {% if perms.foodApp.change_recipe %}
+                  {% if perms.foodApp.can_review_recipe %}
                     <a class="dropdown-item" href="{% url 'foodApp:reviewRecipesList' %}">Verifizieren</a>
                   {% endif %}
                   <a class="dropdown-item" href="{% url 'profile' %}">Einstellungen</a>
