@@ -498,3 +498,7 @@ def generate_recipe(request, foodplan_object, recipe_list, temp_date, daytime):
     save_date.daytime = daytime
     save_date.save()
     return recipe_list.exclude(id=random_recipes.id)
+
+
+def imprint(request): 
+    return render(request, 'foodApp/imprint.html')
