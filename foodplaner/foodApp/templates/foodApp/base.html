@@ -19,20 +19,20 @@
       <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="min-height: 100px">
         <img src="/media/Logo.png" alt="My image" class="rounded mr-2" height="60" max="30"class="img-fluid"> 
         <a class="navbar-brand" href="{% url 'foodApp:home' %}"><h1 class="display-4">Essensplan!</h1></a>
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'foodApp:foodplan' %}" style="font-size: x-large; height: 55px; color:azure ; ">Essensplan</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'foodApp:recipesList' %}" style="font-size: x-large; height: 55px; color:azure ; ">Rezepte</a>
-          </li>
-        </ul>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarsExampleDefault" style="height: 100px">
           <ul class="navbar-nav mr-auto">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'foodApp:foodplan' %}" style="font-size: x-large; height: 55px; color:azure ; ">Essensplan</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'foodApp:recipesList' %}" style="font-size: x-large; height: 55px; color:azure ; ">Rezepte</a>
+              </li>
+            </ul>
           </ul>
           <!-- Login/Logout -->  
           <div class="navbar-nav">

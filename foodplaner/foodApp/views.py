@@ -28,6 +28,11 @@ from .forms import CommentaryForm
 def home(request):
     return render(request, 'foodApp/home.html')
 
+
+def imprint(request):
+    return render(request, 'foodApp/imprint.html')
+
+
 def get_recipe_object():
     """
         desc:
@@ -39,12 +44,11 @@ def get_recipe_object():
 
 class RecipesListView(generic.ListView):
     model = Recipe
-    ordering = ['title']
     template_name = "foodApp/recipe_list.html"
     paginate_by = 10
 
     def get_queryset(self):
-        return get_recipe_object().filter(title__icontains=self.request.GET.get('q', '')).order_by('title')
+        return get_recipe_object().filter(title__icontains=self.request.GET.get('q', ''))
 
 
 class ReviewRecipesListView(PermissionRequiredMixin, generic.ListView):
@@ -56,7 +60,7 @@ class ReviewRecipesListView(PermissionRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         recipe_object = Recipe.objects.filter(reviewed=False)
-        return recipe_object.filter(title__icontains=self.request.GET.get('q', '')).order_by('title')
+        return recipe_object.filter(title__icontains=self.request.GET.get('q', ''))
 
 
 class RecipesDetailView(UserPassesTestMixin, generic.DetailView, generic.list.MultipleObjectMixin):
@@ -84,7 +88,7 @@ class MyProfil(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         self.context_object_name = 'myrecipes'
-        queryset = Recipe.objects.filter(author=self.request.user).order_by('title')
+        queryset = Recipe.objects.filter(author=self.request.user)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -105,7 +109,7 @@ class Agenda(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(Agenda, self).get_context_data(**kwargs)
-        context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk')).order_by('date', '-daytime')
+        context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk'))
         return context
 
 
@@ -435,7 +439,7 @@ def foodplan(request):
     context = {
         'filter': foodplan_filter,
         'form': form,
-        'object_list': Foodplan_Recipe.objects.filter(foodplan=foodplan_object).order_by('date', '-daytime'),
+        'object_list': Foodplan_Recipe.objects.filter(foodplan=foodplan_object),
     }
     return render(request, "foodApp/foodplan.html", context)
 
@@ -519,7 +523,3 @@ def generate_recipe(request, foodplan_object, recipe_list, temp_date, daytime):
     save_date.daytime = daytime
     save_date.save()
     return recipe_list.exclude(id=random_recipes.id)
-
-
-def imprint(request): 
-    return render(request, 'foodApp/imprint.html')
