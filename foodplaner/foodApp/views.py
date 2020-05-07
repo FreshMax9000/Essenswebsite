@@ -28,7 +28,6 @@ from .forms import CommentaryForm
 def home(request):
     return render(request, 'foodApp/home.html')
 
-
 def get_recipe_object():
     """
         desc:
@@ -62,10 +61,10 @@ class ReviewRecipesListView(PermissionRequiredMixin, generic.ListView):
 
 class RecipesDetailView(UserPassesTestMixin, generic.DetailView, generic.list.MultipleObjectMixin):
     model = Recipe
-    paginate_by = 2
+    paginate_by = 4
 
     def get_context_data(self, **kwargs):
-        object_list = Commentary.objects.filter(recipe_id=self.kwargs.get('pk'))
+        object_list = Commentary.objects.filter(recipe_id=self.kwargs.get('pk')).order_by('pk')
         context = super(RecipesDetailView, self).get_context_data(object_list=object_list)
         return context
 
@@ -79,7 +78,7 @@ class RecipesDetailView(UserPassesTestMixin, generic.DetailView, generic.list.Mu
 
 
 class MyProfil(LoginRequiredMixin, generic.ListView):
-    template_name = "foodApp/myprofil.html"
+    template_name = "foodApp/myProfil.html"
 
     def get_queryset(self):
         self.context_object_name = 'myrecipes'
@@ -104,7 +103,7 @@ class Agenda(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(Agenda, self).get_context_data(**kwargs)
-        context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk')).order_by('date')
+        context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk')).order_by('date', '-daytime')
         return context
 
 
@@ -193,16 +192,17 @@ class CreateRecipeView(PermissionRequiredMixin, generic.CreateView):
             except ValueError:
                 print('ValueError ')
             else:
-                if ingredient_form.cleaned_data:
-                    ingredient.recipe = recipe
-                    ingredient.save()
+                check_formset = ingredient_form.cleaned_data.get('quantity') is not None
+                check_formset = check_formset and ingredient_form.cleaned_data.get('grocery') is not None
+                if check_formset:
+                    if ingredient.quantity > 0:
+                        ingredient.recipe = recipe
+                        ingredient.save()
         return super().form_valid(form)
 
 
 class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
     model = Recipe
-
-    success_url = reverse_lazy('foodApp:home')
     permission_required = 'foodApp.change_recipe'
     form_class = RecipeForm
 
@@ -217,6 +217,7 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
                 'preparation': recipe.preparation,
                 'work_time': recipe.work_time,
                 'image': recipe.image,
+                'difficulty': recipe.difficulty,
                 'reviewed': recipe.reviewed,
             })
 
@@ -243,10 +244,13 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
                 except ValueError:
                     print('ValueError ')
                 else:
-                    if ingredient_form.cleaned_data:
-                        count_saved_forms += 1
-                        ingredient.recipe = Recipe.objects.get(id=self.kwargs['pk'])
-                        ingredient.save()
+                    check_formset = ingredient_form.cleaned_data.get('quantity') is not None
+                    check_formset = check_formset and ingredient_form.cleaned_data.get('grocery') is not None
+                    if check_formset:
+                        if ingredient.quantity > 0:
+                            count_saved_forms += 1
+                            ingredient.recipe = Recipe.objects.get(id=self.kwargs['pk'])
+                            ingredient.save()
 
             # necessary because the updateView didn't delete any ingredients
             # ingredients only got updated or added
@@ -255,6 +259,9 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
             for element in ingredient_list:
                 element.delete()
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('foodApp:recipesDetail', kwargs={'pk': self.kwargs['pk']})
 
 
 class DeleteRecipeView(PermissionRequiredMixin, generic.DeleteView):
@@ -266,7 +273,7 @@ class DeleteRecipeView(PermissionRequiredMixin, generic.DeleteView):
 class CreateGroceryView(PermissionRequiredMixin, generic.CreateView):
     model = Grocery
     form_class = CreateGroceryForm
-    success_url = reverse_lazy('foodApp:home')
+    success_url = reverse_lazy('foodApp:addRecipe')
     permission_required = 'foodApp.add_grocery'
 
 
@@ -286,7 +293,6 @@ class DeleteGroceryView(PermissionRequiredMixin, generic.DeleteView):
 class CommentaryCreateView(PermissionRequiredMixin, generic.CreateView):
     model = Commentary
     form_class = CommentaryForm
-    success_url = reverse_lazy('foodApp:home')
     permission_required = 'foodApp.add_commentary'
 
     def form_valid(self, form):
@@ -297,12 +303,14 @@ class CommentaryCreateView(PermissionRequiredMixin, generic.CreateView):
         commentary_list = Commentary.objects.filter(recipe_id=recipe.id)
         calc_avg_rating(recipe, commentary_list, form.instance.rating)
         return super().form_valid(form)
+        
+    def get_success_url(self):
+        return reverse_lazy('foodApp:recipesDetail', kwargs = {'pk': self.kwargs['pk']})
 
 
 class CommentaryUpdateView(PermissionRequiredMixin, generic.UpdateView):
     model = Commentary
     form_class = CommentaryForm
-    success_url = reverse_lazy('foodApp:home')
     permission_required = 'foodApp.change_commentary'
 
     def form_valid(self, form):
@@ -310,6 +318,9 @@ class CommentaryUpdateView(PermissionRequiredMixin, generic.UpdateView):
         commentary_list = Commentary.objects.filter(recipe_id=recipe.id).exclude(id=self.kwargs.get('pk'))
         calc_avg_rating(recipe, commentary_list, form.instance.rating)
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('foodApp:recipesDetail', kwargs={'pk': self.kwargs['pk']})
 
 
 class CommentaryDeleteView(PermissionRequiredMixin, generic.DeleteView):
@@ -411,7 +422,7 @@ def foodplan(request):
     context = {
         'filter': foodplan_filter,
         'form': form,
-        'object_list': Foodplan_Recipe.objects.filter(foodplan=foodplan_object).order_by('date'),
+        'object_list': Foodplan_Recipe.objects.filter(foodplan=foodplan_object).order_by('date', '-daytime'),
     }
     return render(request, "foodApp/foodplan.html", context)
 
@@ -495,3 +506,7 @@ def generate_recipe(request, foodplan_object, recipe_list, temp_date, daytime):
     save_date.daytime = daytime
     save_date.save()
     return recipe_list.exclude(id=random_recipes.id)
+
+
+def imprint(request): 
+    return render(request, 'foodApp/imprint.html')

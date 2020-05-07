@@ -19,10 +19,11 @@ class FoodplanForm(forms.ModelForm):
 
 class CommentaryForm(forms.ModelForm):
     title = forms.CharField(max_length=50, label='Titel: ')
-    title.widget = forms.TextInput(attrs={'placeholder': 'Hier Titel eingeben'})
+    title.widget = forms.TextInput(attrs={'placeholder': 'Titel eingeben'})
     content = forms.CharField(label='Kommentar: ')
-    content.widget = forms.Textarea(attrs={'placeholder': 'Hier den Kommentar einfügen'})
-    rating = forms.IntegerField(min_value=1, max_value=10, label='Bewertung (1-10): ')
+    content.widget = forms.Textarea(attrs={'placeholder': 'Kommentar eingeben'})
+    rating = forms.IntegerField(min_value=1, max_value=10, label='Bewertung: ')
+    rating.widget = forms.HiddenInput()
 
     class Meta:
         model = Commentary
@@ -39,7 +40,7 @@ class CreateGroceryForm(forms.ModelForm):
 
 
 class CreateIngredientForm(forms.ModelForm):
-    quantity = forms.DecimalField(min_value=0.1, required=False, label='Menge: ')
+    quantity = forms.DecimalField(min_value=0, required=False, label='Menge: ')
     grocery = forms.ModelChoiceField(queryset=Grocery.objects.all().order_by('name'), empty_label=" --- ", required=False, label="Zutat: ")
 
     class Meta:
@@ -49,18 +50,20 @@ class CreateIngredientForm(forms.ModelForm):
 
 class RecipeForm(forms.ModelForm):
     title = forms.CharField(max_length=50, label='Titel: ')
-    title.widget = forms.TextInput(attrs={'placeholder': 'Hier Titel eingeben'})
+    title.widget = forms.TextInput(attrs={'placeholder': 'Titel eingeben'})
     description = forms.CharField(max_length=100, required=False, label='Beschreibung: ')
-    description.widget = forms.TextInput(attrs={'placeholder': 'Hier Kurzbeschreibung eingeben'})
+    description.widget = forms.TextInput(attrs={'placeholder': 'Kurzbeschreibung eingeben'})
     preparation = forms.CharField(label='Zubereitung: ')
-    preparation.widget = forms.Textarea(attrs={'placeholder': 'Hier die Zubereitung beschreiben'})
+    preparation.widget = forms.Textarea(attrs={'placeholder': 'Zubereitung eingeben'})
     work_time = forms.IntegerField(min_value=1, label='Zubereitungszeit: ')
     reviewed = forms.BooleanField(required=False, label='Rezept veröffentlichen')
-    image = forms.ImageField(required=False, label='Bild hinzufügen')
-  
+    image = forms.ImageField(required=False, label='Bild hinzufügen:')
+    difficulty_choices = {(1, 'Einfach'), (2, 'Mittel'), (3, 'Schwer')}
+    difficulty = forms.ChoiceField(choices=difficulty_choices, initial=1, label='Schwierigkeit: ')
+
     class Meta:
         model = Recipe
-        fields = ('title', 'description', 'preparation', 'work_time', 'image', 'reviewed')
+        fields = ('title', 'description', 'preparation', 'work_time', 'image', 'reviewed', 'difficulty')
 
 
 IngredientFormset = modelformset_factory(Ingredient, form=CreateIngredientForm)

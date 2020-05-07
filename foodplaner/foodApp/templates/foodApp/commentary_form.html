@@ -6,13 +6,60 @@
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Neuen Kommentar erstellen</legend>
+                <legend class="border-bottom mb-4" style="text-align: center;">Neuen Kommentar erstellen</legend>
                 {{ form|crispy }}
+                {{ form.rating.label }}*
+                <div class="rating-select">
+                    {% for i in '0123456789'|make_list %}
+                        <span class="fa fa-star-o fa-lg" data-rating="{{ forloop.counter }}"></span>
+                    {% endfor %}
+                  </div>
             </fieldset>
             <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Hinzufügen</button>
+                <button class="btn btn-outline-success float-right" type="submit">Hinzufügen</button>
             </div>
         </form>
     </div>
 </main>
 {% endblock main_content %}
+
+{% block custom_js %}
+<script>
+$(function(){
+    $('.rating-select .fa').on('mouseover', function(){
+        $(this).removeClass('fa-star-o').addClass('fa-star');
+        $(this).prevAll().removeClass('fa-star-o').addClass('fa-star');;
+        $(this).nextAll().removeClass('fa-star').addClass('fa-star-o');;
+    });
+
+    $('.rating-select').on('mouseleave', function(){
+        active = $(this).parent().find('.selected');
+        if(active.length) {
+            active.removeClass('fa-star-o').addClass('fa-star');
+            active.prevAll().removeClass('fa-star-o').addClass('fa-star');
+            active.nextAll().removeClass('fa-star').addClass('fa-star-o');
+        } else {
+            $(this).find('.fa').removeClass('fa-star').addClass('fa-star-o');
+        }
+    });
+
+    $('.rating-select .fa').click(function(){
+        var num = 0
+        if($(this).hasClass('selected')) {
+            $('.rating-select .selected').removeClass('selected');
+        } else {
+            $('.rating-select .selected').removeClass('selected');
+            $(this).addClass('selected');
+            num = parseInt($(this).attr("data-rating"));
+        }
+        $('#id_rating').val(num);
+    });
+});
+$(document).ready(function() {
+    var num =  $('#id_rating').val();
+    active = $("span[data-rating='"+num+"']")
+    active.removeClass('fa-star-o').addClass('fa-star selected');
+    active.prevAll().removeClass('fa-star-o').addClass('fa-star');
+});
+</script>
+{% endblock custom_js %}

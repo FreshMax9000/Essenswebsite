@@ -10,7 +10,7 @@
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-danger" type="submit">Ja, löschen</button>
-                <a class="btn btn-outline-secondary" href="{% url 'foodApp:commentaryList' object.recipe.id %}">Abbrechen</a>
+                <a class="btn btn-outline-secondary" href="{% url 'foodApp:recipesDetail' object.recipe.id %}">Abbrechen</a>
             </div>
         </form>
     </div>

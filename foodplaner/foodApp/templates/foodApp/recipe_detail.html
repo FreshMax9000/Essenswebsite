@@ -3,29 +3,73 @@
     <main role="main" class="container">
         <div class="jumbotron">
             {% if perms.foodApp.change_recipe %}
-                <a class="btn btn-danger float-sm-right " href="{% url 'foodApp:recipesDelete' object.id %}" role="button" data-toggle="tooltip" title="Löschen">
+                <a class="btn btn-outline-danger float-sm-right " href="{% url 'foodApp:recipesDelete' object.id %}" role="button" data-toggle="tooltip" title="Löschen">
                     <i class="fa fa-times"></i></a>
-                <a class="btn btn-dark float-sm-right " href="{% url 'foodApp:recipesUpdate' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
+                <a class="btn btn-outline-dark float-sm-right " href="{% url 'foodApp:recipesUpdate' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
                     <i class="fa fa-edit"></i></a>
             {% endif %}
-            <h1>{{object.title}}</h1>
-            {% if object.image %}
-                <img src={{object.image.url}}>
-            {% endif %}
-            <p class="lead">Kurzbeschreibung: {{object.description}}</p>
-            {% if object.avg_rating > 0 %}
-                <p class="lead">Bewertung: {{object.avg_rating | floatformat:1 }}</p>
-            {% endif %}
-            <p class="lead">Verarbeitungszeit: {{object.work_time}}min</p>
-            <p class="lead">Zutaten:
-                <div class="lead container">
-                    {% for each in object.ingredient_set.all %}
-                        <li>{{ each.quantity }}{{ each.grocery.unit }} {{ each.grocery.name }}</li>
-                    {% endfor %}
+            <div class="row">
+                <div class="col-md-12" style="text-align: center;  min-height: 100px;">
+                    <h1 style="text-decoration-line: underline;">{{object.title}}</h1>
                 </div>
-            </p>
-            <p class="lead">Zubereitung: {{object.preparation}}</p>
-            <p class="lead">Erstellt von: {{object.author}}</p>
+                {% if object.avg_rating > 0 %}
+                    <div class="col-md-12" style="text-align: center;">
+                            <h4><small>
+                                {% for i in '0123456789'|make_list %}
+                                    {% if forloop.counter0 >= object.avg_rating %}
+                                        <span class="fa fa-star-o fa-lg"></span>
+                                    {% else %}
+                                        {% if forloop.counter > object.avg_rating and object.avg_rating > forloop.counter0 %}
+                                            <span class="fa fa-star-half-o fa-lg"></span>
+                                        {% else %}
+                                            <span class="fa fa-star fa-lg"></span>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </small></h4>
+                    </div>
+                {% endif %}
+                <div class="col-md-4" style="text-align: center;">
+                    <h4><small>Verarbeitungszeit: {{object.work_time}}min</small></h4>
+                </div>
+                <div class="col-md-4" style="text-align: center;">
+                    <h4><small>Schwierigkeit:
+                        {% if object.difficulty == 1 %}
+                            Einfach
+                        {% endif %}
+                        {% if object.difficulty == 2 %}
+                            Mittel
+                        {% endif %}
+                        {% if object.difficulty == 3 %}
+                            Schwer
+                        {% endif %}
+                    </small></h4>
+                </div>
+                <div class="col-md-4" style="text-align: center;">
+                    <h4><small>Erstellt von: {{object.author}}</small></h4>
+                </div>
+                {% if object.image %}
+                    <div class="col-md-12" style="text-align: center;  min-height: 100px;">
+                        <img src={{object.image.url}} >
+                    </div>
+                {% endif %}
+            </div>
+            <h3 style="line-height: 70px; text-decoration-line: underline;"><small>Kurzbeschreibung</small></h3>
+            <h4 style="text-indent: 30px"><small>{{object.description}}</small></h4>
+            <h3 style="line-height: 70px; text-decoration-line: underline;"><small>Zutaten</small></h3>
+            <div class="list group">
+                {% for each in object.ingredient_set.all %}
+                    <h4 style="text-indent: 30px"><small><li>{{ each.quantity }}{{ each.grocery.unit }} {{ each.grocery.name }}</li></small></h4>
+                {% endfor %}
+            </div>
+            <h3 style="line-height: 70px; text-decoration-line: underline;"><small>Zubereitung</small></h3>
+            <h4 ><small>{{object.preparation}}</small></h4>
+            <div class="container" style="min-height: 50px;"></div>
+            <div class="row">
+                <div class="col-md-12" style="text-align: center;">
+                    <h4><small>Erstellt von: {{object.author}}</small></h4>
+                </div>
+            </div>
         </div>   
 
         <!-- Commentaries in Collapsed View-->
@@ -33,10 +77,10 @@
             <div class="card">
                 <div class="card-header" id="headingOne">
                     <h5 class="mb-0">
-                        <a class="btn btn-success float-sm-right" href="{% url 'foodApp:createCommentary' object.id %}" role="button" data-toggle="tooltip" title="Kommentar hinzufügen">
+                        <a class="btn btn-outline-success float-sm-right" href="{% url 'foodApp:createCommentary' object.id %}" role="button" data-toggle="tooltip" title="Kommentar hinzufügen">
                             <i class="fa fa-plus"></i>
                         </a>
-                        <button class="btn btn-info collapsed" type="button" data-toggle="collapse" data-target="#commentary_list" aria-controls="commentary_list">
+                        <button class="btn btn-outline-success collapsed" type="button" data-toggle="collapse" data-target="#commentary_list" aria-controls="commentary_list">
                             Kommentare
                         </button>
                     </h5>
@@ -46,20 +90,39 @@
                         {% for object in object_list %}
                             <div class="jumbotron">
                                 {% if perms.foodApp.delete_commentary %}
-                                    <a class="btn btn-danger float-right " href="{% url 'foodApp:deleteCommentary' object.id %}" role="button" data-toggle="tooltip" title="Löschen">
+                                    <a class="btn btn-outline-danger float-right " href="{% url 'foodApp:deleteCommentary' object.id %}" role="button" data-toggle="tooltip" title="Löschen">
                                         <i class="fa fa-times"></i>
                                     </a>
-                                    <a class="btn btn-dark float-right " href="{% url 'foodApp:updateCommentary' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
+                                    <a class="btn btn-outline-dark float-right " href="{% url 'foodApp:updateCommentary' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 {% endif %}
-                                <h1>{{object.title}}</h1>
-                                <p class="lead">Bewertung: {{object.rating }}</p>
-                                <p class="lead">{{object.content}}</p>
-                                <p class="lead">Erstellt von: {{object.author}}</p>
+                                <div class="row">
+                                    <div class="col-md-12" style="text-align: center;">
+                                        <h3 style="text-decoration: underline;"><small>{{object.title}}</small></h3>
+                                    </div>
+                                    <div class="col-md-12" style="text-align: center;">
+                                        {% for i in '0123456789'|make_list %}
+                                            {% if forloop.counter > object.rating %}
+                                                <span class="fa fa-star-o fa-lg"></span>
+                                            {% else %}
+                                                <span class="fa fa-star fa-lg"></span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="col-md-12" style="text-align: center;">
+                                        <h4 style="text-indent: 30px"><small>{{object.content}}</small></h4>
+                                    </div>
+                                    <div class="col-md-6" style="text-align: center;">
+                                        <h4 style="text-indent: 30px"><small>Erstellt von: {{object.author}}</small></h4>
+                                    </div>
+                                    <div class="col-md-6" style="text-align: center;">
+                                        <h4 style="text-indent: 30px"><small>Erstellt am: {{object.date}}</small></h4>
+                                    </div>
+                                </div>
                             </div>
                         {% empty %}
-                            <h5>Leider wurden noch keine Kommentate erstellt</h5>
+                            <h5>Zu diesem Rezept gibt es noch keine Kommentare</h5>
                         {% endfor %}
                         {% if page_obj %}
                             <div class="pagination">

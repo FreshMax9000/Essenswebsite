@@ -4,11 +4,11 @@
     <div class="jumbotron">
         <div class="container">
             <div class="row">
-                <div class="col-md-10">
-                    <h1 class="display-3">Mein Wochenplan</h1>
+                <div class="col-md-12">
+                    <h1 class="display-4">Mein Wochenplan!</h1>
                 </div>
-                <div class="col-md-2">
-                    <p><a class="btn btn-secondary" href="{% url 'foodApp:shopping' object.id %}" role="button">Einkaufsliste &raquo;</a></p>
+                <div class="col-md-12">
+                    <p><a class="btn btn-outline-success " href="{% url 'foodApp:shopping' object.id %}" role="button">Einkaufsliste &raquo;</a></p>
                 </div>
             </div>
         </div>
@@ -21,7 +21,7 @@
 <main role="main">
     <div class="container">
         <!-- Current agenda -->
-        <table class="table">
+        <table class="table table-outline-success">
             <thead>
               <tr>
                 <th scope="col"></th>
@@ -34,22 +34,23 @@
                     {% ifchanged object.date %}
                         {% if not forloop.first %}
                             </tr>
-                        {%endif%}
+                        {% endif %}
                         <tr>
                         <th scope="row">{{ object.date | date:"l j. F" }}</th> <!-- "l": Monday | "j": 1 | "F": January -->
                         {% if object.daytime %} <!-- datetime = True: lunch -->
-                            <td>{{ object.recipe.title }}</td><td>
+                            <td><a style=" color: black;" href="{% url 'foodApp:recipesDetail' object.recipe.id %}" >{{ object.recipe.title }}</a></td><td>
                         {% else %} <!-- datetime = False: dinner -->
                             <td></td>
-                            <td>{{ object.recipe.title }}</td>
-                        {%endif%}
+                            <td><a style=" color: black;" href="{% url 'foodApp:recipesDetail' object.recipe.id %}" >{{ object.recipe.title }}</a></td>
+                        {% endif %}
                     {% else %} <!-- datetime = False: dinner -->
-                        {{ object.recipe.title }}</td>
-                    {%endifchanged%}
+                        <a style=" color: black;" href="{% url 'foodApp:recipesDetail' object.recipe.id %}" >{{ object.recipe.title }}</a></td>
+                    {% endifchanged %}
                 {% endfor %}
                 </tr>
             </tbody>
         </table>
+        <div class="container" style="min-height: 30px;"></div>
     </div>
 </main>
 {% endblock main_content %}
