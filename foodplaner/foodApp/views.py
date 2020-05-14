@@ -28,6 +28,11 @@ from .forms import CommentaryForm
 def home(request):
     return render(request, 'foodApp/home.html')
 
+
+def imprint(request):
+    return render(request, 'foodApp/imprint.html')
+
+
 def get_recipe_object():
     """
         desc:
@@ -39,12 +44,11 @@ def get_recipe_object():
 
 class RecipesListView(generic.ListView):
     model = Recipe
-    ordering = ['title']
     template_name = "foodApp/recipe_list.html"
     paginate_by = 10
 
     def get_queryset(self):
-        return get_recipe_object().filter(title__icontains=self.request.GET.get('q', '')).order_by('title')
+        return get_recipe_object().filter(title__icontains=self.request.GET.get('q', ''))
 
 
 class ReviewRecipesListView(PermissionRequiredMixin, generic.ListView):
@@ -52,11 +56,11 @@ class ReviewRecipesListView(PermissionRequiredMixin, generic.ListView):
     ordering = ['title']
     template_name = "foodApp/recipe_list.html"
     paginate_by = 10
-    permission_required = 'foodApp.change_recipe'
+    permission_required = 'foodApp.can_review_recipe'
 
     def get_queryset(self):
         recipe_object = Recipe.objects.filter(reviewed=False)
-        return recipe_object.filter(title__icontains=self.request.GET.get('q', '')).order_by('title')
+        return recipe_object.filter(title__icontains=self.request.GET.get('q', ''))
 
 
 class RecipesDetailView(UserPassesTestMixin, generic.DetailView, generic.list.MultipleObjectMixin):
@@ -70,8 +74,10 @@ class RecipesDetailView(UserPassesTestMixin, generic.DetailView, generic.list.Mu
 
     def test_func(self):
         is_valid = False
-        if self.request.user.has_perm('foodApp.change_recipe'):
+        if self.request.user.has_perm('foodApp.can_review_recipe'):
             is_valid = True
+        elif self.request.user.is_authenticated and self.request.user == self.get_object().author:
+                is_valid = True
         else:
             is_valid = self.get_object() in get_recipe_object()
         return is_valid
@@ -82,7 +88,7 @@ class MyProfil(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         self.context_object_name = 'myrecipes'
-        queryset = get_recipe_object().filter(author=self.request.user).order_by('title')
+        queryset = Recipe.objects.filter(author=self.request.user)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -103,7 +109,7 @@ class Agenda(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(Agenda, self).get_context_data(**kwargs)
-        context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk')).order_by('date', '-daytime')
+        context['object_list'] = Foodplan_Recipe.objects.filter(foodplan_id=self.kwargs.get('pk'))
         return context
 
 
@@ -199,9 +205,12 @@ class CreateRecipeView(PermissionRequiredMixin, generic.CreateView):
                         ingredient.recipe = recipe
                         ingredient.save()
         return super().form_valid(form)
+        
+    def get_success_url(self):
+        return reverse_lazy('foodApp:recipesDetail', kwargs={'pk': self.object.pk})
 
 
-class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
+class UpdateRecipeView(UserPassesTestMixin, PermissionRequiredMixin, generic.UpdateView):
     model = Recipe
     permission_required = 'foodApp.change_recipe'
     form_class = RecipeForm
@@ -260,6 +269,14 @@ class UpdateRecipeView(PermissionRequiredMixin, generic.UpdateView):
                 element.delete()
         return super().form_valid(form)
 
+    def test_func(self):
+        is_valid = False
+        if self.request.user.has_perm('foodApp.can_review_recipe'):
+            is_valid = True
+        elif self.request.user == self.get_object().author:
+            is_valid = not self.get_object().reviewed
+        return is_valid
+
     def get_success_url(self):
         return reverse_lazy('foodApp:recipesDetail', kwargs={'pk': self.kwargs['pk']})
 
@@ -305,7 +322,7 @@ class CommentaryCreateView(PermissionRequiredMixin, generic.CreateView):
         return super().form_valid(form)
         
     def get_success_url(self):
-        return reverse_lazy('foodApp:recipesDetail', kwargs = {'pk': self.kwargs['pk']})
+        return reverse_lazy('foodApp:recipesDetail', kwargs={'pk': self.kwargs['pk']})
 
 
 class CommentaryUpdateView(PermissionRequiredMixin, generic.UpdateView):
@@ -422,7 +439,7 @@ def foodplan(request):
     context = {
         'filter': foodplan_filter,
         'form': form,
-        'object_list': Foodplan_Recipe.objects.filter(foodplan=foodplan_object).order_by('date', '-daytime'),
+        'object_list': Foodplan_Recipe.objects.filter(foodplan=foodplan_object),
     }
     return render(request, "foodApp/foodplan.html", context)
 
@@ -506,7 +523,3 @@ def generate_recipe(request, foodplan_object, recipe_list, temp_date, daytime):
     save_date.daytime = daytime
     save_date.save()
     return recipe_list.exclude(id=random_recipes.id)
-
-
-def imprint(request): 
-    return render(request, 'foodApp/imprint.html')

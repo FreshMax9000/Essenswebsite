@@ -36,7 +36,7 @@
                         {{ filter.form.avg_rating }}
                         <div class="rating-select my-3">
                             {% for i in '0123456789'|make_list %}
-                                <span class="fa fa-star-o fa-lg" data-rating="{{ forloop.counter }}"></span>
+                                <span class="fa fa-star-o fa-lg" style="color: #28a745;" data-rating="{{ forloop.counter }}"></span>
                             {% endfor %}
                         </div>
                     </div>

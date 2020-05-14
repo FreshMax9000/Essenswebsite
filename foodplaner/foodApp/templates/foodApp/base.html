@@ -7,13 +7,10 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="/media/Logo.png">
-    
-    
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.1/examples/jumbotron/">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- Custom Bootstrap CSS Theme-->
+    <link rel="stylesheet" href="/media/theme.css">
 
     <title>Essensplan</title>
   </head>
@@ -28,22 +25,24 @@
 
         <div class="collapse navbar-collapse" id="navbarsExampleDefault" style="height: 100px">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'foodApp:foodplan' %}" style="font-size: x-large; height: 55px; color:azure ; ">Essensplan</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'foodApp:recipesList' %}" style="font-size: x-large; height: 55px; color:azure ; ">Rezepte</a>
-            </li>
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'foodApp:foodplan' %}" style="font-size: x-large; height: 55px; color:azure ; ">Essensplan</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'foodApp:recipesList' %}" style="font-size: x-large; height: 55px; color:azure ; ">Rezepte</a>
+              </li>
+            </ul>
           </ul>
           <!-- Login/Logout -->  
           <div class="navbar-nav">
             {% if user.is_authenticated %}
               <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 70px; ; width: 150px; background-color: transparent;"> 
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 70px; ; width: 150px; background-color: transparent;"> 
                   <img src="/media/profil.png" style="max-height: 30px;"; alt="Profli"><br><p style="font-size: medium">{{user}}</p></button>
                 <div class="dropdown-menu " aria-labelledby="dropdownMenuButton" >
                   <a class="dropdown-item" href="{% url 'foodApp:myprofil' %}">Dein Profil</a>
-                  {% if perms.foodApp.change_recipe %}
+                  {% if perms.foodApp.can_review_recipe %}
                     <a class="dropdown-item" href="{% url 'foodApp:reviewRecipesList' %}">Verifizieren</a>
                   {% endif %}
                   <a class="dropdown-item" href="{% url 'profile' %}">Einstellungen</a>
@@ -76,7 +75,6 @@
         <p class="pull-left">&copy; INF18IN - DHBW 2020</p>
           <div class="pull-right">
             <div class="list-inline">
-               <a style="color: black;" href="{% url 'foodApp:imprint' %}">Datenschutz</a>
                <a style="color: black;" href="{% url 'foodApp:imprint' %}">Impressum</a>
             </div>
           </div>
@@ -97,7 +95,7 @@
     data-message="Diese Website nutzt Cookies, um bestmögliche Funktionalität bieten zu können. Bei weitere Benutzung dieser Website stimmst du der Benutzung unserer Cookies zu. "
     data-moreinfo="https://www.cookiesandyou.com/"
     data-close-text="Schließen"
-    data-divlinkbg="rgb(241, 201, 125)">
+    data-divlinkbg="#28a745">
   </script>
 </html>
 

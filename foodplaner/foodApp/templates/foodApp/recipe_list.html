@@ -19,8 +19,11 @@
     </form>
     <br />
     
-    <div class="container" style="text-align: center;">
-      <p><a class="btn btn-lg btn-outline-success" href="{% url 'foodApp:addRecipe' %}" role="button">Rezept hinzufügen</a></p>
+    <div class="row" style="text-align: center;">
+      <div class="col-md-12" style="text-align: center;">
+        <p><a class="btn btn-lg btn-outline-success" href="{% url 'foodApp:addRecipe' %}" role="button">Rezept hinzufügen</a></p>
+        <p><a class="btn btn-outline-success" href="{% url 'foodApp:addGrocery' %}" role="button">Zutat hinzufügen</a></p>
+      </div>
     </div>
 
     <div class="row" style="text-align: center"></div>
@@ -32,7 +35,7 @@
             <div class="row">
               <div class="col-md-4 my-auto">
                 {% if object.image %}
-                  <img src={{object.image.url}}  alt="Rezept Bild" style="max-height: 200px;">
+                  <img class="img-fluid" src={{object.image.url}}  alt="Rezept Bild" style="max-height: 200px; width: auto;">
                 {% endif %}
               </div>
               <div class="col-md-4 my-auto">
@@ -43,12 +46,12 @@
                   <p class="lead">
                     {% for i in '0123456789'|make_list %}
                         {% if forloop.counter0 >= object.avg_rating %}
-                            <span class="fa fa-star-o fa-lg"></span>
+                            <span class="fa fa-star-o fa-lg" style="color: #28a745;"></span>
                         {% else %}
                             {% if forloop.counter > object.avg_rating and object.avg_rating > forloop.counter0 %}
-                                <span class="fa fa-star-half-o fa-lg"></span>
+                                <span class="fa fa-star-half-o fa-lg" style="color: #28a745;"></span>
                             {% else %}
-                                <span class="fa fa-star fa-lg"></span>
+                                <span class="fa fa-star fa-lg" style="color: #28a745;"></span>
                             {% endif %}
                         {% endif %}
                     {% endfor %}
