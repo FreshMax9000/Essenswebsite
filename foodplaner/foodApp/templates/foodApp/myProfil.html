@@ -16,7 +16,7 @@
         <!-- Lists the agenda and recipes from the User -->
         <div class="row">
             <div class="col-md-6">
-                <h2>Deine Rezepte</h2>
+                <h2>Meine Rezepte</h2>
                 {% for recipe in myrecipes  %}
                     <div class="jumbotron" >
                         <div class="row">
@@ -43,7 +43,7 @@
                 {% endfor %}       
             </div>
             <div class="col-md-6">
-                <h2>Deine Wochenpläne</h2>
+                <h2>Meine Wochenpläne</h2>
                 {% for plan in myfoodplans  %}
                     <div class="jumbotron" >
                         <a class="btn btn-outline-danger float-sm-right " href="{% url 'foodApp:foodplanDelete' plan.id %}" role="delete"data-toggle="tooltip" title="Löschen">

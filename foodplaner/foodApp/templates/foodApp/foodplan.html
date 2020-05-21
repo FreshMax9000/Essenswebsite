@@ -61,8 +61,8 @@
             </div>
             <div class="row">
                 {% for object in object_list  %}
-                <div class="col-md-6">
-                    <div class="jumbotron" style="max-height: 250px;">
+                <div class="col-md-6 my-auto">
+                    <div class="jumbotron">
                         <div class="form-group">
                             <button class="btn btn-outline-danger float-sm-right " name="delete"  value={{object.recipe.id}} data-toggle="tooltip" title="Löschen">
                                 <i class="fa fa-times"></i>

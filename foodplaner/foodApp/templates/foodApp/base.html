@@ -16,14 +16,16 @@
   </head>
   <body>
       <!-- Navigation -->
-      <nav class="navbar navbar-expand-md navbar-dark bg-dark" style="min-height: 100px">
-        <img src="/media/Logo.png" alt="My image" class="rounded mr-2" height="60" max="30"class="img-fluid"> 
-        <a class="navbar-brand" href="{% url 'foodApp:home' %}"><h1 class="display-4">Essensplan!</h1></a>
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <img src="/media/Logo.png" alt="My image" class="rounded mr-2 d-none d-md-block" height="50" max="30"class="img-fluid"> 
+        <img src="/media/Logo.png" alt="My image" class="rounded mr-2 d-md-none" height="35" max="30"class="img-fluid"> 
+        <a class="navbar-brand d-none d-md-block" href="{% url 'foodApp:home' %}"><h1 class="display-5">Essensplan!</h1></a>
+        <a class="navbar-brand d-md-none" href="{% url 'foodApp:home' %}"><h2>Essensplan!</h2></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarsExampleDefault" style="height: 100px">
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
           <ul class="navbar-nav mr-auto">
             <ul class="navbar-nav mr-auto">
               <li class="nav-item">
@@ -41,7 +43,7 @@
                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height: 70px; ; width: 150px; background-color: transparent;"> 
                   <img src="/media/profil.png" style="max-height: 30px;"; alt="Profli"><br><p style="font-size: medium">{{user}}</p></button>
                 <div class="dropdown-menu " aria-labelledby="dropdownMenuButton" >
-                  <a class="dropdown-item" href="{% url 'foodApp:myprofil' %}">Dein Profil</a>
+                  <a class="dropdown-item" href="{% url 'foodApp:myprofil' %}">Mein Profil</a>
                   {% if perms.foodApp.can_review_recipe %}
                     <a class="dropdown-item" href="{% url 'foodApp:reviewRecipesList' %}">Verifizieren</a>
                   {% endif %}
@@ -50,8 +52,8 @@
                 </div>
               </div>
             {% else %}
-              <a class="btn btn-outline-success mx-2" style="font-size: x-large" href="{% url 'login' %}">Anmelden</a>
-              <a class="btn btn-outline-success mx-2" style="font-size: x-large" href="{% url 'register' %}">Registrieren</a>
+              <a class="btn btn-md btn-outline-success mx-2" href="{% url 'login' %}">Anmelden</a>
+              <a class="btn btn-md btn-outline-success mx-2" href="{% url 'register' %}">Registrieren</a>
             {% endif %}
           </div>
         </div>
