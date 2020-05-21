@@ -49,8 +49,6 @@
                         <a class="btn btn-outline-danger float-sm-right " href="{% url 'foodApp:foodplanDelete' plan.id %}" role="delete"data-toggle="tooltip" title="Löschen">
                             <i class="fa fa-times" ></i></a>
                         <h3><a style=" color: black;"  href="{% url 'foodApp:agenda' plan.id %}" ><small>Wochenplan</small></a></h3>
-
-                        
                         ab {{plan.foodplan_recipe_set.first.date | date:"l j. F" }}
                     </div>
                 {% endfor %}  
