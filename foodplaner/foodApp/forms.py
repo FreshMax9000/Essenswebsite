@@ -55,7 +55,7 @@ class RecipeForm(forms.ModelForm):
     description.widget = forms.TextInput(attrs={'placeholder': 'Kurzbeschreibung eingeben'})
     preparation = forms.CharField(label='Zubereitung: ')
     preparation.widget = forms.Textarea(attrs={'placeholder': 'Zubereitung eingeben'})
-    work_time = forms.IntegerField(min_value=1, label='Zubereitungszeit: ')
+    work_time = forms.IntegerField(min_value=1, max_value=999, label='Zubereitungszeit: ')
     reviewed = forms.BooleanField(required=False, label='Rezept veröffentlichen')
     image = forms.ImageField(required=False, label='Bild hinzufügen:')
     difficulty_choices = {(1, 'Einfach'), (2, 'Mittel'), (3, 'Schwer')}

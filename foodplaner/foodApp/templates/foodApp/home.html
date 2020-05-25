@@ -64,28 +64,49 @@
 
 <!--main content-->
 {% block main_content %}
-<!-- <main role="main">
+<main role="main" class=" d-md-none d-block">
+  <div class="container" style="min-height: 30px;"></div>
   <div class="container">
-    <div class="jumbotron" style=" text-align: center;">
-      <h1>Essensplan</h1>
-      <p>Lass dir deinen persönlichen Essensplan generiernen.</p>
-      <p><a class="btn btn-lg btn-outline-success" href="{% url 'foodApp:foodplan' %}" role="button">Generiernen</a></p>
-  </div>
-    <div class="jumbotron" style="text-align: center">
-      <h1>Mein Profil</h1>
-      <p>Schau dir unter Mein Profil deine gespeicherten Pläne und Rezepte an.</p>
-      <p><a class="btn btn-lg btn-outline-success" href="{% url 'foodApp:myprofil' %}" role="button">Mein Profil</a></p>
-  </div>
-    <div class="jumbotron" style="text-align: center">
-      <h1>Rezepte</h1>
-      <p>Schau dir alle unsere Rezepte an.</p>
-      <p><a class="btn btn-lg btn-outline-success" href="{% url 'foodApp:recipesList' %}" role="button">Rezepte durchsuchen</a></p>
-  </div>
-    <div class="jumbotron" style="text-align: center">
-      <h1>Neue Rezepte</h1>
-      <p>Füge neue Rezepte hinzu.</p>
-      <p><a class="btn btn-lg btn-outline-success" href="{% url 'foodApp:addRecipe' %}" role="button">Rezept hinzufügen</a></p>
+    <div class="card" style=" text-align: center;">
+      <h4 class="card-header">Essensplan</h4>
+      <div class="card-body">
+        <p>Lass dir deinen persönlichen Essensplan generiernen.</p>
+        <p><a class="btn btn-lg btn-outline-success" href="{% url 'foodApp:foodplan' %}" role="button">Generiernen</a></p>
+      </div>
     </div>
   </div>
-</main>-->
+  <div class="container" style="min-height: 30px;"></div>
+
+  <div class="container">
+    <div class="card" style=" text-align: center;">
+      <h4 class="card-header">Mein Profil</h4>
+      <div class="card-body">
+        <p>Schau dir unter Mein Profil deine gespeicherten Pläne und Rezepte an.</p>
+        <p><a class="btn btn-lg btn-outline-success" href="{% url 'foodApp:myprofil' %}" role="button">Mein Profil</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="container" style="min-height: 30px;"></div>
+
+  <div class="container">
+    <div class="card" style=" text-align: center;">
+      <h4 class="card-header">Rezepte</h4>
+      <div class="card-body">
+        <p>Schau dir alle unsere Rezepte an.</p>
+        <p><a class="btn btn-lg btn-outline-success" href="{% url 'foodApp:recipesList' %}" role="button">Rezepte durchsuchen</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="container" style="min-height: 30px;"></div>
+  <div class="container">
+    <div class="card" style=" text-align: center;">
+      <h4 class="card-header">Neue Rezepte</h4>
+      <div class="card-body">
+        <p>Füge neue Rezepte hinzu.</p>
+        <p><a class="btn btn-lg btn-outline-success" href="{% url 'foodApp:addRecipe' %}" role="button">Rezept hinzufügen</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="container" style="min-height: 30px;"></div>
+</main>
 {% endblock main_content %} 

@@ -57,8 +57,8 @@
                     </small></h4>
                 </div>
                 {% if object.image %}
-                    <div class="col-md-12" style="text-align: center;  min-height: 100px;">
-                        <img src={{object.image.url}} >
+                    <div class="col-md-12" style="text-align: center;">
+                        <img class="img-fluid" src={{object.image.url}}  alt="Rezept Bild" style="max-height: 200px; width: auto;">
                     </div>
                 {% endif %}
             </div>
@@ -85,7 +85,7 @@
             <div class="card">
                 <div class="card-header" id="headingOne">
                     <h5 class="mb-0">
-                        <a class="btn btn-outline-success float-sm-right" href="{% url 'foodApp:createCommentary' object.id %}" role="button" data-toggle="tooltip" title="Kommentar hinzufügen">
+                        <a class="btn btn-outline-success float-right" href="{% url 'foodApp:createCommentary' object.id %}" role="button" data-toggle="tooltip" title="Kommentar hinzufügen">
                             <i class="fa fa-plus"></i>
                         </a>
                         <button class="btn btn-outline-success collapsed" type="button" data-toggle="collapse" data-target="#commentary_list" aria-controls="commentary_list">
@@ -98,10 +98,10 @@
                         {% for object in object_list %}
                             <div class="jumbotron">
                                 {% if perms.foodApp.delete_commentary %}
-                                    <a class="btn btn-outline-danger float-right " href="{% url 'foodApp:deleteCommentary' object.id %}" role="button" data-toggle="tooltip" title="Löschen">
+                                    <a class="btn btn-outline-danger float-sm-right " href="{% url 'foodApp:deleteCommentary' object.id %}" role="button" data-toggle="tooltip" title="Löschen">
                                         <i class="fa fa-times"></i>
                                     </a>
-                                    <a class="btn btn-outline-dark float-right " href="{% url 'foodApp:updateCommentary' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
+                                    <a class="btn btn-outline-dark float-sm-right " href="{% url 'foodApp:updateCommentary' object.id %}" role="button" data-toggle="tooltip" title="Bearbeiten">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 {% endif %}

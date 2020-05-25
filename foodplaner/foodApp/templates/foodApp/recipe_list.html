@@ -67,7 +67,11 @@
 
 
     {% empty %}
-    <h1 style="text-align: center; line-height: 100px;"><small>Es wurden keine Gerichte zum verifizieren gefunden</small></h1>
+      {% if perms.foodApp.can_review_recipe %}
+        <h1 style="text-align: center; line-height: 100px;"><small>Es wurden keine Gerichte zum verifizieren gefunden</small></h1>
+      {% else %}
+        <h1 style="text-align: center; line-height: 100px;"><small>Es wurden keine Gerichte gefunden</small></h1>
+      {% endif %}
     {% endfor %}
     {% if page_obj %}
       <div class="pagination justify-content-end" >
