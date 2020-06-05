@@ -1,3 +1,10 @@
+"""
+This document defines the link between given URLs and Python functions to generate the corresponding view.
+
+For more information see https://docs.djangoproject.com/en/3.0/topics/http/urls/
+"""
+
+
 from django.urls import path
 
 from . import views

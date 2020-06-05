@@ -1,3 +1,12 @@
+"""
+This document contains models to store persistent data.
+
+Models are objects which internally translate the data they contain to a SQL database. Therefore models can be
+treated like object but the data they contain is stored persistent and efficient in a SQL database.
+For more information see https://docs.djangoproject.com/en/3.0/topics/db/models/
+"""
+
+
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
