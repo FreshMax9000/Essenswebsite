@@ -1,3 +1,12 @@
+"""
+This document defines the views in Django, which take a web request and returns a web response.
+
+In this implementation the web responses are static HTML pages or pages modified by logic depending on
+what is in the database.
+For more information see https://docs.djangoproject.com/en/3.0/topics/http/views/
+"""
+
+
 from datetime import date
 from datetime import timedelta
 

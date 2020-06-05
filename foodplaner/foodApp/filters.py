@@ -1,7 +1,8 @@
 """
-    This modul uses django-filter.
-    Django-filter provides a simple way to filter down a queryset based on parameters a user provides.
-    Guide: https://simpleisbetterthancomplex.com/tutorial/2016/11/28/how-to-filter-querysets-dynamically.html
+This modul uses django-filter.
+
+Django-filter provides a simple way to filter down a queryset based on parameters a user provides.
+Guide: https://simpleisbetterthancomplex.com/tutorial/2016/11/28/how-to-filter-querysets-dynamically.html
 """
 import django_filters
 from django import forms
